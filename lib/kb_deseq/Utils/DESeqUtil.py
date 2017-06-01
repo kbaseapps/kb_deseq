@@ -6,11 +6,9 @@ import errno
 import subprocess
 import math
 
-# from DataFileUtil.DataFileUtilClient import DataFileUtil
-# from Workspace.WorkspaceClient import Workspace as Workspace
+from DataFileUtil.DataFileUtilClient import DataFileUtil
+from Workspace.WorkspaceClient import Workspace as Workspace
 from KBaseReport.KBaseReportClient import KBaseReport
-# from GenomeFileUtil.GenomeFileUtilClient import GenomeFileUtil
-# from ReadsAlignmentUtils.ReadsAlignmentUtilsClient import ReadsAlignmentUtils
 
 
 def log(message, prefix_newline=False):
@@ -22,11 +20,11 @@ class DESeqUtil:
 
     def _validate_run_deseq2_app_params(self, params):
         """
-        _validate_run_stringtie_params:
-                validates params passed to run_stringtie method
+        _validate_run_deseq2_app_params:
+                validates params passed to run_deseq2_app method
         """
 
-        log('Start validating run_stringtie params')
+        log('start validating run_deseq2_app params')
 
         # check for required parameters
         for p in ['expressionset_ref', 'diff_expression_obj_name', 'filtered_expr_matrix',
@@ -75,22 +73,78 @@ class DESeqUtil:
     def _get_count_matrix_file(self, expressionset_ref):
         pass
 
+    def _generate_diff_expression_data(self, result_directory, expressionset_ref,
+                                       diff_expression_obj_name, workspace_name):
+
+        """
+        _generate_diff_expression_data: generate RNASeqDifferentialExpression object data
+        """
+        expression_set_data = self.ws.get_objects2({'objects':
+                                                   [{'ref': expressionset_ref}]})['data'][0]['data']
+
+        diff_expression_data = {
+                'tool_used': 'DESeq2',
+                'tool_version': '1.16.1',
+                'expressionSet_id': expressionset_ref,
+                'genome_id': expression_set_data.get('genome_id'),
+                'alignmentSet_id': expression_set_data.get('alignmentSet_id'),
+                'sampleset_id': expression_set_data.get('sampleset_id')
+        }
+
+        handle = self.dfu.file_to_shock({'file_path': result_directory,
+                                         'pack': 'zip',
+                                         'make_handle': True})['handle']
+        diff_expression_data.update({'file': handle})
+
+        sample_ids = []
+        diff_expression_data.update({'sample_ids': sample_ids})
+
+        condition = []
+        diff_expression_data.update({'condition': condition})
+
+        print diff_expression_data
+
+        return diff_expression_data
+
     def _save_diff_expression(self, result_directory, expressionset_ref,
                               workspace_name, diff_expression_obj_name):
-        pass
+        """
+        _save_diff_expression: save DifferentialExpression object to workspace
+        """
+        log('start saving RNASeqDifferentialExpression object')
+        if isinstance(workspace_name, int) or workspace_name.isdigit():
+            workspace_id = workspace_name
+        else:
+            workspace_id = self.dfu.ws_name_to_id(workspace_name)
+
+        diff_expression_data = self._generate_diff_expression_data(result_directory,
+                                                                   expressionset_ref,
+                                                                   diff_expression_obj_name,
+                                                                   workspace_name)
+
+        object_type = 'KBaseRNASeq.RNASeqDifferentialExpression'
+        save_object_params = {
+            'id': workspace_id,
+            'objects': [{
+                            'type': object_type,
+                            'data': diff_expression_data,
+                            'name': diff_expression_obj_name
+                        }]
+        }
+
+        dfu_oi = self.dfu.save_objects(save_object_params)[0]
+        diff_expression_obj_ref = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
+
+        return diff_expression_obj_ref
 
     def __init__(self, config):
         self.ws_url = config["workspace-url"]
         self.callback_url = config['SDK_CALLBACK_URL']
         self.token = config['KB_AUTH_TOKEN']
         self.shock_url = config['shock-url']
-        # self.dfu = DataFileUtil(self.callback_url)
-        # self.gfu = GenomeFileUtil(self.callback_url)
-        # self.rau = ReadsAlignmentUtils(self.callback_url)
-        # self.ws = Workspace(self.ws_url, token=self.token)
+        self.dfu = DataFileUtil(self.callback_url)
+        self.ws = Workspace(self.ws_url, token=self.token)
         self.scratch = config['scratch']
-        # self.scratch = os.path.join(config['scratch'], str(uuid.uuid4()))
-        # self._mkdir_p(self.scratch)
 
     def run_deseq2_app(self, params):
         """
@@ -106,6 +160,8 @@ class DESeqUtil:
         optional params:
         fold_scale_type: one of ["linear", "log2+1", "log10+1"]
         alpha_cutoff: q value cutoff
+        fold_change_cutoff: fold change cutoff
+        maximum_num_genes: maximum gene numbers
 
         return:
         result_directory: folder path that holds all files generated by run_deseq2_app
