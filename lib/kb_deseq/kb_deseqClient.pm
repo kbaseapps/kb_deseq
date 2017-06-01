@@ -439,6 +439,8 @@ workspace_name: the name of the workspace it gets saved to
 optional params:
 fold_scale_type: one of ["linear", "log2+1", "log10+1"]
 alpha_cutoff: q value cutoff
+fold_change_cutoff: fold change cutoff
+maximum_num_genes: maximum gene numbers
 
 
 =item Definition

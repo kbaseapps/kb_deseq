@@ -30,6 +30,8 @@ module kb_deseq {
       optional params:
       fold_scale_type: one of ["linear", "log2+1", "log10+1"]
       alpha_cutoff: q value cutoff
+      fold_change_cutoff: fold change cutoff
+      maximum_num_genes: maximum gene numbers
     */
     typedef structure{
         obj_ref expressionset_ref;
