@@ -333,10 +333,10 @@ class Application(object):
         self.serverlog.set_log_level(6)
         self.rpc_service = JSONRPCServiceCustom()
         self.method_authentication = dict()
-        self.rpc_service.add(impl_kb_deseq.run_deseq2,
-                             name='kb_deseq.run_deseq2',
+        self.rpc_service.add(impl_kb_deseq.run_deseq2_app,
+                             name='kb_deseq.run_deseq2_app',
                              types=[dict])
-        self.method_authentication['kb_deseq.run_deseq2'] = 'required'  # noqa
+        self.method_authentication['kb_deseq.run_deseq2_app'] = 'required'  # noqa
         self.rpc_service.add(impl_kb_deseq.status,
                              name='kb_deseq.status',
                              types=[dict])
