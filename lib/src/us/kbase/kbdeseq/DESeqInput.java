@@ -16,9 +16,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * <pre>
  * required params:
  * expressionset_ref: ExpressionSet object reference
- * expression_set_name: ExpressionSet object name and output file header
+ * diff_expression_obj_name: RNASeqDifferetialExpression object name
  * filtered_expr_matrix: name of output object filtered expression matrix
  * workspace_name: the name of the workspace it gets saved to
+ * optional params:
  * fold_scale_type: one of ["linear", "log2+1", "log10+1"]
  * alpha_cutoff: q value cutoff
  * </pre>

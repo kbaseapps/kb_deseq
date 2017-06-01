@@ -3,7 +3,7 @@ import unittest
 import os  # noqa: F401
 import json  # noqa: F401
 import time
-import requests
+import requests  # noqa: F401
 
 from os import environ
 try:
@@ -75,15 +75,43 @@ class kb_deseqTest(unittest.TestCase):
     def getContext(self):
         return self.__class__.ctx
 
-    # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
-    def test_your_method(self):
-        # Prepare test objects in workspace if needed using
-        # self.getWsClient().save_objects({'workspace': self.getWsName(),
-        #                                  'objects': []})
-        #
-        # Run your method by
-        # ret = self.getImpl().your_method(self.getContext(), parameters...)
-        #
-        # Check returned data with
-        # self.assertEqual(ret[...], ...) or other unittest methods
-        pass
+    def test_bad_run_deseq2_app_params(self):
+        invalidate_input_params = {
+          'missing_expressionset_ref': 'expressionset_ref',
+          'diff_expression_obj_name': 'diff_expression_obj_name',
+          'filtered_expr_matrix': 'filtered_expr_matrix',
+          'workspace_name': 'workspace_name'
+        }
+        with self.assertRaisesRegexp(
+                    ValueError, '"expressionset_ref" parameter is required, but missing'):
+            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+        invalidate_input_params = {
+          'expressionset_ref': 'expressionset_ref',
+          'missing_diff_expression_obj_name': 'diff_expression_obj_name',
+          'filtered_expr_matrix': 'filtered_expr_matrix',
+          'workspace_name': 'workspace_name'
+        }
+        with self.assertRaisesRegexp(
+                    ValueError, '"diff_expression_obj_name" parameter is required, but missing'):
+            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+        invalidate_input_params = {
+          'expressionset_ref': 'expressionset_ref',
+          'diff_expression_obj_name': 'diff_expression_obj_name',
+          'missing_filtered_expr_matrix': 'filtered_expr_matrix',
+          'workspace_name': 'workspace_name'
+        }
+        with self.assertRaisesRegexp(
+                    ValueError, '"filtered_expr_matrix" parameter is required, but missing'):
+            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+        invalidate_input_params = {
+          'expressionset_ref': 'expressionset_ref',
+          'diff_expression_obj_name': 'diff_expression_obj_name',
+          'filtered_expr_matrix': 'filtered_expr_matrix',
+          'missing_workspace_name': 'workspace_name'
+        }
+        with self.assertRaisesRegexp(
+                    ValueError, '"workspace_name" parameter is required, but missing'):
+            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)

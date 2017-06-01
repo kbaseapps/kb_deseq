@@ -163,9 +163,9 @@ public class KbDeseqClient {
     }
 
     /**
-     * <p>Original spec-file function name: run_deseq2</p>
+     * <p>Original spec-file function name: run_deseq2_app</p>
      * <pre>
-     * run_deseq2: run DESeq2 app
+     * run_deseq2_app: run DESeq2 app
      * ref: https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
      * </pre>
      * @param   params   instance of type {@link us.kbase.kbdeseq.DESeqInput DESeqInput}
@@ -173,11 +173,11 @@ public class KbDeseqClient {
      * @throws IOException if an IO exception occurs
      * @throws JsonClientException if a JSON RPC exception occurs
      */
-    public DESeqResult runDeseq2(DESeqInput params, RpcContext... jsonRpcContext) throws IOException, JsonClientException {
+    public DESeqResult runDeseq2App(DESeqInput params, RpcContext... jsonRpcContext) throws IOException, JsonClientException {
         List<Object> args = new ArrayList<Object>();
         args.add(params);
         TypeReference<List<DESeqResult>> retType = new TypeReference<List<DESeqResult>>() {};
-        List<DESeqResult> res = caller.jsonrpcCall("kb_deseq.run_deseq2", args, retType, true, true, jsonRpcContext, this.serviceVersion);
+        List<DESeqResult> res = caller.jsonrpcCall("kb_deseq.run_deseq2_app", args, retType, true, true, jsonRpcContext, this.serviceVersion);
         return res.get(0);
     }
 
