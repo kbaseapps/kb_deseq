@@ -23,6 +23,16 @@ RUN pip install cffi --upgrade \
 
 # -----------------------------------------
 
+# download prepDE script
+RUN cd /kb/dev_container/modules && \
+    mkdir prepDE && cd prepDE && \
+    wget http://ccb.jhu.edu/software/stringtie/dl/prepDE.py &&\
+    mkdir /kb/deployment/bin/prepDE && \
+    cp -R prepDE.py /kb/deployment/bin/prepDE/prepDE.py && \
+    chmod 777 /kb/deployment/bin/prepDE/prepDE.py
+
+# -----------------------------------------
+
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 RUN chmod -R a+rw /kb/module
