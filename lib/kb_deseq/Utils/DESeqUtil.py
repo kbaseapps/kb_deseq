@@ -9,6 +9,7 @@ import math
 from DataFileUtil.DataFileUtilClient import DataFileUtil
 from Workspace.WorkspaceClient import Workspace as Workspace
 from KBaseReport.KBaseReportClient import KBaseReport
+from ReadsAlignmentUtils.ReadsAlignmentUtilsClient import ReadsAlignmentUtils
 
 
 def log(message, prefix_newline=False):
@@ -17,6 +18,8 @@ def log(message, prefix_newline=False):
 
 
 class DESeqUtil:
+
+    PREPDE_TOOLKIT_PATH = '/kb/deployment/bin/prepDE'
 
     def _validate_run_deseq2_app_params(self, params):
         """
@@ -46,6 +49,24 @@ class DESeqUtil:
             else:
                 raise
 
+    def _run_command(self, command):
+        """
+        _run_command: run command and print result
+        """
+
+        log('Start executing command:\n{}'.format(command))
+        pipe = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        output = pipe.communicate()[0]
+        exitCode = pipe.returncode
+
+        if (exitCode == 0):
+            log('Executed commend:\n{}\n'.format(command) +
+                'Exit Code: {}\nOutput:\n{}'.format(exitCode, output))
+        else:
+            error_msg = 'Error running commend:\n{}\n'.format(command)
+            error_msg += 'Exit Code: {}\nOutput:\n{}'.format(exitCode, output)
+            raise ValueError(error_msg)
+
     def _generate_report(self, obj_ref, workspace_name):
         """
         _generate_report: generate summary report
@@ -70,7 +91,56 @@ class DESeqUtil:
 
         return report_output
 
-    def _get_count_matrix_file(self, expressionset_ref):
+    def _save_count_matrix_file(self, expressionset_ref, result_directory):
+        """
+        _save_count_matrix_file: download gtf file for each expression
+                                 run prepDE.py on them and save reault count matrix file
+        """
+
+        mapped_expr_ids = self.expression_set_data.get('mapped_expression_ids')
+
+        gtf_directory = os.path.join(self.scratch, str(uuid.uuid4()))
+        self._mkdir_p(gtf_directory)
+
+        for i in mapped_expr_ids:
+            for alignment_id, expression_id in i.items():
+                expression_data = self.ws.get_objects2(
+                                                {'objects':
+                                                 [{'ref': expression_id}]})['data'][0]['data']
+                handle_id = expression_data.get('file').get('hid')
+                expression_name = expression_data.get('id')
+
+                tmp_gtf_directory = os.path.join(gtf_directory, expression_name)
+                self._mkdir_p(tmp_gtf_directory)
+
+                self.dfu.shock_to_file({'handle_id': handle_id,
+                                        'file_path': tmp_gtf_directory,
+                                        'unpack': 'unpack'})
+
+        self._run_prepDE(result_directory, gtf_directory)
+
+    def _run_prepDE(self, result_directory, input_directory):
+        """
+        _run_prepDE: run prepDE.py script
+
+        ref: http://ccb.jhu.edu/software/stringtie/index.shtml?t=manual#deseq
+        """
+
+        log('generating matrix of read counts')
+        command = self.PREPDE_TOOLKIT_PATH + '/prepDE.py '
+        command += '-i {} '.format(input_directory)
+        command += '-g {} '.format(os.path.join(result_directory, 'gene_count_matrix.csv'))
+        command += '-t {} '.format(os.path.join(result_directory, 'transcript_count_matrix.csv'))
+
+        self._run_command(command)
+
+    def _generate_diff_expression_csv(self, result_directory):
+        """
+        _generate_diff_expression_csv: get different expression matrix with DESeq2
+        """
+
+        count_matrix_file = os.path.join(result_directory, 'transcript_count_matrix.csv')
+
         pass
 
     def _generate_diff_expression_data(self, result_directory, expressionset_ref,
@@ -79,30 +149,32 @@ class DESeqUtil:
         """
         _generate_diff_expression_data: generate RNASeqDifferentialExpression object data
         """
-        expression_set_data = self.ws.get_objects2({'objects':
-                                                   [{'ref': expressionset_ref}]})['data'][0]['data']
 
         diff_expression_data = {
                 'tool_used': 'DESeq2',
                 'tool_version': '1.16.1',
                 'expressionSet_id': expressionset_ref,
-                'genome_id': expression_set_data.get('genome_id'),
-                'alignmentSet_id': expression_set_data.get('alignmentSet_id'),
-                'sampleset_id': expression_set_data.get('sampleset_id')
+                'genome_id': self.expression_set_data.get('genome_id'),
+                'alignmentSet_id': self.expression_set_data.get('alignmentSet_id'),
+                'sampleset_id': self.expression_set_data.get('sampleset_id')
         }
+
+        self._generate_diff_expression_csv(result_directory)
 
         handle = self.dfu.file_to_shock({'file_path': result_directory,
                                          'pack': 'zip',
                                          'make_handle': True})['handle']
         diff_expression_data.update({'file': handle})
 
-        sample_ids = []
-        diff_expression_data.update({'sample_ids': sample_ids})
-
         condition = []
+        mapped_expr_ids = self.expression_set_data.get('mapped_expression_ids')
+        for i in mapped_expr_ids:
+            for alignment_id, expression_id in i.items():
+                expression_data = self.ws.get_objects2(
+                                                {'objects':
+                                                 [{'ref': expression_id}]})['data'][0]['data']
+                condition.append(expression_data.get('condition'))
         diff_expression_data.update({'condition': condition})
-
-        print diff_expression_data
 
         return diff_expression_data
 
@@ -143,6 +215,7 @@ class DESeqUtil:
         self.token = config['KB_AUTH_TOKEN']
         self.shock_url = config['shock-url']
         self.dfu = DataFileUtil(self.callback_url)
+        self.rau = ReadsAlignmentUtils(self.callback_url)
         self.ws = Workspace(self.ws_url, token=self.token)
         self.scratch = config['scratch']
 
@@ -177,9 +250,13 @@ class DESeqUtil:
         result_directory = os.path.join(self.scratch, str(uuid.uuid4()))
         self._mkdir_p(result_directory)
 
-        # input files
         expressionset_ref = params.get('expressionset_ref')
-        params['count_matrix_file'] = self._get_count_matrix_file(expressionset_ref)
+        self.expression_set_data = self.ws.get_objects2(
+                                                {'objects':
+                                                 [{'ref': expressionset_ref}]})['data'][0]['data']
+
+        # run prepDE.py and save count matrix file to result_directory
+        self._save_count_matrix_file(expressionset_ref, result_directory)
 
         diff_expression_obj_ref = self._save_diff_expression(result_directory,
                                                              expressionset_ref,
