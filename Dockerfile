@@ -33,6 +33,19 @@ RUN cd /kb/dev_container/modules && \
 
 # -----------------------------------------
 
+# install R dependency
+RUN CODENAME=`grep CODENAME /etc/lsb-release | cut -c 18-` && \
+    echo "deb http://cran.cnr.berkeley.edu/bin/linux/ubuntu $CODENAME/" >> /etc/apt/sources.list && \
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 && \
+    sudo apt-get update && \
+    yes '' | sudo apt-get -y install r-base && \
+    yes '' | sudo apt-get -y install r-base-dev && \
+    wget "https://bioconductor.org/biocLite.R" -O /kb/deployment/bin/prepDE/biocLite.R && \
+    echo 'install.packages(c("getopt"), lib="/kb/deployment/bin/prepDE", repos="http://cran.us.r-project.org", dependencies=TRUE)\nsource("http://bioconductor.org/biocLite.R")\nbiocLite(c("DESeq2"), dependencies = TRUE)' > /kb/deployment/bin/prepDE/packages.R && \
+    Rscript /kb/deployment/bin/prepDE/packages.R
+
+# -----------------------------------------
+
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 RUN chmod -R a+rw /kb/module
