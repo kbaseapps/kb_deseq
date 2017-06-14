@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * required params:
  * expressionset_ref: ExpressionSet object reference
  * diff_expression_obj_name: RNASeqDifferetialExpression object name
- * filtered_expr_matrix: name of output object filtered expression matrix
+ * filtered_expression_matrix_name: name of output object filtered expression matrix
  * workspace_name: the name of the workspace it gets saved to
  * optional params:
  * fold_scale_type: one of ["linear", "log2+1", "log10+1"]
@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
     "expressionset_ref",
     "diff_expression_obj_name",
-    "filtered_expr_matrix",
+    "filtered_expression_matrix_name",
     "workspace_name",
     "num_threads",
     "expr_ids_list",
@@ -47,8 +47,8 @@ public class DESeqInput {
     private String expressionsetRef;
     @JsonProperty("diff_expression_obj_name")
     private String diffExpressionObjName;
-    @JsonProperty("filtered_expr_matrix")
-    private String filteredExprMatrix;
+    @JsonProperty("filtered_expression_matrix_name")
+    private String filteredExpressionMatrixName;
     @JsonProperty("workspace_name")
     private String workspaceName;
     @JsonProperty("num_threads")
@@ -100,18 +100,18 @@ public class DESeqInput {
         return this;
     }
 
-    @JsonProperty("filtered_expr_matrix")
-    public String getFilteredExprMatrix() {
-        return filteredExprMatrix;
+    @JsonProperty("filtered_expression_matrix_name")
+    public String getFilteredExpressionMatrixName() {
+        return filteredExpressionMatrixName;
     }
 
-    @JsonProperty("filtered_expr_matrix")
-    public void setFilteredExprMatrix(String filteredExprMatrix) {
-        this.filteredExprMatrix = filteredExprMatrix;
+    @JsonProperty("filtered_expression_matrix_name")
+    public void setFilteredExpressionMatrixName(String filteredExpressionMatrixName) {
+        this.filteredExpressionMatrixName = filteredExpressionMatrixName;
     }
 
-    public DESeqInput withFilteredExprMatrix(String filteredExprMatrix) {
-        this.filteredExprMatrix = filteredExprMatrix;
+    public DESeqInput withFilteredExpressionMatrixName(String filteredExpressionMatrixName) {
+        this.filteredExpressionMatrixName = filteredExpressionMatrixName;
         return this;
     }
 
@@ -242,7 +242,7 @@ public class DESeqInput {
 
     @Override
     public String toString() {
-        return ((((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExprMatrix=")+ filteredExprMatrix)+", workspaceName=")+ workspaceName)+", numThreads=")+ numThreads)+", exprIdsList=")+ exprIdsList)+", foldScaleType=")+ foldScaleType)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", maximumNumGenes=")+ maximumNumGenes)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", workspaceName=")+ workspaceName)+", numThreads=")+ numThreads)+", exprIdsList=")+ exprIdsList)+", foldScaleType=")+ foldScaleType)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", maximumNumGenes=")+ maximumNumGenes)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

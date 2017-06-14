@@ -130,7 +130,7 @@ class DESeqUtil:
 
         self._run_command(command)
 
-    def _generate_diff_expression_csv(self, result_directory):
+    def _generate_diff_expression_csv(self, result_directory, alpha_cutoff):
         """
         _generate_diff_expression_csv: get different expression matrix with DESeq2
         """
@@ -143,6 +143,7 @@ class DESeqUtil:
 
         rcmd_list = ['Rscript', os.path.join(os.path.dirname(__file__), 'run_DESeq.R')]
         rcmd_list.extend(['--result_directory', result_directory])
+        rcmd_list.extend(['--alpha_cutoff', alpha_cutoff])
         output_csvfile = 'gene_results.csv'
         rcmd_list.extend(['--output_csvfile', output_csvfile])
         rcmd_str = " ".join(str(x) for x in rcmd_list)
@@ -150,7 +151,7 @@ class DESeqUtil:
         self._run_command(rcmd_str)
 
     def _generate_diff_expression_data(self, result_directory, expressionset_ref,
-                                       diff_expression_obj_name, workspace_name):
+                                       diff_expression_obj_name, workspace_name, alpha_cutoff):
         """
         _generate_diff_expression_data: generate RNASeqDifferentialExpression object data
         """
@@ -164,7 +165,7 @@ class DESeqUtil:
                 'sampleset_id': self.expression_set_data.get('sampleset_id')
         }
 
-        self._generate_diff_expression_csv(result_directory)
+        self._generate_diff_expression_csv(result_directory, alpha_cutoff)
 
         handle = self.dfu.file_to_shock({'file_path': result_directory,
                                          'pack': 'zip',
@@ -196,7 +197,7 @@ class DESeqUtil:
         return expression_matrix_data
 
     def _save_diff_expression(self, result_directory, expressionset_ref,
-                              workspace_name, diff_expression_obj_name):
+                              workspace_name, diff_expression_obj_name, alpha_cutoff):
         """
         _save_diff_expression: save DifferentialExpression object to workspace
         """
@@ -209,7 +210,8 @@ class DESeqUtil:
         diff_expression_data = self._generate_diff_expression_data(result_directory,
                                                                    expressionset_ref,
                                                                    diff_expression_obj_name,
-                                                                   workspace_name)
+                                                                   workspace_name,
+                                                                   alpha_cutoff)
 
         object_type = 'KBaseRNASeq.RNASeqDifferentialExpression'
         save_object_params = {
@@ -311,7 +313,8 @@ class DESeqUtil:
                                                     result_directory,
                                                     expressionset_ref,
                                                     params.get('workspace_name'),
-                                                    params.get('diff_expression_obj_name'))
+                                                    params.get('diff_expression_obj_name'),
+                                                    params.get('alpha_cutoff'))
         filtered_expression_matrix_ref = '111/111/111'
         # filtered_expression_matrix_ref = self._save_expression_matrix(
         #                                             result_directory,
