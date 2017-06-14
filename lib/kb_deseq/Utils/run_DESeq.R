@@ -11,6 +11,7 @@ dmesg("Running run_DESeq.R")
 option_tab = matrix(c(
                        'result_directory', 'O', 1, 'character',  #result directory
                        'output_csvfile',   'o', 1, 'character',  #output csv file
+                       'alpha_cutoff',     'a', 1, 'double',  #output csv file
                        'help',             'h', 0, 'logical'
                       ), 
                     byrow=TRUE, ncol=4);
@@ -25,8 +26,79 @@ if (!is.null(opt$help)){
 dmesg("Here is the option_tab matrix of arguments")
 print(option_tab)
 
-print(opt$result_directory)
-print(opt$output_csvfile)
+# set up input params
+input_file <- paste(opt$result_directory, "/gene_count_matrix.csv", sep='')
+#TODO: are conditions from inputs?
+condition_1 <- "WT"
+condition_2 <- "Hy5"
+alpha_cutoff <- opt$alpha_cutoff
+gene_results_file <- paste(opt$result_directory, "/gene_results.csv", sep='')
+diff_genes_file <- paste(opt$result_directory, "/diff_genes.csv", sep='')
+sig_genes_results_file <- paste(opt$result_directory, "/sig_genes_results.csv", sep='')
+sig_genes_up_regulated_file <- paste(opt$result_directory, "/sig_genes_up_regulated.txt", sep='')
+sig_genes_down_regulated_file <- paste(opt$result_directory, "/sig_genes_down_regulated.txt", sep='')
+pvaluesPlot_file <- paste(opt$result_directory, "/pvaluesPlot.png", sep='')
+qvaluesPlot_file <- paste(opt$result_directory, "/qvaluesPlot.png", sep='')
+deseq2_MAplot_file <- paste(opt$result_directory, "/deseq2_MAplot.png", sep='')
+PCA_MAplot_file <- paste(opt$result_directory, "/PCA_MAplot.png", sep='')
+
+dmesg("Start processing count matrix input")
+cntTable <- read.csv(input_file, header = TRUE)
+rownames(cntTable) <- cntTable$X
+cntTable <- cntTable[,-1]
+
+#TODO: is input file gene_count_matrix.csv always have 4 columns?
+conds <- factor(c(condition_1, condition_1, condition_2, condition_2))
+
+ddsFromMatrix <- DESeqDataSetFromMatrix(cntTable, DataFrame(conds), ~ conds)
+colData(ddsFromMatrix)$conds<-factor(colData(ddsFromMatrix)$conds, levels=c(condition_1, condition_2))
+dds<-DESeq(ddsFromMatrix)
+res<-results(dds, alpha=alpha_cutoff)
+res<-res[order(res$padj),]
+
+dmesg("DESeq2 result file head")
+head(res)
+write.csv(res, gene_results_file, row.names=TRUE)
+summary(res)
+sum(res$padj < alpha_cutoff, na.rm=TRUE)
+rld<- rlogTransformation(dds, blind=TRUE)
+vsd<-varianceStabilizingTransformation(dds, blind=TRUE)
+
+#  Identify genes with a q value <0.05, classify up and down regulated
+sig_g=subset(res,res$padj<0.05)
+summary(sig_g)
+sig_g_res <- rownames(sig_g)
+write.csv(sig_g_res, diff_genes_file, row.names=FALSE)
+write.csv(sig_g, sig_genes_results_file, row.names=TRUE)
+
+sig_g_fc_up=subset(sig_g,sig_g$log2FoldChange  > 2)
+sig_g_fc_res_up <- rownames(sig_g_fc_up)
+write.table(sig_g_fc_res_up, sig_genes_up_regulated_file, row.names=FALSE)
+
+sig_g_fc_down=subset(sig_g,sig_g$log2FoldChange < -2)
+sig_g_fc_res_down <- rownames(sig_g_fc_down)
+write.table(sig_g_fc_res_down, sig_genes_down_regulated_file, row.names=FALSE)
+
+dmesg("Start plotting results")
+# p-values for genes
+png(pvaluesPlot_file)
+hist(res$pvalue, main='DESeq2 gene pvalues', col="grey", xlab='Range of p-values for genes')
+dev.off()
+
+# q-values for genes
+png(qvaluesPlot_file)
+hist(sig_g$padj, main='DESeq2 gene qvalues', col="grey", xlab='Range of q-values for genes')
+dev.off()
+
+# dispersion plots
+png(deseq2_MAplot_file)
+plotMA(dds,ylim=c(-2,2),main='DESeq2')
+dev.off()
+
+# PCA plots
+png(PCA_MAplot_file)
+plotPCA(rld, intgroup=c('conds'))
+dev.off()
 
 dmesg("Exiting run_DESeq.R")
 q(save="no") 
