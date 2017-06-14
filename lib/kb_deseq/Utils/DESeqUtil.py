@@ -4,7 +4,6 @@ import os
 import uuid
 import errno
 import subprocess
-import math
 
 from DataFileUtil.DataFileUtilClient import DataFileUtil
 from Workspace.WorkspaceClient import Workspace as Workspace
@@ -30,8 +29,8 @@ class DESeqUtil:
         log('start validating run_deseq2_app params')
 
         # check for required parameters
-        for p in ['expressionset_ref', 'diff_expression_obj_name', 'filtered_expr_matrix',
-                  'workspace_name']:
+        for p in ['expressionset_ref', 'diff_expression_obj_name',
+                  'filtered_expression_matrix_name', 'workspace_name']:
             if p not in params:
                 raise ValueError('"{}" parameter is required, but missing'.format(p))
 
@@ -53,7 +52,6 @@ class DESeqUtil:
         """
         _run_command: run command and print result
         """
-
         log('Start executing command:\n{}'.format(command))
         pipe = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         output = pipe.communicate()[0]
@@ -96,7 +94,6 @@ class DESeqUtil:
         _save_count_matrix_file: download gtf file for each expression
                                  run prepDE.py on them and save reault count matrix file
         """
-
         mapped_expr_ids = self.expression_set_data.get('mapped_expression_ids')
 
         gtf_directory = os.path.join(self.scratch, str(uuid.uuid4()))
@@ -125,7 +122,6 @@ class DESeqUtil:
 
         ref: http://ccb.jhu.edu/software/stringtie/index.shtml?t=manual#deseq
         """
-
         log('generating matrix of read counts')
         command = self.PREPDE_TOOLKIT_PATH + '/prepDE.py '
         command += '-i {} '.format(input_directory)
@@ -138,14 +134,23 @@ class DESeqUtil:
         """
         _generate_diff_expression_csv: get different expression matrix with DESeq2
         """
+        result_files = os.listdir(result_directory)
+        if 'gene_count_matrix.csv' not in result_files:
+            raise ValueError('Missing gene_count_matrix.csv, available files: {}'.format(
+                                                                                    result_files))
 
-        count_matrix_file = os.path.join(result_directory, 'transcript_count_matrix.csv')
+        count_matrix_file = os.path.join(result_directory, 'gene_count_matrix.csv')
 
-        pass
+        rcmd_list = ['Rscript', os.path.join(os.path.dirname(__file__), 'run_DESeq.R')]
+        rcmd_list.extend(['--result_directory', result_directory])
+        output_csvfile = 'gene_results.csv'
+        rcmd_list.extend(['--output_csvfile', output_csvfile])
+        rcmd_str = " ".join(str(x) for x in rcmd_list)
+
+        self._run_command(rcmd_str)
 
     def _generate_diff_expression_data(self, result_directory, expressionset_ref,
                                        diff_expression_obj_name, workspace_name):
-
         """
         _generate_diff_expression_data: generate RNASeqDifferentialExpression object data
         """
@@ -178,6 +183,18 @@ class DESeqUtil:
 
         return diff_expression_data
 
+    def _generate_expression_matrix_data(self, result_directory, expressionset_ref,
+                                         filtered_expression_matrix_name, workspace_name):
+
+        """
+        _generate_expression_matrix_data: generate ExpressionMatrix object data
+        """
+
+        expression_matrix_data = {
+        }
+
+        return expression_matrix_data
+
     def _save_diff_expression(self, result_directory, expressionset_ref,
                               workspace_name, diff_expression_obj_name):
         """
@@ -208,6 +225,38 @@ class DESeqUtil:
         diff_expression_obj_ref = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
 
         return diff_expression_obj_ref
+
+    def _save_expression_matrix(self, result_directory, expressionset_ref,
+                                workspace_name, filtered_expression_matrix_name):
+        """
+        _save_expression_matrix: save ExpressionMatrix object to workspace
+        """
+        log('start saving RNASeqDifferentialExpression object')
+        if isinstance(workspace_name, int) or workspace_name.isdigit():
+            workspace_id = workspace_name
+        else:
+            workspace_id = self.dfu.ws_name_to_id(workspace_name)
+
+        expression_matrix_data = self._generate_expression_matrix_data(
+                                                        result_directory,
+                                                        expressionset_ref,
+                                                        filtered_expression_matrix_name,
+                                                        workspace_name)
+
+        object_type = 'KBaseFeatureValues.ExpressionMatrix'
+        save_object_params = {
+            'id': workspace_id,
+            'objects': [{
+                            'type': object_type,
+                            'data': expression_matrix_data,
+                            'name': filtered_expression_matrix_name
+                        }]
+        }
+
+        dfu_oi = self.dfu.save_objects(save_object_params)[0]
+        filtered_expression_matrix_ref = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
+
+        return filtered_expression_matrix_ref
 
     def __init__(self, config):
         self.ws_url = config["workspace-url"]
@@ -258,13 +307,21 @@ class DESeqUtil:
         # run prepDE.py and save count matrix file to result_directory
         self._save_count_matrix_file(expressionset_ref, result_directory)
 
-        diff_expression_obj_ref = self._save_diff_expression(result_directory,
-                                                             expressionset_ref,
-                                                             params.get('workspace_name'),
-                                                             params.get('diff_expression_obj_name'))
+        diff_expression_obj_ref = self._save_diff_expression(
+                                                    result_directory,
+                                                    expressionset_ref,
+                                                    params.get('workspace_name'),
+                                                    params.get('diff_expression_obj_name'))
+        filtered_expression_matrix_ref = '111/111/111'
+        # filtered_expression_matrix_ref = self._save_expression_matrix(
+        #                                             result_directory,
+        #                                             expressionset_ref,
+        #                                             params.get('workspace_name'),
+        #                                             params.get('filtered_expression_matrix_name'))
 
         returnVal = {'result_directory': result_directory,
-                     'diff_expression_obj_ref': diff_expression_obj_ref}
+                     'diff_expression_obj_ref': diff_expression_obj_ref,
+                     'filtered_expression_matrix_ref': filtered_expression_matrix_ref}
 
         report_output = self._generate_report(diff_expression_obj_ref, params.get('workspace_name'))
         returnVal.update(report_output)
