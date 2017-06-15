@@ -47,11 +47,6 @@ parameters :
           Alpha Cutoff
       short-hint : |
           q-value (corrected p-value)  cutoff
-  expr_condition_list:
-      ui-name : |
-          RNA-Seq Sample and Condition
-      short-hint : |
-          RNA-Seq Sample and Condition
   condition_name:
       ui-name : |
           Condition Label
@@ -63,6 +58,12 @@ parameters :
       short-hint : |
           Sample Replicates
 
+parameter-groups :
+  expr_condition_list:
+    ui-name : |
+        RNA-Seq Sample and Condition
+    short-hint : |
+        RNA-Seq Sample and Condition
 
 description : |
     <p>This App uses the transcripts for two or more samples obtained from either Cufflinks or StringTie to calculate gene and transcript levels in more than one condition and finds significant changes in the expression levels.</p>
