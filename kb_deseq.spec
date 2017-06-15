@@ -24,23 +24,24 @@ module kb_deseq {
       diff_expression_obj_name: RNASeqDifferetialExpression object name
       filtered_expression_matrix_name: name of output object filtered expression matrix
       expr_condition_list: conditions for expression set object
+      alpha_cutoff: q value cutoff
+      num_threads: number of threads
       workspace_name: the name of the workspace it gets saved to
 
       optional params:
       fold_scale_type: one of ["linear", "log2+1", "log10+1"]
-      alpha_cutoff: q value cutoff
       fold_change_cutoff: fold change cutoff
     */
     typedef structure{
         obj_ref expressionset_ref;
         string diff_expression_obj_name;
         string filtered_expression_matrix_name;
+        list<ExpressionConditionList> expr_condition_list;  
+        float alpha_cutoff;
+        int num_threads;
         string workspace_name;
 
-        int num_threads;
-        list<ExpressionConditionList> expr_condition_list;    
         string fold_scale_type;
-        float alpha_cutoff;
         float fold_change_cutoff;
     } DESeqInput;
 
