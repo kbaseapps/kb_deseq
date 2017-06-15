@@ -9,9 +9,9 @@ dmesg("Running run_DESeq.R")
 
 
 option_tab = matrix(c(
-                       'result_directory', 'O', 1, 'character',  #result directory
-                       'output_csvfile',   'o', 1, 'character',  #output csv file
+                       'result_directory', 'o', 1, 'character',  #result directory
                        'alpha_cutoff',     'a', 1, 'double',  #output csv file
+                       'condition_string', 'c', 1, 'character',  #conditions separated with comma 
                        'help',             'h', 0, 'logical'
                       ), 
                     byrow=TRUE, ncol=4);
@@ -28,9 +28,7 @@ print(option_tab)
 
 # set up input params
 input_file <- paste(opt$result_directory, "/gene_count_matrix.csv", sep='')
-#TODO: are conditions from inputs?
-condition_1 <- "WT"
-condition_2 <- "Hy5"
+condition_string <- opt$condition_string
 alpha_cutoff <- opt$alpha_cutoff
 gene_results_file <- paste(opt$result_directory, "/gene_results.csv", sep='')
 diff_genes_file <- paste(opt$result_directory, "/diff_genes.csv", sep='')
@@ -47,11 +45,10 @@ cntTable <- read.csv(input_file, header = TRUE)
 rownames(cntTable) <- cntTable$X
 cntTable <- cntTable[,-1]
 
-#TODO: is input file gene_count_matrix.csv always have 4 columns?
-conds <- factor(c(condition_1, condition_1, condition_2, condition_2))
+conds <- factor(strsplit(condition_string, ",")[[1]])
 
 ddsFromMatrix <- DESeqDataSetFromMatrix(cntTable, DataFrame(conds), ~ conds)
-colData(ddsFromMatrix)$conds<-factor(colData(ddsFromMatrix)$conds, levels=c(condition_1, condition_2))
+colData(ddsFromMatrix)$conds<-factor(colData(ddsFromMatrix)$conds, levels=unique(strsplit(condition_string, ",")[[1]]))
 dds<-DESeq(ddsFromMatrix)
 res<-results(dds, alpha=alpha_cutoff)
 res<-res[order(res$padj),]

@@ -6,6 +6,7 @@ import errno
 import subprocess
 import zipfile
 import shutil
+import csv
 
 from DataFileUtil.DataFileUtilClient import DataFileUtil
 from Workspace.WorkspaceClient import Workspace as Workspace
@@ -225,7 +226,7 @@ class DESeqUtil:
 
         self._run_command(command)
 
-    def _generate_diff_expression_csv(self, result_directory, alpha_cutoff):
+    def _generate_diff_expression_csv(self, result_directory, alpha_cutoff, condition_string):
         """
         _generate_diff_expression_csv: get different expression matrix with DESeq2
         """
@@ -234,19 +235,17 @@ class DESeqUtil:
             raise ValueError('Missing gene_count_matrix.csv, available files: {}'.format(
                                                                                     result_files))
 
-        count_matrix_file = os.path.join(result_directory, 'gene_count_matrix.csv')
-
         rcmd_list = ['Rscript', os.path.join(os.path.dirname(__file__), 'run_DESeq.R')]
         rcmd_list.extend(['--result_directory', result_directory])
         rcmd_list.extend(['--alpha_cutoff', alpha_cutoff])
-        output_csvfile = 'gene_results.csv'
-        rcmd_list.extend(['--output_csvfile', output_csvfile])
+        rcmd_list.extend(['--condition_string', condition_string])
         rcmd_str = " ".join(str(x) for x in rcmd_list)
 
         self._run_command(rcmd_str)
 
     def _generate_diff_expression_data(self, result_directory, expressionset_ref,
-                                       diff_expression_obj_name, workspace_name, alpha_cutoff):
+                                       diff_expression_obj_name, workspace_name, alpha_cutoff,
+                                       condition_string):
         """
         _generate_diff_expression_data: generate RNASeqDifferentialExpression object data
         """
@@ -260,7 +259,7 @@ class DESeqUtil:
                 'sampleset_id': self.expression_set_data.get('sampleset_id')
         }
 
-        self._generate_diff_expression_csv(result_directory, alpha_cutoff)
+        self._generate_diff_expression_csv(result_directory, alpha_cutoff, condition_string)
 
         handle = self.dfu.file_to_shock({'file_path': result_directory,
                                          'pack': 'zip',
@@ -291,12 +290,55 @@ class DESeqUtil:
 
         return expression_matrix_data
 
-    def _save_diff_expression(self, result_directory, expressionset_ref,
-                              workspace_name, diff_expression_obj_name, alpha_cutoff):
+    def _get_condition_string(self, result_directory, expr_condition_list):
+        """
+        _get_condition_string: get condition string corresponding to givin expr_condition_list
+        """
+
+        count_matrix_file = os.path.join(result_directory, 'gene_count_matrix.csv')
+
+        with open(count_matrix_file, "rb") as f:
+            reader = csv.reader(f)
+            columns = reader.next()[1:]
+
+        condition_list = [None] * len(columns)
+
+        sample_expression_ids = self.expression_set_data.get('sample_expression_ids')
+        for expr_condition in expr_condition_list:
+            condition_name = expr_condition.get('condition_name')
+            expression_refs = expr_condition.get('expression_refs')
+            for expression_ref in expression_refs:
+                expression_name = self.ws.get_objects2(
+                                            {'objects':
+                                             [{'ref': expression_ref}]})['data'][0]['data']['id']
+                if expression_ref not in sample_expression_ids:
+                    error_msg = 'Expression Object ({}) not available in '.format(expression_name)
+                    error_msg += 'ExpressionSet Object ({})'.format(self.expression_set_data['id'])
+                    raise ValueError(error_msg)
+
+                pos = columns.index(expression_name)
+                condition_list[pos] = condition_name
+
+        if None in condition_list:
+            raise ValueError('Please include all Expression objects associated with ExpressionSet')
+
+        condition_string = ','.join(condition_list)
+
+        return condition_string
+
+    def _save_diff_expression(self, result_directory, params):
         """
         _save_diff_expression: save DifferentialExpression object to workspace
         """
+
         log('start saving RNASeqDifferentialExpression object')
+        expressionset_ref = params.get('expressionset_ref')
+        workspace_name = params.get('workspace_name')
+        diff_expression_obj_name = params.get('diff_expression_obj_name')
+        alpha_cutoff = params.get('alpha_cutoff')
+        condition_string = self._get_condition_string(result_directory,
+                                                      params.get('expr_condition_list'))
+
         if isinstance(workspace_name, int) or workspace_name.isdigit():
             workspace_id = workspace_name
         else:
@@ -306,7 +348,8 @@ class DESeqUtil:
                                                                    expressionset_ref,
                                                                    diff_expression_obj_name,
                                                                    workspace_name,
-                                                                   alpha_cutoff)
+                                                                   alpha_cutoff,
+                                                                   condition_string)
 
         object_type = 'KBaseRNASeq.RNASeqDifferentialExpression'
         save_object_params = {
@@ -405,10 +448,8 @@ class DESeqUtil:
 
         diff_expression_obj_ref = self._save_diff_expression(
                                                     result_directory,
-                                                    expressionset_ref,
-                                                    params.get('workspace_name'),
-                                                    params.get('diff_expression_obj_name'),
-                                                    params.get('alpha_cutoff'))
+                                                    params)
+
         filtered_expression_matrix_ref = '111/111/111'
         # filtered_expression_matrix_ref = self._save_expression_matrix(
         #                                             result_directory,
