@@ -24,7 +24,7 @@ class kb_deseq:
     ######################################### noqa
     VERSION = "1.0.0"
     GIT_URL = "https://github.com/Tianhao-Gu/kb_deseq.git"
-    GIT_COMMIT_HASH = "726c448cc559d51215d637408314ff930177c293"
+    GIT_COMMIT_HASH = "8e1cd816f3ee40750f4e83185bcc04380364ddca"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
