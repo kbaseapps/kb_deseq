@@ -175,7 +175,7 @@ class DESeqUtil:
               'file_links': output_files,
               'html_links': output_html_files,
               'direct_html_link_index': 0,
-              'html_window_height': 300,
+              'html_window_height': 333,
               'report_object_name': 'kb_deseq2_report_' + str(uuid.uuid4())}
 
         kbase_report_client = KBaseReport(self.callback_url)
