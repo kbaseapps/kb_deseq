@@ -5,6 +5,7 @@ import uuid
 import errno
 import subprocess
 import zipfile
+import shutil
 
 from DataFileUtil.DataFileUtilClient import DataFileUtil
 from Workspace.WorkspaceClient import Workspace as Workspace
@@ -79,6 +80,15 @@ class DESeqUtil:
         self._mkdir_p(output_directory)
         result_file_path = os.path.join(output_directory, 'report.html')
 
+        shutil.copy2(os.path.join(result_directory, 'deseq2_MAplot.png'),
+                     os.path.join(output_directory, 'dispersion_plots.png'))
+        shutil.copy2(os.path.join(result_directory, 'PCA_MAplot.png'),
+                     os.path.join(output_directory, 'PCA_plots.png'))
+        shutil.copy2(os.path.join(result_directory, 'pvaluesPlot.png'),
+                     os.path.join(output_directory, 'pvalues_plots.png'))
+        shutil.copy2(os.path.join(result_directory, 'qvaluesPlot.png'),
+                     os.path.join(output_directory, 'qvalues_plots.png'))
+
         overview_content = ''
         overview_content += '<p>Generated Differential Expression: {}({})</p>'.format(
             params.get('diff_expression_obj_name'), diff_expression_obj_ref)
@@ -91,21 +101,12 @@ class DESeqUtil:
                 report_template = report_template_file.read()
                 report_template = report_template.replace('<p>Overview_Content</p>',
                                                           overview_content)
-                report_template = report_template.replace('dispersion_plots.png',
-                                                          os.path.join(result_directory,
-                                                                       'deseq2_MAplot.png'))
-                report_template = report_template.replace('PCA_plots.png',
-                                                          os.path.join(result_directory,
-                                                                       'PCA_MAplot.png'))
-                report_template = report_template.replace('pvalues_plots.png',
-                                                          os.path.join(result_directory,
-                                                                       'pvaluesPlot.png'))
-                report_template = report_template.replace('qvalues_plots.png',
-                                                          os.path.join(result_directory,
-                                                                       'qvaluesPlot.png'))
                 result_file.write(report_template)
 
-        html_report.append({'path': result_file_path,
+        report_shock_id = self.dfu.file_to_shock({'file_path': output_directory,
+                                                  'pack': 'zip'})['shock_id']
+
+        html_report.append({'shock_id': report_shock_id,
                             'name': os.path.basename(result_file_path),
                             'label': os.path.basename(result_file_path),
                             'description': 'HTML summary report for DESeq2 App'})
