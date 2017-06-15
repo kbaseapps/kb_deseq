@@ -131,7 +131,6 @@ DESeqInput is a reference to a hash where the following keys are defined:
 	fold_scale_type has a value which is a string
 	alpha_cutoff has a value which is a float
 	fold_change_cutoff has a value which is a float
-	maximum_num_genes has a value which is an int
 obj_ref is a string
 ExperimentGroupIDsList is a reference to a hash where the following keys are defined:
 	group_name1 has a value which is a string
@@ -163,7 +162,6 @@ DESeqInput is a reference to a hash where the following keys are defined:
 	fold_scale_type has a value which is a string
 	alpha_cutoff has a value which is a float
 	fold_change_cutoff has a value which is a float
-	maximum_num_genes has a value which is an int
 obj_ref is a string
 ExperimentGroupIDsList is a reference to a hash where the following keys are defined:
 	group_name1 has a value which is a string
@@ -442,7 +440,6 @@ optional params:
 fold_scale_type: one of ["linear", "log2+1", "log10+1"]
 alpha_cutoff: q value cutoff
 fold_change_cutoff: fold change cutoff
-maximum_num_genes: maximum gene numbers
 
 
 =item Definition
@@ -460,7 +457,6 @@ expr_ids_list has a value which is a kb_deseq.ExperimentGroupIDsList
 fold_scale_type has a value which is a string
 alpha_cutoff has a value which is a float
 fold_change_cutoff has a value which is a float
-maximum_num_genes has a value which is an int
 
 </pre>
 
@@ -478,7 +474,6 @@ expr_ids_list has a value which is a kb_deseq.ExperimentGroupIDsList
 fold_scale_type has a value which is a string
 alpha_cutoff has a value which is a float
 fold_change_cutoff has a value which is a float
-maximum_num_genes has a value which is an int
 
 
 =end text

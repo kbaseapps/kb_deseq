@@ -23,7 +23,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * fold_scale_type: one of ["linear", "log2+1", "log10+1"]
  * alpha_cutoff: q value cutoff
  * fold_change_cutoff: fold change cutoff
- * maximum_num_genes: maximum gene numbers
  * </pre>
  * 
  */
@@ -38,8 +37,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "expr_ids_list",
     "fold_scale_type",
     "alpha_cutoff",
-    "fold_change_cutoff",
-    "maximum_num_genes"
+    "fold_change_cutoff"
 })
 public class DESeqInput {
 
@@ -66,8 +64,6 @@ public class DESeqInput {
     private Double alphaCutoff;
     @JsonProperty("fold_change_cutoff")
     private Double foldChangeCutoff;
-    @JsonProperty("maximum_num_genes")
-    private Long maximumNumGenes;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("expressionset_ref")
@@ -215,21 +211,6 @@ public class DESeqInput {
         return this;
     }
 
-    @JsonProperty("maximum_num_genes")
-    public Long getMaximumNumGenes() {
-        return maximumNumGenes;
-    }
-
-    @JsonProperty("maximum_num_genes")
-    public void setMaximumNumGenes(Long maximumNumGenes) {
-        this.maximumNumGenes = maximumNumGenes;
-    }
-
-    public DESeqInput withMaximumNumGenes(Long maximumNumGenes) {
-        this.maximumNumGenes = maximumNumGenes;
-        return this;
-    }
-
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
@@ -242,7 +223,7 @@ public class DESeqInput {
 
     @Override
     public String toString() {
-        return ((((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", workspaceName=")+ workspaceName)+", numThreads=")+ numThreads)+", exprIdsList=")+ exprIdsList)+", foldScaleType=")+ foldScaleType)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", maximumNumGenes=")+ maximumNumGenes)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", workspaceName=")+ workspaceName)+", numThreads=")+ numThreads)+", exprIdsList=")+ exprIdsList)+", foldScaleType=")+ foldScaleType)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }
