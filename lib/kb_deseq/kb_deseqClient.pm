@@ -125,18 +125,16 @@ DESeqInput is a reference to a hash where the following keys are defined:
 	expressionset_ref has a value which is a kb_deseq.obj_ref
 	diff_expression_obj_name has a value which is a string
 	filtered_expression_matrix_name has a value which is a string
-	workspace_name has a value which is a string
-	num_threads has a value which is an int
-	expr_ids_list has a value which is a kb_deseq.ExperimentGroupIDsList
-	fold_scale_type has a value which is a string
+	expr_condition_list has a value which is a reference to a list where each element is a kb_deseq.ExpressionConditionList
 	alpha_cutoff has a value which is a float
+	num_threads has a value which is an int
+	workspace_name has a value which is a string
+	fold_scale_type has a value which is a string
 	fold_change_cutoff has a value which is a float
 obj_ref is a string
-ExperimentGroupIDsList is a reference to a hash where the following keys are defined:
-	group_name1 has a value which is a string
-	expr_ids1 has a value which is a reference to a list where each element is a string
-	group_name2 has a value which is a string
-	expr_ids2 has a value which is a reference to a list where each element is a string
+ExpressionConditionList is a reference to a hash where the following keys are defined:
+	condition_name has a value which is a string
+	expression_refs has a value which is a reference to a list where each element is a string
 DESeqResult is a reference to a hash where the following keys are defined:
 	result_directory has a value which is a string
 	diff_expression_obj_ref has a value which is a kb_deseq.obj_ref
@@ -156,18 +154,16 @@ DESeqInput is a reference to a hash where the following keys are defined:
 	expressionset_ref has a value which is a kb_deseq.obj_ref
 	diff_expression_obj_name has a value which is a string
 	filtered_expression_matrix_name has a value which is a string
-	workspace_name has a value which is a string
-	num_threads has a value which is an int
-	expr_ids_list has a value which is a kb_deseq.ExperimentGroupIDsList
-	fold_scale_type has a value which is a string
+	expr_condition_list has a value which is a reference to a list where each element is a kb_deseq.ExpressionConditionList
 	alpha_cutoff has a value which is a float
+	num_threads has a value which is an int
+	workspace_name has a value which is a string
+	fold_scale_type has a value which is a string
 	fold_change_cutoff has a value which is a float
 obj_ref is a string
-ExperimentGroupIDsList is a reference to a hash where the following keys are defined:
-	group_name1 has a value which is a string
-	expr_ids1 has a value which is a reference to a list where each element is a string
-	group_name2 has a value which is a string
-	expr_ids2 has a value which is a reference to a list where each element is a string
+ExpressionConditionList is a reference to a hash where the following keys are defined:
+	condition_name has a value which is a string
+	expression_refs has a value which is a reference to a list where each element is a string
 DESeqResult is a reference to a hash where the following keys are defined:
 	result_directory has a value which is a string
 	diff_expression_obj_ref has a value which is a kb_deseq.obj_ref
@@ -386,7 +382,7 @@ a string
 
 
 
-=head2 ExperimentGroupIDsList
+=head2 ExpressionConditionList
 
 =over 4
 
@@ -398,10 +394,8 @@ a string
 
 <pre>
 a reference to a hash where the following keys are defined:
-group_name1 has a value which is a string
-expr_ids1 has a value which is a reference to a list where each element is a string
-group_name2 has a value which is a string
-expr_ids2 has a value which is a reference to a list where each element is a string
+condition_name has a value which is a string
+expression_refs has a value which is a reference to a list where each element is a string
 
 </pre>
 
@@ -410,10 +404,8 @@ expr_ids2 has a value which is a reference to a list where each element is a str
 =begin text
 
 a reference to a hash where the following keys are defined:
-group_name1 has a value which is a string
-expr_ids1 has a value which is a reference to a list where each element is a string
-group_name2 has a value which is a string
-expr_ids2 has a value which is a reference to a list where each element is a string
+condition_name has a value which is a string
+expression_refs has a value which is a reference to a list where each element is a string
 
 
 =end text
@@ -434,11 +426,13 @@ required params:
 expressionset_ref: ExpressionSet object reference
 diff_expression_obj_name: RNASeqDifferetialExpression object name
 filtered_expression_matrix_name: name of output object filtered expression matrix
+expr_condition_list: conditions for expression set object
+alpha_cutoff: q value cutoff
+num_threads: number of threads
 workspace_name: the name of the workspace it gets saved to
 
 optional params:
 fold_scale_type: one of ["linear", "log2+1", "log10+1"]
-alpha_cutoff: q value cutoff
 fold_change_cutoff: fold change cutoff
 
 
@@ -451,11 +445,11 @@ a reference to a hash where the following keys are defined:
 expressionset_ref has a value which is a kb_deseq.obj_ref
 diff_expression_obj_name has a value which is a string
 filtered_expression_matrix_name has a value which is a string
-workspace_name has a value which is a string
-num_threads has a value which is an int
-expr_ids_list has a value which is a kb_deseq.ExperimentGroupIDsList
-fold_scale_type has a value which is a string
+expr_condition_list has a value which is a reference to a list where each element is a kb_deseq.ExpressionConditionList
 alpha_cutoff has a value which is a float
+num_threads has a value which is an int
+workspace_name has a value which is a string
+fold_scale_type has a value which is a string
 fold_change_cutoff has a value which is a float
 
 </pre>
@@ -468,11 +462,11 @@ a reference to a hash where the following keys are defined:
 expressionset_ref has a value which is a kb_deseq.obj_ref
 diff_expression_obj_name has a value which is a string
 filtered_expression_matrix_name has a value which is a string
-workspace_name has a value which is a string
-num_threads has a value which is an int
-expr_ids_list has a value which is a kb_deseq.ExperimentGroupIDsList
-fold_scale_type has a value which is a string
+expr_condition_list has a value which is a reference to a list where each element is a kb_deseq.ExpressionConditionList
 alpha_cutoff has a value which is a float
+num_threads has a value which is an int
+workspace_name has a value which is a string
+fold_scale_type has a value which is a string
 fold_change_cutoff has a value which is a float
 
 

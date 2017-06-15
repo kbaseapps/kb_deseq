@@ -61,7 +61,7 @@
   },{
     "id" : "fold_change_cutoff",
     "optional" : true,
-    "advanced" : false,
+    "advanced" : true,
     "allow_multiple" : false,
     "default_values" : [ "1.5" ],    
     "field_type" : "text",
@@ -71,7 +71,7 @@
   },{
     "id" : "alpha_cutoff",
     "optional" : false,
-    "advanced" : false,
+    "advanced" : true,
     "allow_multiple" : false,
     "default_values" : [ "0.05" ],    
     "field_type" : "text",

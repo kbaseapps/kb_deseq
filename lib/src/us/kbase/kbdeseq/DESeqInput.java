@@ -2,6 +2,7 @@
 package us.kbase.kbdeseq;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -18,10 +19,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * expressionset_ref: ExpressionSet object reference
  * diff_expression_obj_name: RNASeqDifferetialExpression object name
  * filtered_expression_matrix_name: name of output object filtered expression matrix
+ * expr_condition_list: conditions for expression set object
+ * alpha_cutoff: q value cutoff
+ * num_threads: number of threads
  * workspace_name: the name of the workspace it gets saved to
  * optional params:
  * fold_scale_type: one of ["linear", "log2+1", "log10+1"]
- * alpha_cutoff: q value cutoff
  * fold_change_cutoff: fold change cutoff
  * </pre>
  * 
@@ -32,11 +35,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "expressionset_ref",
     "diff_expression_obj_name",
     "filtered_expression_matrix_name",
-    "workspace_name",
-    "num_threads",
-    "expr_ids_list",
-    "fold_scale_type",
+    "expr_condition_list",
     "alpha_cutoff",
+    "num_threads",
+    "workspace_name",
+    "fold_scale_type",
     "fold_change_cutoff"
 })
 public class DESeqInput {
@@ -47,21 +50,16 @@ public class DESeqInput {
     private String diffExpressionObjName;
     @JsonProperty("filtered_expression_matrix_name")
     private String filteredExpressionMatrixName;
-    @JsonProperty("workspace_name")
-    private String workspaceName;
-    @JsonProperty("num_threads")
-    private Long numThreads;
-    /**
-     * <p>Original spec-file type: ExperimentGroupIDsList</p>
-     * 
-     * 
-     */
-    @JsonProperty("expr_ids_list")
-    private ExperimentGroupIDsList exprIdsList;
-    @JsonProperty("fold_scale_type")
-    private String foldScaleType;
+    @JsonProperty("expr_condition_list")
+    private List<ExpressionConditionList> exprConditionList;
     @JsonProperty("alpha_cutoff")
     private Double alphaCutoff;
+    @JsonProperty("num_threads")
+    private Long numThreads;
+    @JsonProperty("workspace_name")
+    private String workspaceName;
+    @JsonProperty("fold_scale_type")
+    private String foldScaleType;
     @JsonProperty("fold_change_cutoff")
     private Double foldChangeCutoff;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -111,18 +109,33 @@ public class DESeqInput {
         return this;
     }
 
-    @JsonProperty("workspace_name")
-    public String getWorkspaceName() {
-        return workspaceName;
+    @JsonProperty("expr_condition_list")
+    public List<ExpressionConditionList> getExprConditionList() {
+        return exprConditionList;
     }
 
-    @JsonProperty("workspace_name")
-    public void setWorkspaceName(String workspaceName) {
-        this.workspaceName = workspaceName;
+    @JsonProperty("expr_condition_list")
+    public void setExprConditionList(List<ExpressionConditionList> exprConditionList) {
+        this.exprConditionList = exprConditionList;
     }
 
-    public DESeqInput withWorkspaceName(String workspaceName) {
-        this.workspaceName = workspaceName;
+    public DESeqInput withExprConditionList(List<ExpressionConditionList> exprConditionList) {
+        this.exprConditionList = exprConditionList;
+        return this;
+    }
+
+    @JsonProperty("alpha_cutoff")
+    public Double getAlphaCutoff() {
+        return alphaCutoff;
+    }
+
+    @JsonProperty("alpha_cutoff")
+    public void setAlphaCutoff(Double alphaCutoff) {
+        this.alphaCutoff = alphaCutoff;
+    }
+
+    public DESeqInput withAlphaCutoff(Double alphaCutoff) {
+        this.alphaCutoff = alphaCutoff;
         return this;
     }
 
@@ -141,28 +154,18 @@ public class DESeqInput {
         return this;
     }
 
-    /**
-     * <p>Original spec-file type: ExperimentGroupIDsList</p>
-     * 
-     * 
-     */
-    @JsonProperty("expr_ids_list")
-    public ExperimentGroupIDsList getExprIdsList() {
-        return exprIdsList;
+    @JsonProperty("workspace_name")
+    public String getWorkspaceName() {
+        return workspaceName;
     }
 
-    /**
-     * <p>Original spec-file type: ExperimentGroupIDsList</p>
-     * 
-     * 
-     */
-    @JsonProperty("expr_ids_list")
-    public void setExprIdsList(ExperimentGroupIDsList exprIdsList) {
-        this.exprIdsList = exprIdsList;
+    @JsonProperty("workspace_name")
+    public void setWorkspaceName(String workspaceName) {
+        this.workspaceName = workspaceName;
     }
 
-    public DESeqInput withExprIdsList(ExperimentGroupIDsList exprIdsList) {
-        this.exprIdsList = exprIdsList;
+    public DESeqInput withWorkspaceName(String workspaceName) {
+        this.workspaceName = workspaceName;
         return this;
     }
 
@@ -178,21 +181,6 @@ public class DESeqInput {
 
     public DESeqInput withFoldScaleType(String foldScaleType) {
         this.foldScaleType = foldScaleType;
-        return this;
-    }
-
-    @JsonProperty("alpha_cutoff")
-    public Double getAlphaCutoff() {
-        return alphaCutoff;
-    }
-
-    @JsonProperty("alpha_cutoff")
-    public void setAlphaCutoff(Double alphaCutoff) {
-        this.alphaCutoff = alphaCutoff;
-    }
-
-    public DESeqInput withAlphaCutoff(Double alphaCutoff) {
-        this.alphaCutoff = alphaCutoff;
         return this;
     }
 
@@ -223,7 +211,7 @@ public class DESeqInput {
 
     @Override
     public String toString() {
-        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", workspaceName=")+ workspaceName)+", numThreads=")+ numThreads)+", exprIdsList=")+ exprIdsList)+", foldScaleType=")+ foldScaleType)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", exprConditionList=")+ exprConditionList)+", alphaCutoff=")+ alphaCutoff)+", numThreads=")+ numThreads)+", workspaceName=")+ workspaceName)+", foldScaleType=")+ foldScaleType)+", foldChangeCutoff=")+ foldChangeCutoff)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }
