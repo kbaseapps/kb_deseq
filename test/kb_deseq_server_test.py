@@ -140,10 +140,7 @@ class kb_deseqTest(unittest.TestCase):
             "alpha_cutoff": 0.5,
             "fold_change_cutoff": 1.5,
             'maximum_num_genes': 50,
-            'expr_condition_list': [{'condition_name': 'WT',
-                                     'expression_refs': ['15206/172/2', '15206/173/2']},
-                                    {'condition_name': 'hy5',
-                                     'expression_refs': ['15206/176/1', '15206/171/2']}]
+            'condition_labels': ['WT', 'hy5']
         }
 
         result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]

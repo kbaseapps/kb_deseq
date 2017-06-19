@@ -291,7 +291,7 @@ class DESeqUtil:
 
         return expression_matrix_data
 
-    def _get_condition_string(self, result_directory, condition_labels, expressionset_ref):
+    def _get_condition_string(self, result_directory, condition_labels):
         """
         _get_condition_string: get condition string corresponding to givin condition_labels
         """
@@ -365,8 +365,7 @@ class DESeqUtil:
         condition_labels = params.get('condition_labels')
 
         condition_string = self._get_condition_string(result_directory,
-                                                      condition_labels,
-                                                      expressionset_ref)
+                                                      condition_labels)
 
         if isinstance(workspace_name, int) or workspace_name.isdigit():
             workspace_id = workspace_name
