@@ -7,6 +7,7 @@ import subprocess
 import zipfile
 import shutil
 import csv
+import numpy
 
 from DataFileUtil.DataFileUtilClient import DataFileUtil
 from Workspace.WorkspaceClient import Workspace as Workspace
@@ -290,12 +291,13 @@ class DESeqUtil:
 
         return expression_matrix_data
 
-    def _get_condition_string(self, result_directory, expr_condition_list):
+    def _get_condition_string(self, result_directory, condition_labels):
         """
-        _get_condition_string: get condition string corresponding to givin expr_condition_list
+        _get_condition_string: get condition string corresponding to givin condition_labels
         """
 
         count_matrix_file = os.path.join(result_directory, 'gene_count_matrix.csv')
+        filtered_count_matrix_file = os.path.join(result_directory, 'filtered_gene_count_matrix.csv')
 
         with open(count_matrix_file, "rb") as f:
             reader = csv.reader(f)
@@ -304,25 +306,49 @@ class DESeqUtil:
         condition_list = [None] * len(columns)
 
         sample_expression_ids = self.expression_set_data.get('sample_expression_ids')
-        for expr_condition in expr_condition_list:
-            condition_name = expr_condition.get('condition_name')
-            expression_refs = expr_condition.get('expression_refs')
-            for expression_ref in expression_refs:
-                expression_name = self.ws.get_objects2(
-                                            {'objects':
-                                             [{'ref': expression_ref}]})['data'][0]['data']['id']
-                if expression_ref not in sample_expression_ids:
-                    error_msg = 'Expression Object ({}) not available in '.format(expression_name)
-                    error_msg += 'ExpressionSet Object ({})'.format(self.expression_set_data['id'])
-                    raise ValueError(error_msg)
+        expr_name_condition_mapping = {}
+        for sample_expression_id in sample_expression_ids:
+            expr_data = self.ws.get_objects2(
+                                    {'objects':
+                                     [{'ref': sample_expression_id}]})['data'][0]['data']
+            expr_name = expr_data['id']
+            expr_condition = expr_data['condition']
+            expr_name_list = expr_name_condition_mapping.get(expr_condition)
+            if expr_name_list:
+                expr_name_list.append(expr_name)
+                expr_name_condition_mapping.update({expr_condition: expr_name_list})
+            else:
+                expr_name_condition_mapping.update({expr_condition: [expr_name]})
 
-                pos = columns.index(expression_name)
-                condition_list[pos] = condition_name
+        for condition_label in condition_labels:
+            if condition_label in expr_name_condition_mapping.keys():
+                expression_names = expr_name_condition_mapping.get(condition_label)
+                for expression_name in expression_names:
+                    pos = columns.index(expression_name)
+                    condition_list[pos] = condition_label
+            else:
+                error_msg = 'Condition: {} is not availalbe. '.format(condition_label)
+                error_msg += 'Available conditions: {}'.format(expr_name_condition_mapping.keys())
+                raise ValueError(error_msg)
 
         if None in condition_list:
+            filtered_pos = [0]
+            filtered_condition_list = []
+            for condition in condition_list:
+                if condition:
+                    filtered_pos.append(condition_list.index(condition) + 1)
+                    filtered_condition_list.append(condition)
             raise ValueError('Please include all Expression objects associated with ExpressionSet')
-
-        condition_string = ','.join(condition_list)
+            with open(count_matrix_file, "rb") as source:
+                rdr = csv.reader(source)
+                with open(filtered_count_matrix_file, "wb") as result:
+                    wtr = csv.writer(result)
+                    for r in rdr:
+                        wtr.writerow(tuple(list(numpy.array(r)[filtered_pos])))
+            os.rename(filtered_count_matrix_file, count_matrix_file)
+            condition_string = ','.join(filtered_condition_list)
+        else:
+            condition_string = ','.join(condition_list)
 
         return condition_string
 
@@ -336,8 +362,10 @@ class DESeqUtil:
         workspace_name = params.get('workspace_name')
         diff_expression_obj_name = params.get('diff_expression_obj_name')
         alpha_cutoff = params.get('alpha_cutoff')
+        condition_labels = params.get('condition_labels')
+
         condition_string = self._get_condition_string(result_directory,
-                                                      params.get('expr_condition_list'))
+                                                      condition_labels)
 
         if isinstance(workspace_name, int) or workspace_name.isdigit():
             workspace_id = workspace_name
@@ -417,7 +445,7 @@ class DESeqUtil:
             expressionset_ref: ExpressionSet object reference
             diff_expression_obj_name: RNASeqDifferetialExpression object name
             filtered_expression_matrix_name: name of output object filtered expression matrix
-            expr_condition_list: conditions for expression set object
+            condition_labels: conditions for expression set object
             alpha_cutoff: q value cutoff
             num_threads: number of threads
             workspace_name: the name of the workspace it gets saved to

@@ -87,46 +87,46 @@ class kb_deseqTest(unittest.TestCase):
     def getContext(self):
         return self.__class__.ctx
 
-    def test_bad_run_deseq2_app_params(self):
-        invalidate_input_params = {
-          'missing_expressionset_ref': 'expressionset_ref',
-          'diff_expression_obj_name': 'diff_expression_obj_name',
-          'filtered_expression_matrix_name': 'filtered_expression_matrix_name',
-          'workspace_name': 'workspace_name'
-        }
-        with self.assertRaisesRegexp(
-                    ValueError, '"expressionset_ref" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    # def test_bad_run_deseq2_app_params(self):
+    #     invalidate_input_params = {
+    #       'missing_expressionset_ref': 'expressionset_ref',
+    #       'diff_expression_obj_name': 'diff_expression_obj_name',
+    #       'filtered_expression_matrix_name': 'filtered_expression_matrix_name',
+    #       'workspace_name': 'workspace_name'
+    #     }
+    #     with self.assertRaisesRegexp(
+    #                 ValueError, '"expressionset_ref" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-        invalidate_input_params = {
-          'expressionset_ref': 'expressionset_ref',
-          'missing_diff_expression_obj_name': 'diff_expression_obj_name',
-          'filtered_expression_matrix_name': 'filtered_expression_matrix_name',
-          'workspace_name': 'workspace_name'
-        }
-        with self.assertRaisesRegexp(
-                    ValueError, '"diff_expression_obj_name" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    #     invalidate_input_params = {
+    #       'expressionset_ref': 'expressionset_ref',
+    #       'missing_diff_expression_obj_name': 'diff_expression_obj_name',
+    #       'filtered_expression_matrix_name': 'filtered_expression_matrix_name',
+    #       'workspace_name': 'workspace_name'
+    #     }
+    #     with self.assertRaisesRegexp(
+    #                 ValueError, '"diff_expression_obj_name" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-        invalidate_input_params = {
-          'expressionset_ref': 'expressionset_ref',
-          'diff_expression_obj_name': 'diff_expression_obj_name',
-          'missing_filtered_expression_matrix_name': 'filtered_expression_matrix_name',
-          'workspace_name': 'workspace_name'
-        }
-        with self.assertRaisesRegexp(
-                    ValueError, '"filtered_expression_matrix_name" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    #     invalidate_input_params = {
+    #       'expressionset_ref': 'expressionset_ref',
+    #       'diff_expression_obj_name': 'diff_expression_obj_name',
+    #       'missing_filtered_expression_matrix_name': 'filtered_expression_matrix_name',
+    #       'workspace_name': 'workspace_name'
+    #     }
+    #     with self.assertRaisesRegexp(
+    #                 ValueError, '"filtered_expression_matrix_name" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-        invalidate_input_params = {
-          'expressionset_ref': 'expressionset_ref',
-          'diff_expression_obj_name': 'diff_expression_obj_name',
-          'filtered_expression_matrix_name': 'filtered_expression_matrix_name',
-          'missing_workspace_name': 'workspace_name'
-        }
-        with self.assertRaisesRegexp(
-                    ValueError, '"workspace_name" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    #     invalidate_input_params = {
+    #       'expressionset_ref': 'expressionset_ref',
+    #       'diff_expression_obj_name': 'diff_expression_obj_name',
+    #       'filtered_expression_matrix_name': 'filtered_expression_matrix_name',
+    #       'missing_workspace_name': 'workspace_name'
+    #     }
+    #     with self.assertRaisesRegexp(
+    #                 ValueError, '"workspace_name" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
     def test_run_deseq2_app(self):
 
@@ -140,10 +140,7 @@ class kb_deseqTest(unittest.TestCase):
             "alpha_cutoff": 0.5,
             "fold_change_cutoff": 1.5,
             'maximum_num_genes': 50,
-            'expr_condition_list': [{'condition_name': 'WT',
-                                     'expression_refs': ['15206/172/2', '15206/173/2']},
-                                    {'condition_name': 'Hy5',
-                                     'expression_refs': ['15206/176/1', '15206/171/2']}]
+            'condition_labels': ['WT', 'hy5']
         }
 
         result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]

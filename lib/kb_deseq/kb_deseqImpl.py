@@ -22,9 +22,9 @@ class kb_deseq:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "1.0.0"
+    VERSION = "1.0.1"
     GIT_URL = "https://github.com/Tianhao-Gu/kb_deseq.git"
-    GIT_COMMIT_HASH = "c3d8bc149c2cbf7d5f20c9de8f3a7dcc6b0511c0"
+    GIT_COMMIT_HASH = "df4b3a3535c9b1cfe541c04ebb31edde417406c8"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -48,17 +48,15 @@ class kb_deseq:
            expressionset_ref: ExpressionSet object reference
            diff_expression_obj_name: RNASeqDifferetialExpression object name
            filtered_expression_matrix_name: name of output object filtered
-           expression matrix expr_condition_list: conditions for expression
-           set object alpha_cutoff: q value cutoff num_threads: number of
-           threads workspace_name: the name of the workspace it gets saved to
+           expression matrix condition_labels: conditions for expression set
+           object alpha_cutoff: q value cutoff num_threads: number of threads
+           workspace_name: the name of the workspace it gets saved to
            optional params: fold_scale_type: one of ["linear", "log2+1",
            "log10+1"] fold_change_cutoff: fold change cutoff) -> structure:
            parameter "expressionset_ref" of type "obj_ref" (An X/Y/Z style
            reference), parameter "diff_expression_obj_name" of String,
            parameter "filtered_expression_matrix_name" of String, parameter
-           "expr_condition_list" of list of type "ExpressionConditionList" ->
-           structure: parameter "condition_name" of String, parameter
-           "expression_refs" of list of String, parameter "alpha_cutoff" of
+           "condition_labels" of list of String, parameter "alpha_cutoff" of
            Double, parameter "num_threads" of Long, parameter
            "workspace_name" of String, parameter "fold_scale_type" of String,
            parameter "fold_change_cutoff" of Double

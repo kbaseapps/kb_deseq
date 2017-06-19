@@ -21,12 +21,6 @@ method-suggestions :
 #
 # Configure the display and description of the parameters
 #
-parameter-groups :
-  expr_condition_list:
-    ui-name : |
-        RNA-Seq Sample and Condition
-    short-hint : |
-        RNA-Seq Sample and Condition
 
 parameters :
   expressionset_ref :
@@ -44,16 +38,11 @@ parameters :
       Expression Matrix Object Name
     short-hint : |
       Provide the name of filtered differential expression Matrix
-  condition_name:
+  condition_labels:
       ui-name : |
           Condition Label
       short-hint : |
           Condition Label
-  expression_refs:
-      ui-name : |
-          Sample Replicates
-      short-hint : |
-          Sample Replicates
   alpha_cutoff :
       ui-name : |
           Alpha Cutoff
@@ -64,8 +53,6 @@ parameters :
           Fold Change Cutoff
       short-hint : |
           Absolute value of fold change cutoff
-
-
 
 
 description : |
