@@ -338,7 +338,6 @@ class DESeqUtil:
                 if condition:
                     filtered_pos.append(condition_list.index(condition) + 1)
                     filtered_condition_list.append(condition)
-            raise ValueError('Please include all Expression objects associated with ExpressionSet')
             with open(count_matrix_file, "rb") as source:
                 rdr = csv.reader(source)
                 with open(filtered_count_matrix_file, "wb") as result:

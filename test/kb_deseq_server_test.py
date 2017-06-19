@@ -4,6 +4,7 @@ import os  # noqa: F401
 import json  # noqa: F401
 import time
 import requests  # noqa: F401
+import csv
 
 from os import environ
 try:
@@ -154,7 +155,46 @@ class kb_deseqTest(unittest.TestCase):
                                'gene_results.csv',  'diff_genes.csv', 'sig_genes_results.csv',
                                'sig_genes_down_regulated.txt', 'sig_genes_up_regulated.txt']
         self.assertTrue(all(x in result_files for x in expect_result_files))
+        with open(os.path.join(result['result_directory'], 'gene_count_matrix.csv'), "rb") as f:
+            reader = csv.reader(f)
+            columns = reader.next()[1:]
+        expect_columns = ['WT_rep1_hisat2_stringtie_expression',
+                          'WT_rep2_hisat2_stringtie_expression',
+                          'hy5_rep1_hisat2_stringtie_expression',
+                          'hy5_rep2_hisat2_stringtie_expression']
+        self.assertItemsEqual(expect_columns, columns)
         self.assertTrue('diff_expression_obj_ref' in result)
         self.assertTrue('filtered_expression_matrix_ref' in result)
         self.assertTrue('report_name' in result)
         self.assertTrue('report_ref' in result)
+
+    # def test_run_deseq2_app_partial_conditions(self):
+
+    #     input_params = {
+    #         'expressionset_ref': self.expressionset_ref,
+    #         'diff_expression_obj_name': 'MyDiffExpression',
+    #         'filtered_expression_matrix_name': 'MyFilteredExprMatrix',
+    #         'workspace_name': self.getWsName(),
+    #         'num_threads': 4,
+    #         "fold_scale_type": 'log2',
+    #         "alpha_cutoff": 0.5,
+    #         "fold_change_cutoff": 1.5,
+    #         'maximum_num_genes': 50,
+    #         'condition_labels': ['WT']
+    #     }
+
+    #     result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
+
+    #     self.assertTrue('result_directory' in result)
+    #     result_files = os.listdir(result['result_directory'])
+    #     print result_files
+    #     expect_result_files = ['gene_count_matrix.csv', 'transcript_count_matrix.csv',
+    #                            'deseq2_MAplot.png', 'PCA_MAplot.png',
+    #                            'qvaluesPlot.png', 'pvaluesPlot.png',
+    #                            'gene_results.csv',  'diff_genes.csv', 'sig_genes_results.csv',
+    #                            'sig_genes_down_regulated.txt', 'sig_genes_up_regulated.txt']
+    #     self.assertTrue(all(x in result_files for x in expect_result_files))
+    #     self.assertTrue('diff_expression_obj_ref' in result)
+    #     self.assertTrue('filtered_expression_matrix_ref' in result)
+    #     self.assertTrue('report_name' in result)
+    #     self.assertTrue('report_ref' in result)
