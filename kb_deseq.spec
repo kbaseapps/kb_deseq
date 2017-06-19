@@ -13,17 +13,12 @@ module kb_deseq {
     */
     typedef string obj_ref;
 
-    typedef structure {
-        string        condition_name;
-        list<string>  expression_refs;
-    } ExpressionConditionList;
-
     /*
       required params:
       expressionset_ref: ExpressionSet object reference
       diff_expression_obj_name: RNASeqDifferetialExpression object name
       filtered_expression_matrix_name: name of output object filtered expression matrix
-      expr_condition_list: conditions for expression set object
+      condition_labels: conditions for expression set object
       alpha_cutoff: q value cutoff
       num_threads: number of threads
       workspace_name: the name of the workspace it gets saved to
@@ -36,7 +31,7 @@ module kb_deseq {
         obj_ref expressionset_ref;
         string diff_expression_obj_name;
         string filtered_expression_matrix_name;
-        list<ExpressionConditionList> expr_condition_list;  
+        list<string> condition_labels;  
         float alpha_cutoff;
         int num_threads;
         string workspace_name;

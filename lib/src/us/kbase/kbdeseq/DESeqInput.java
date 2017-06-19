@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * expressionset_ref: ExpressionSet object reference
  * diff_expression_obj_name: RNASeqDifferetialExpression object name
  * filtered_expression_matrix_name: name of output object filtered expression matrix
- * expr_condition_list: conditions for expression set object
+ * condition_labels: conditions for expression set object
  * alpha_cutoff: q value cutoff
  * num_threads: number of threads
  * workspace_name: the name of the workspace it gets saved to
@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "expressionset_ref",
     "diff_expression_obj_name",
     "filtered_expression_matrix_name",
-    "expr_condition_list",
+    "condition_labels",
     "alpha_cutoff",
     "num_threads",
     "workspace_name",
@@ -45,82 +45,82 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class DESeqInput {
 
     @JsonProperty("expressionset_ref")
-    private String expressionsetRef;
+    private java.lang.String expressionsetRef;
     @JsonProperty("diff_expression_obj_name")
-    private String diffExpressionObjName;
+    private java.lang.String diffExpressionObjName;
     @JsonProperty("filtered_expression_matrix_name")
-    private String filteredExpressionMatrixName;
-    @JsonProperty("expr_condition_list")
-    private List<ExpressionConditionList> exprConditionList;
+    private java.lang.String filteredExpressionMatrixName;
+    @JsonProperty("condition_labels")
+    private List<String> conditionLabels;
     @JsonProperty("alpha_cutoff")
     private Double alphaCutoff;
     @JsonProperty("num_threads")
     private Long numThreads;
     @JsonProperty("workspace_name")
-    private String workspaceName;
+    private java.lang.String workspaceName;
     @JsonProperty("fold_scale_type")
-    private String foldScaleType;
+    private java.lang.String foldScaleType;
     @JsonProperty("fold_change_cutoff")
     private Double foldChangeCutoff;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<java.lang.String, Object> additionalProperties = new HashMap<java.lang.String, Object>();
 
     @JsonProperty("expressionset_ref")
-    public String getExpressionsetRef() {
+    public java.lang.String getExpressionsetRef() {
         return expressionsetRef;
     }
 
     @JsonProperty("expressionset_ref")
-    public void setExpressionsetRef(String expressionsetRef) {
+    public void setExpressionsetRef(java.lang.String expressionsetRef) {
         this.expressionsetRef = expressionsetRef;
     }
 
-    public DESeqInput withExpressionsetRef(String expressionsetRef) {
+    public DESeqInput withExpressionsetRef(java.lang.String expressionsetRef) {
         this.expressionsetRef = expressionsetRef;
         return this;
     }
 
     @JsonProperty("diff_expression_obj_name")
-    public String getDiffExpressionObjName() {
+    public java.lang.String getDiffExpressionObjName() {
         return diffExpressionObjName;
     }
 
     @JsonProperty("diff_expression_obj_name")
-    public void setDiffExpressionObjName(String diffExpressionObjName) {
+    public void setDiffExpressionObjName(java.lang.String diffExpressionObjName) {
         this.diffExpressionObjName = diffExpressionObjName;
     }
 
-    public DESeqInput withDiffExpressionObjName(String diffExpressionObjName) {
+    public DESeqInput withDiffExpressionObjName(java.lang.String diffExpressionObjName) {
         this.diffExpressionObjName = diffExpressionObjName;
         return this;
     }
 
     @JsonProperty("filtered_expression_matrix_name")
-    public String getFilteredExpressionMatrixName() {
+    public java.lang.String getFilteredExpressionMatrixName() {
         return filteredExpressionMatrixName;
     }
 
     @JsonProperty("filtered_expression_matrix_name")
-    public void setFilteredExpressionMatrixName(String filteredExpressionMatrixName) {
+    public void setFilteredExpressionMatrixName(java.lang.String filteredExpressionMatrixName) {
         this.filteredExpressionMatrixName = filteredExpressionMatrixName;
     }
 
-    public DESeqInput withFilteredExpressionMatrixName(String filteredExpressionMatrixName) {
+    public DESeqInput withFilteredExpressionMatrixName(java.lang.String filteredExpressionMatrixName) {
         this.filteredExpressionMatrixName = filteredExpressionMatrixName;
         return this;
     }
 
-    @JsonProperty("expr_condition_list")
-    public List<ExpressionConditionList> getExprConditionList() {
-        return exprConditionList;
+    @JsonProperty("condition_labels")
+    public List<String> getConditionLabels() {
+        return conditionLabels;
     }
 
-    @JsonProperty("expr_condition_list")
-    public void setExprConditionList(List<ExpressionConditionList> exprConditionList) {
-        this.exprConditionList = exprConditionList;
+    @JsonProperty("condition_labels")
+    public void setConditionLabels(List<String> conditionLabels) {
+        this.conditionLabels = conditionLabels;
     }
 
-    public DESeqInput withExprConditionList(List<ExpressionConditionList> exprConditionList) {
-        this.exprConditionList = exprConditionList;
+    public DESeqInput withConditionLabels(List<String> conditionLabels) {
+        this.conditionLabels = conditionLabels;
         return this;
     }
 
@@ -155,31 +155,31 @@ public class DESeqInput {
     }
 
     @JsonProperty("workspace_name")
-    public String getWorkspaceName() {
+    public java.lang.String getWorkspaceName() {
         return workspaceName;
     }
 
     @JsonProperty("workspace_name")
-    public void setWorkspaceName(String workspaceName) {
+    public void setWorkspaceName(java.lang.String workspaceName) {
         this.workspaceName = workspaceName;
     }
 
-    public DESeqInput withWorkspaceName(String workspaceName) {
+    public DESeqInput withWorkspaceName(java.lang.String workspaceName) {
         this.workspaceName = workspaceName;
         return this;
     }
 
     @JsonProperty("fold_scale_type")
-    public String getFoldScaleType() {
+    public java.lang.String getFoldScaleType() {
         return foldScaleType;
     }
 
     @JsonProperty("fold_scale_type")
-    public void setFoldScaleType(String foldScaleType) {
+    public void setFoldScaleType(java.lang.String foldScaleType) {
         this.foldScaleType = foldScaleType;
     }
 
-    public DESeqInput withFoldScaleType(String foldScaleType) {
+    public DESeqInput withFoldScaleType(java.lang.String foldScaleType) {
         this.foldScaleType = foldScaleType;
         return this;
     }
@@ -200,18 +200,18 @@ public class DESeqInput {
     }
 
     @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
+    public Map<java.lang.String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
     @JsonAnySetter
-    public void setAdditionalProperties(String name, Object value) {
+    public void setAdditionalProperties(java.lang.String name, Object value) {
         this.additionalProperties.put(name, value);
     }
 
     @Override
-    public String toString() {
-        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", exprConditionList=")+ exprConditionList)+", alphaCutoff=")+ alphaCutoff)+", numThreads=")+ numThreads)+", workspaceName=")+ workspaceName)+", foldScaleType=")+ foldScaleType)+", foldChangeCutoff=")+ foldChangeCutoff)+", additionalProperties=")+ additionalProperties)+"]");
+    public java.lang.String toString() {
+        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", numThreads=")+ numThreads)+", workspaceName=")+ workspaceName)+", foldScaleType=")+ foldScaleType)+", foldChangeCutoff=")+ foldChangeCutoff)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }
