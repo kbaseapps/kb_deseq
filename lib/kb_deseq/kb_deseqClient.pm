@@ -127,10 +127,10 @@ DESeqInput is a reference to a hash where the following keys are defined:
 	filtered_expression_matrix_name has a value which is a string
 	condition_labels has a value which is a reference to a list where each element is a string
 	alpha_cutoff has a value which is a float
+	fold_change_cutoff has a value which is a float
 	num_threads has a value which is an int
 	workspace_name has a value which is a string
 	fold_scale_type has a value which is a string
-	fold_change_cutoff has a value which is a float
 obj_ref is a string
 DESeqResult is a reference to a hash where the following keys are defined:
 	result_directory has a value which is a string
@@ -153,10 +153,10 @@ DESeqInput is a reference to a hash where the following keys are defined:
 	filtered_expression_matrix_name has a value which is a string
 	condition_labels has a value which is a reference to a list where each element is a string
 	alpha_cutoff has a value which is a float
+	fold_change_cutoff has a value which is a float
 	num_threads has a value which is an int
 	workspace_name has a value which is a string
 	fold_scale_type has a value which is a string
-	fold_change_cutoff has a value which is a float
 obj_ref is a string
 DESeqResult is a reference to a hash where the following keys are defined:
 	result_directory has a value which is a string
@@ -390,12 +390,12 @@ diff_expression_obj_name: RNASeqDifferetialExpression object name
 filtered_expression_matrix_name: name of output object filtered expression matrix
 condition_labels: conditions for expression set object
 alpha_cutoff: q value cutoff
+fold_change_cutoff: fold change cutoff
 num_threads: number of threads
 workspace_name: the name of the workspace it gets saved to
 
 optional params:
 fold_scale_type: one of ["linear", "log2+1", "log10+1"]
-fold_change_cutoff: fold change cutoff
 
 
 =item Definition
@@ -409,10 +409,10 @@ diff_expression_obj_name has a value which is a string
 filtered_expression_matrix_name has a value which is a string
 condition_labels has a value which is a reference to a list where each element is a string
 alpha_cutoff has a value which is a float
+fold_change_cutoff has a value which is a float
 num_threads has a value which is an int
 workspace_name has a value which is a string
 fold_scale_type has a value which is a string
-fold_change_cutoff has a value which is a float
 
 </pre>
 
@@ -426,10 +426,10 @@ diff_expression_obj_name has a value which is a string
 filtered_expression_matrix_name has a value which is a string
 condition_labels has a value which is a reference to a list where each element is a string
 alpha_cutoff has a value which is a float
+fold_change_cutoff has a value which is a float
 num_threads has a value which is an int
 workspace_name has a value which is a string
 fold_scale_type has a value which is a string
-fold_change_cutoff has a value which is a float
 
 
 =end text

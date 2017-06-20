@@ -20,12 +20,13 @@ module kb_deseq {
       filtered_expression_matrix_name: name of output object filtered expression matrix
       condition_labels: conditions for expression set object
       alpha_cutoff: q value cutoff
+      fold_change_cutoff: fold change cutoff
       num_threads: number of threads
       workspace_name: the name of the workspace it gets saved to
 
       optional params:
       fold_scale_type: one of ["linear", "log2+1", "log10+1"]
-      fold_change_cutoff: fold change cutoff
+      
     */
     typedef structure{
         obj_ref expressionset_ref;
@@ -33,11 +34,11 @@ module kb_deseq {
         string filtered_expression_matrix_name;
         list<string> condition_labels;  
         float alpha_cutoff;
+        float fold_change_cutoff;
         int num_threads;
         string workspace_name;
 
         string fold_scale_type;
-        float fold_change_cutoff;
     } DESeqInput;
 
     /*

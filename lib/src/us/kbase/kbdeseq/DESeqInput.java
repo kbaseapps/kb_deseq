@@ -21,11 +21,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * filtered_expression_matrix_name: name of output object filtered expression matrix
  * condition_labels: conditions for expression set object
  * alpha_cutoff: q value cutoff
+ * fold_change_cutoff: fold change cutoff
  * num_threads: number of threads
  * workspace_name: the name of the workspace it gets saved to
  * optional params:
  * fold_scale_type: one of ["linear", "log2+1", "log10+1"]
- * fold_change_cutoff: fold change cutoff
  * </pre>
  * 
  */
@@ -37,10 +37,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "filtered_expression_matrix_name",
     "condition_labels",
     "alpha_cutoff",
+    "fold_change_cutoff",
     "num_threads",
     "workspace_name",
-    "fold_scale_type",
-    "fold_change_cutoff"
+    "fold_scale_type"
 })
 public class DESeqInput {
 
@@ -54,14 +54,14 @@ public class DESeqInput {
     private List<String> conditionLabels;
     @JsonProperty("alpha_cutoff")
     private Double alphaCutoff;
+    @JsonProperty("fold_change_cutoff")
+    private Double foldChangeCutoff;
     @JsonProperty("num_threads")
     private Long numThreads;
     @JsonProperty("workspace_name")
     private java.lang.String workspaceName;
     @JsonProperty("fold_scale_type")
     private java.lang.String foldScaleType;
-    @JsonProperty("fold_change_cutoff")
-    private Double foldChangeCutoff;
     private Map<java.lang.String, Object> additionalProperties = new HashMap<java.lang.String, Object>();
 
     @JsonProperty("expressionset_ref")
@@ -139,6 +139,21 @@ public class DESeqInput {
         return this;
     }
 
+    @JsonProperty("fold_change_cutoff")
+    public Double getFoldChangeCutoff() {
+        return foldChangeCutoff;
+    }
+
+    @JsonProperty("fold_change_cutoff")
+    public void setFoldChangeCutoff(Double foldChangeCutoff) {
+        this.foldChangeCutoff = foldChangeCutoff;
+    }
+
+    public DESeqInput withFoldChangeCutoff(Double foldChangeCutoff) {
+        this.foldChangeCutoff = foldChangeCutoff;
+        return this;
+    }
+
     @JsonProperty("num_threads")
     public Long getNumThreads() {
         return numThreads;
@@ -184,21 +199,6 @@ public class DESeqInput {
         return this;
     }
 
-    @JsonProperty("fold_change_cutoff")
-    public Double getFoldChangeCutoff() {
-        return foldChangeCutoff;
-    }
-
-    @JsonProperty("fold_change_cutoff")
-    public void setFoldChangeCutoff(Double foldChangeCutoff) {
-        this.foldChangeCutoff = foldChangeCutoff;
-    }
-
-    public DESeqInput withFoldChangeCutoff(Double foldChangeCutoff) {
-        this.foldChangeCutoff = foldChangeCutoff;
-        return this;
-    }
-
     @JsonAnyGetter
     public Map<java.lang.String, Object> getAdditionalProperties() {
         return this.additionalProperties;
@@ -211,7 +211,7 @@ public class DESeqInput {
 
     @Override
     public java.lang.String toString() {
-        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", numThreads=")+ numThreads)+", workspaceName=")+ workspaceName)+", foldScaleType=")+ foldScaleType)+", foldChangeCutoff=")+ foldChangeCutoff)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", numThreads=")+ numThreads)+", workspaceName=")+ workspaceName)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }
