@@ -69,6 +69,7 @@ class kb_deseqTest(unittest.TestCase):
         # shutil.copy(os.path.join("data", input_file), input_file_path)
 
         cls.expressionset_ref = '15206/177/1'
+        cls.expressionset_ref = '2409/141/1'
 
     def getWsClient(self):
         return self.__class__.wsClient
@@ -180,7 +181,7 @@ class kb_deseqTest(unittest.TestCase):
     #         "alpha_cutoff": 0.5,
     #         "fold_change_cutoff": 1.5,
     #         'maximum_num_genes': 50,
-    #         'condition_labels': ['WT']
+    #         'condition_labels': ['hy5']
     #     }
 
     #     result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
