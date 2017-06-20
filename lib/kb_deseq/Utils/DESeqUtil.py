@@ -13,6 +13,7 @@ from DataFileUtil.DataFileUtilClient import DataFileUtil
 from Workspace.WorkspaceClient import Workspace as Workspace
 from KBaseReport.KBaseReportClient import KBaseReport
 from ReadsAlignmentUtils.ReadsAlignmentUtilsClient import ReadsAlignmentUtils
+from KBaseFeatureValues.KBaseFeatureValuesClient import KBaseFeatureValues
 
 
 def log(message, prefix_newline=False):
@@ -279,17 +280,20 @@ class DESeqUtil:
 
         return diff_expression_data
 
-    def _generate_expression_matrix_data(self, result_directory, expressionset_ref,
-                                         filtered_expression_matrix_name, workspace_name):
-
+    def _generate_expression_matrix_file(self, result_directory):
         """
-        _generate_expression_matrix_data: generate ExpressionMatrix object data
+        _generate_expression_matrix_file: generate expression matrix file
         """
 
-        expression_matrix_data = {
-        }
+        expression_matrix_csv_file = os.path.join(result_directory, 'gene_results.csv')
+        expression_matrix_tsv_file = os.path.join(result_directory, 'gene_results.tsv')
+        with open(expression_matrix_csv_file, 'rb') as source:
+            rdr = csv.reader(source)
+            with open(expression_matrix_tsv_file, 'wb') as result:
+                for r in rdr:
+                    result.write('\t'.join(r) + '\n')
 
-        return expression_matrix_data
+        return expression_matrix_tsv_file
 
     def _get_condition_string(self, result_directory, condition_labels):
         """
@@ -297,7 +301,7 @@ class DESeqUtil:
         """
 
         count_matrix_file = os.path.join(result_directory, 'gene_count_matrix.csv')
-        filtered_count_matrix_file = os.path.join(result_directory, 'filtered_gene_count_matrix.csv')
+        tmp_count_matrix_file = os.path.join(result_directory, 'tmp_gene_count_matrix.csv')
 
         with open(count_matrix_file, "rb") as f:
             reader = csv.reader(f)
@@ -336,15 +340,17 @@ class DESeqUtil:
             filtered_condition_list = []
             for condition in condition_list:
                 if condition:
-                    filtered_pos.append(condition_list.index(condition) + 1)
+                    pos = [i + 1 for i, val in enumerate(condition_list) if val == condition]
+                    filtered_pos += pos
                     filtered_condition_list.append(condition)
+            filtered_pos = list(set(filtered_pos))
             with open(count_matrix_file, "rb") as source:
                 rdr = csv.reader(source)
-                with open(filtered_count_matrix_file, "wb") as result:
+                with open(tmp_count_matrix_file, "wb") as result:
                     wtr = csv.writer(result)
                     for r in rdr:
                         wtr.writerow(tuple(list(numpy.array(r)[filtered_pos])))
-            os.rename(filtered_count_matrix_file, count_matrix_file)
+            os.rename(tmp_count_matrix_file, count_matrix_file)
             condition_string = ','.join(filtered_condition_list)
         else:
             condition_string = ','.join(condition_list)
@@ -393,37 +399,25 @@ class DESeqUtil:
 
         return diff_expression_obj_ref
 
-    def _save_expression_matrix(self, result_directory, expressionset_ref,
-                                workspace_name, filtered_expression_matrix_name):
+    def _save_expression_matrix(self, result_directory, filtered_expression_matrix_name,
+                                workspace_name):
         """
         _save_expression_matrix: save ExpressionMatrix object to workspace
         """
-        log('start saving RNASeqDifferentialExpression object')
-        if isinstance(workspace_name, int) or workspace_name.isdigit():
-            workspace_id = workspace_name
-        else:
-            workspace_id = self.dfu.ws_name_to_id(workspace_name)
+        log('start saving ExpressionMatrix object')
 
-        expression_matrix_data = self._generate_expression_matrix_data(
-                                                        result_directory,
-                                                        expressionset_ref,
-                                                        filtered_expression_matrix_name,
-                                                        workspace_name)
+        expression_matrix_file = self._generate_expression_matrix_file(result_directory)
 
-        object_type = 'KBaseFeatureValues.ExpressionMatrix'
-        save_object_params = {
-            'id': workspace_id,
-            'objects': [{
-                            'type': object_type,
-                            'data': expression_matrix_data,
-                            'name': filtered_expression_matrix_name
-                        }]
-        }
+        tsv_file_to_matrix_params = {'input_file_path': expression_matrix_file,
+                                     'genome_ref': self.expression_set_data.get('genome_id'),
+                                     'data_type': 'log2_level',
+                                     'data_scale': '1.0',
+                                     'output_ws_name': workspace_name,
+                                     'output_obj_name': filtered_expression_matrix_name}
 
-        dfu_oi = self.dfu.save_objects(save_object_params)[0]
-        filtered_expression_matrix_ref = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
+        matrix_ref = self.fv.tsv_file_to_matrix(tsv_file_to_matrix_params)['output_matrix_ref']
 
-        return filtered_expression_matrix_ref
+        return matrix_ref
 
     def __init__(self, config):
         self.ws_url = config["workspace-url"]
@@ -432,6 +426,7 @@ class DESeqUtil:
         self.shock_url = config['shock-url']
         self.dfu = DataFileUtil(self.callback_url)
         self.rau = ReadsAlignmentUtils(self.callback_url)
+        self.fv = KBaseFeatureValues(self.callback_url)
         self.ws = Workspace(self.ws_url, token=self.token)
         self.scratch = config['scratch']
 
@@ -480,12 +475,10 @@ class DESeqUtil:
                                                     result_directory,
                                                     params)
 
-        filtered_expression_matrix_ref = '00000/000/0'
-        # filtered_expression_matrix_ref = self._save_expression_matrix(
-        #                                             result_directory,
-        #                                             expressionset_ref,
-        #                                             params.get('workspace_name'),
-        #                                             params.get('filtered_expression_matrix_name'))
+        filtered_expression_matrix_ref = self._save_expression_matrix(
+                                                    result_directory,
+                                                    params.get('filtered_expression_matrix_name'),
+                                                    params.get('workspace_name'))
 
         returnVal = {'result_directory': result_directory,
                      'diff_expression_obj_ref': diff_expression_obj_ref,
