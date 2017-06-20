@@ -35,7 +35,8 @@ class DESeqUtil:
 
         # check for required parameters
         for p in ['expressionset_ref', 'diff_expression_obj_name',
-                  'filtered_expression_matrix_name', 'workspace_name']:
+                  'filtered_expression_matrix_name', 'condition_labels', 'workspace_name',
+                  'alpha_cutoff', 'fold_change_cutoff']:
             if p not in params:
                 raise ValueError('"{}" parameter is required, but missing'.format(p))
 
@@ -228,7 +229,8 @@ class DESeqUtil:
 
         self._run_command(command)
 
-    def _generate_diff_expression_csv(self, result_directory, alpha_cutoff, condition_string):
+    def _generate_diff_expression_csv(self, result_directory, alpha_cutoff, fold_change_cutoff,
+                                      condition_string):
         """
         _generate_diff_expression_csv: get different expression matrix with DESeq2
         """
@@ -240,14 +242,16 @@ class DESeqUtil:
         rcmd_list = ['Rscript', os.path.join(os.path.dirname(__file__), 'run_DESeq.R')]
         rcmd_list.extend(['--result_directory', result_directory])
         rcmd_list.extend(['--alpha_cutoff', alpha_cutoff])
+        rcmd_list.extend(['--fold_change_cutoff', fold_change_cutoff])
         rcmd_list.extend(['--condition_string', condition_string])
+
         rcmd_str = " ".join(str(x) for x in rcmd_list)
 
         self._run_command(rcmd_str)
 
     def _generate_diff_expression_data(self, result_directory, expressionset_ref,
                                        diff_expression_obj_name, workspace_name, alpha_cutoff,
-                                       condition_string):
+                                       fold_change_cutoff, condition_string):
         """
         _generate_diff_expression_data: generate RNASeqDifferentialExpression object data
         """
@@ -261,7 +265,8 @@ class DESeqUtil:
                 'sampleset_id': self.expression_set_data.get('sampleset_id')
         }
 
-        self._generate_diff_expression_csv(result_directory, alpha_cutoff, condition_string)
+        self._generate_diff_expression_csv(result_directory, alpha_cutoff,
+                                           fold_change_cutoff, condition_string)
 
         handle = self.dfu.file_to_shock({'file_path': result_directory,
                                          'pack': 'zip',
@@ -285,8 +290,8 @@ class DESeqUtil:
         _generate_expression_matrix_file: generate expression matrix file
         """
 
-        expression_matrix_csv_file = os.path.join(result_directory, 'gene_results.csv')
-        expression_matrix_tsv_file = os.path.join(result_directory, 'gene_results.tsv')
+        expression_matrix_csv_file = os.path.join(result_directory, 'sig_genes_results.csv')
+        expression_matrix_tsv_file = os.path.join(result_directory, 'sig_genes_results.tsv')
         with open(expression_matrix_csv_file, 'rb') as source:
             rdr = csv.reader(source)
             with open(expression_matrix_tsv_file, 'wb') as result:
@@ -361,16 +366,13 @@ class DESeqUtil:
         """
         _save_diff_expression: save DifferentialExpression object to workspace
         """
-
         log('start saving RNASeqDifferentialExpression object')
-        expressionset_ref = params.get('expressionset_ref')
+
         workspace_name = params.get('workspace_name')
         diff_expression_obj_name = params.get('diff_expression_obj_name')
-        alpha_cutoff = params.get('alpha_cutoff')
-        condition_labels = params.get('condition_labels')
 
         condition_string = self._get_condition_string(result_directory,
-                                                      condition_labels)
+                                                      params.get('condition_labels'))
 
         if isinstance(workspace_name, int) or workspace_name.isdigit():
             workspace_id = workspace_name
@@ -378,10 +380,11 @@ class DESeqUtil:
             workspace_id = self.dfu.ws_name_to_id(workspace_name)
 
         diff_expression_data = self._generate_diff_expression_data(result_directory,
-                                                                   expressionset_ref,
+                                                                   params.get('expressionset_ref'),
                                                                    diff_expression_obj_name,
                                                                    workspace_name,
-                                                                   alpha_cutoff,
+                                                                   params.get('alpha_cutoff'),
+                                                                   params.get('fold_change_cutoff'),
                                                                    condition_string)
 
         object_type = 'KBaseRNASeq.RNASeqDifferentialExpression'
@@ -441,12 +444,11 @@ class DESeqUtil:
             filtered_expression_matrix_name: name of output object filtered expression matrix
             condition_labels: conditions for expression set object
             alpha_cutoff: q value cutoff
-            num_threads: number of threads
+            fold_change_cutoff: fold change cutoff
             workspace_name: the name of the workspace it gets saved to
 
         optional params:
             fold_scale_type: one of ["linear", "log2+1", "log10+1"]
-            fold_change_cutoff: fold change cutoff
 
         return:
             result_directory: folder path that holds all files generated by run_deseq2_app
