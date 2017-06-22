@@ -94,10 +94,10 @@ class DESeqUtil:
                      os.path.join(output_directory, 'qvalues_plots.png'))
 
         overview_content = ''
-        overview_content += '<p>Generated Differential Expression: {}({})</p>'.format(
-            params.get('diff_expression_obj_name'), diff_expression_obj_ref)
-        overview_content += '<p>Generated Expression Matrix: {}({})</p>'.format(
-            params.get('filtered_expression_matrix_name'), filtered_expression_matrix_ref)
+        overview_content += '<p>Generated Differential Expression Object:</p><p>{}</p>'.format(
+                                                    params.get('diff_expression_obj_name'))
+        overview_content += '<br><p>Generated Expression Matrix Object:</p><p>{}</p>'.format(
+                                                    params.get('filtered_expression_matrix_name'))
 
         with open(result_file_path, 'w') as result_file:
             with open(os.path.join(os.path.dirname(__file__), 'report_template.html'),
