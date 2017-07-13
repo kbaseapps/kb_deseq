@@ -105,10 +105,6 @@ class DESeqUtil:
         genome_name = self.ws.get_object_info([{"ref": genome_ref}], includeMetadata=None)[0][1]
         total_feature_num = self.gsu.search({'ref': genome_ref})['num_found']
 
-        print 'fdasfadsf'
-        print number_features
-        print total_feature_num
-
         overview_content = ''
         overview_content += '<p>Generated Differential Expression Matrix Object:</p>'
         overview_content += '<p>{} ({})</p>'.format(params.get('diff_expression_obj_name'),

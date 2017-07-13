@@ -365,7 +365,7 @@ class kb_deseqTest(unittest.TestCase):
             'diff_expression_obj_name': 'MyDiffExpression',
             'workspace_name': self.getWsName(),
             "alpha_cutoff": 1,
-            "fold_change_cutoff": 0,
+            "fold_change_cutoff": 1.5,
             'condition_labels': [self.condition_1, self.condition_2],
             "fold_scale_type": 'log2'
         }
