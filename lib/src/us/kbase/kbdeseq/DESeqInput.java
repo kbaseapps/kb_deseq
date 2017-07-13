@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * required params:
  * expressionset_ref: ExpressionSet object reference
  * diff_expression_obj_name: RNASeqDifferetialExpression object name
- * filtered_expression_matrix_name: name of output object filtered expression matrix
  * condition_labels: conditions for expression set object
  * alpha_cutoff: q value cutoff
  * fold_change_cutoff: fold change cutoff
@@ -34,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
     "expressionset_ref",
     "diff_expression_obj_name",
-    "filtered_expression_matrix_name",
     "condition_labels",
     "alpha_cutoff",
     "fold_change_cutoff",
@@ -48,8 +46,6 @@ public class DESeqInput {
     private java.lang.String expressionsetRef;
     @JsonProperty("diff_expression_obj_name")
     private java.lang.String diffExpressionObjName;
-    @JsonProperty("filtered_expression_matrix_name")
-    private java.lang.String filteredExpressionMatrixName;
     @JsonProperty("condition_labels")
     private List<String> conditionLabels;
     @JsonProperty("alpha_cutoff")
@@ -91,21 +87,6 @@ public class DESeqInput {
 
     public DESeqInput withDiffExpressionObjName(java.lang.String diffExpressionObjName) {
         this.diffExpressionObjName = diffExpressionObjName;
-        return this;
-    }
-
-    @JsonProperty("filtered_expression_matrix_name")
-    public java.lang.String getFilteredExpressionMatrixName() {
-        return filteredExpressionMatrixName;
-    }
-
-    @JsonProperty("filtered_expression_matrix_name")
-    public void setFilteredExpressionMatrixName(java.lang.String filteredExpressionMatrixName) {
-        this.filteredExpressionMatrixName = filteredExpressionMatrixName;
-    }
-
-    public DESeqInput withFilteredExpressionMatrixName(java.lang.String filteredExpressionMatrixName) {
-        this.filteredExpressionMatrixName = filteredExpressionMatrixName;
         return this;
     }
 
@@ -211,7 +192,7 @@ public class DESeqInput {
 
     @Override
     public java.lang.String toString() {
-        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", filteredExpressionMatrixName=")+ filteredExpressionMatrixName)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", numThreads=")+ numThreads)+", workspaceName=")+ workspaceName)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", numThreads=")+ numThreads)+", workspaceName=")+ workspaceName)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }
