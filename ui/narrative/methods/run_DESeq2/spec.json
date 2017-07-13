@@ -34,18 +34,7 @@
     "default_values" : [ "" ],
     "field_type" : "text",
     "text_options" : {
-      "valid_ws_types" : ["KBaseRNASeq.RNASeqDifferentialExpression"],
-      "is_output_name": true
-    }
-  },{
-    "id" : "filtered_expression_matrix_name",
-    "optional" : false,
-    "advanced" : false,
-    "allow_multiple" : false,
-    "default_values" : [ "" ],
-    "field_type" : "text",
-    "text_options" : {
-      "valid_ws_types" : ["KBaseFeatureValues.ExpressionMatrix"],
+      "valid_ws_types" : ["KBaseFeatureValues.DifferentialExpressionMatrix"],
       "is_output_name": true
     }
   },{
@@ -105,10 +94,6 @@
           "target_property" : "fold_change_cutoff"
         },
         {
-          "input_parameter" : "filtered_expression_matrix_name",
-          "target_property" : "filtered_expression_matrix_name"
-        },
-        {
           "input_parameter" : "diff_expression_obj_name",
           "target_property" : "diff_expression_obj_name"
         }],
@@ -116,10 +101,6 @@
         {
           "input_parameter" : "diff_expression_obj_name",
           "target_property" : "diff_expression_obj_name"
-        },
-        {
-          "input_parameter" : "filtered_expression_matrix_name",
-          "target_property" : "filtered_expression_matrix_name"
         },
         {
           "service_method_output_path": [0, "result_directory"],
