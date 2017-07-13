@@ -2,4 +2,8 @@
   "module_name" : "DifferentialExpressionUtils",
   "type" : "sdk",
   "version_tag" : "release"
+}, {
+  "module_name" : "GenomeSearchUtil",
+  "type" : "sdk",
+  "version_tag" : "release"
 } ]

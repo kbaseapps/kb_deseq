@@ -52,7 +52,7 @@
     "optional" : false,
     "advanced" : false,
     "allow_multiple" : false,
-    "default_values" : [ "0.05" ],    
+    "default_values" : [ "1" ],    
     "field_type" : "text",
     "text_options" : {
       "validate_as": "float"
@@ -109,10 +109,6 @@
         {
           "service_method_output_path": [0,"diff_expression_obj_ref"],
           "target_property": "diff_expression_obj_ref"
-        },
-        {
-          "service_method_output_path": [0,"filtered_expression_matrix_ref"],
-          "target_property": "filtered_expression_matrix_ref"
         },
         {
           "service_method_output_path": [0,"report_name"],

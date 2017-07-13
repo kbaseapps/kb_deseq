@@ -364,7 +364,7 @@ class kb_deseqTest(unittest.TestCase):
             'expressionset_ref': self.expressionset_ref,
             'diff_expression_obj_name': 'MyDiffExpression',
             'workspace_name': self.getWsName(),
-            "alpha_cutoff": 0.05,
+            "alpha_cutoff": 1,
             "fold_change_cutoff": 1.5,
             'condition_labels': [self.condition_1, self.condition_2],
             "fold_scale_type": 'log2'
@@ -388,15 +388,10 @@ class kb_deseqTest(unittest.TestCase):
         #                   'test_stringtie_expression_2']
         # self.assertItemsEqual(expect_columns, columns)
 
-        with open(os.path.join(result['result_directory'], 'sig_genes_results.csv'), "rb") as f:
-            reader = csv.reader(f)
-            columns = reader.next()[1:]
-
-        print 'fdsafdsf'
-        print columns
-
         self.assertTrue('diff_expression_obj_ref' in result)
-        diff_expression_data = self.ws.get_objects2({
-                    'objects': [{'ref': result.get('diff_expression_obj_ref')}]})['data'][0]['data']
+        diff_expr_obj_ref = result.get('diff_expression_obj_ref')
+        diff_expr_data = self.ws.get_objects2({'objects': 
+                                              [{'ref': diff_expr_obj_ref}]})['data'][0]['data']
+        # print diff_expr_data
         self.assertTrue('report_name' in result)
         self.assertTrue('report_ref' in result)
