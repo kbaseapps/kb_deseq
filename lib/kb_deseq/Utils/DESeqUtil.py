@@ -221,7 +221,9 @@ class DESeqUtil:
 
         ref: http://ccb.jhu.edu/software/stringtie/index.shtml?t=manual#deseq
         """
+
         log('generating matrix of read counts')
+
         command = self.PREPDE_TOOLKIT_PATH + '/prepDE.py '
         command += '-i {} '.format(input_directory)
         command += '-g {} '.format(os.path.join(result_directory, 'gene_count_matrix.csv'))
@@ -248,42 +250,6 @@ class DESeqUtil:
         rcmd_str = " ".join(str(x) for x in rcmd_list)
 
         self._run_command(rcmd_str)
-
-    # def _generate_diff_expression_data(self, result_directory, expressionset_ref,
-    #                                    diff_expression_obj_name, workspace_name, alpha_cutoff,
-    #                                    fold_change_cutoff, condition_string):
-    #     """
-    #     _generate_diff_expression_data: generate RNASeqDifferentialExpression object data
-    #     """
-
-    #     diff_expression_data = {
-    #             'tool_used': 'DESeq2',
-    #             'tool_version': '1.16.1',
-    #             'expressionSet_id': expressionset_ref,
-    #             'genome_id': self.expression_set_data.get('genome_id'),
-    #             'alignmentSet_id': self.expression_set_data.get('alignmentSet_id'),
-    #             'sampleset_id': self.expression_set_data.get('sampleset_id')
-    #     }
-
-    #     self._generate_diff_expression_csv(result_directory, alpha_cutoff,
-    #                                        fold_change_cutoff, condition_string)
-
-    #     handle = self.dfu.file_to_shock({'file_path': result_directory,
-    #                                      'pack': 'zip',
-    #                                      'make_handle': True})['handle']
-    #     diff_expression_data.update({'file': handle})
-
-    #     condition = []
-    #     mapped_expr_ids = self.expression_set_data.get('mapped_expression_ids')
-    #     for i in mapped_expr_ids:
-    #         for alignment_id, expression_id in i.items():
-    #             expression_data = self.ws.get_objects2({'objects':
-    #                                                    [{'ref': 
-    #                                                     expression_id}]})['data'][0]['data']
-    #             condition.append(expression_data.get('condition'))
-    #     diff_expression_data.update({'condition': condition})
-
-    #     return diff_expression_data
 
     def _get_condition_string(self, result_directory, condition_labels):
         """
@@ -351,6 +317,7 @@ class DESeqUtil:
         """
         _save_diff_expression: save DifferentialExpression object to workspace
         """
+
         log('start saving KBaseFeatureValues.DifferentialExpressionMatrix object')
 
         workspace_name = params.get('workspace_name')
@@ -365,16 +332,13 @@ class DESeqUtil:
         destination_ref = workspace_name + '/' + diff_expression_obj_name
         diffexpr_filepath = os.path.join(result_directory, 'sig_genes_results.csv')
 
-        # with open(diffexpr_filepath, "rb") as f:
-        #     reader = csv.reader(f)
-        #     columns = reader.next()[1:]
-
-        # print 'fdsafasfs'
-        # print ','.join(columns)
+        with open(diffexpr_filepath, "rb") as f:
+            reader = csv.reader(f)
+            columns = reader.next()[1:]
 
         for line in fileinput.input(diffexpr_filepath, inplace=True):
             if fileinput.isfirstline():
-                print 'geneID,baseMean,log2FoldChange,lfcSE,stat,pvalue,padj'
+                print 'geneID,' + ','.join(columns)
             else:
                 print line,
 
