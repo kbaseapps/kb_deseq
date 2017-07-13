@@ -44,7 +44,7 @@ PCA_MAplot_file <- paste(opt$result_directory, "/PCA_MAplot.png", sep='')
 
 dmesg("Start processing count matrix input")
 cntTable <- read.csv(input_file, header = TRUE)
-rownames(cntTable) <- cntTable$X
+rownames(cntTable) <- cntTable$gene_id
 cntTable <- cntTable[,-1]
 
 conds <- factor(strsplit(condition_string, ",")[[1]])

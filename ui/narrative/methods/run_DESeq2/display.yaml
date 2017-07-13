@@ -33,11 +33,6 @@ parameters :
       Differential Expression Object Name
     short-hint : |
       Provide the name of the differential expression analysis output
-  filtered_expression_matrix_name :
-    ui-name : |
-      Expression Matrix Object Name
-    short-hint : |
-      Provide the name of filtered differential expression Matrix
   condition_labels:
       ui-name : |
           Condition Label
