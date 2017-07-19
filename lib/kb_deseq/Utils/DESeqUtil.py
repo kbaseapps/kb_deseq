@@ -126,7 +126,7 @@ class DESeqUtil:
         overview_content += '<p><br/></p>'
 
         overview_content += '<br/><table><tr><th>Generated DifferentialExpressionMatrix'
-        overview_content += ' Object</th><th></th></tr>'
+        overview_content += ' Object</th><th></th><th></th><th></th></tr>'
         overview_content += '<tr><th>Expression Name</th><th>Reference Genome</th>'
         overview_content += '<th>Reference Genome Feature Count</th>'
         overview_content += '<th>Filtered Feature Count</th>'
