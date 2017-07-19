@@ -25,9 +25,9 @@ method-suggestions :
 parameters :
   expressionset_ref :
     ui-name : |
-      RNA-seq Expression Set
+      Expression Set
     short-hint : |
-      Select the RNA-seq expression set associated with transcripts assembled by Cufflinks or StringTie.
+      Select the expression set associated with transcripts assembled by Cufflinks or StringTie.
   diff_expression_obj_name :
     ui-name : |
       Differential Expression Object Name
