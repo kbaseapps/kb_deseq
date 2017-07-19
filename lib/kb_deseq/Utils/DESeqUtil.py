@@ -9,6 +9,7 @@ import shutil
 import csv
 import numpy
 import fileinput
+import re
 
 from DataFileUtil.DataFileUtilClient import DataFileUtil
 from Workspace.WorkspaceClient import Workspace as Workspace
@@ -114,7 +115,16 @@ class DESeqUtil:
         expression_data = expression_object['data']
         genome_ref = expression_data['genome_id']
         genome_name = self.ws.get_object_info([{"ref": genome_ref}], includeMetadata=None)[0][1]
-        total_feature_num = self.gsu.search({'ref': genome_ref})['num_found']
+        
+        feature_num = self.gsu.search({'ref': genome_ref})['num_found']
+        genome_features = self.gsu.search({'ref': genome_ref,
+                                           'limit': feature_num,
+                                           'sort_by': [['feature_id', True]]})['features']
+        feature_ids = []
+        for genome_feature in genome_features:
+            if not re.match('.*\.\d*', genome_feature.get('feature_id')):
+                feature_ids.append(genome_feature.get('feature_id'))
+        total_feature_num = len(feature_ids)
 
         overview_content = ''
         overview_content += '<br/><table><tr><th>Generated DifferentialExpressionMatrixSet'
