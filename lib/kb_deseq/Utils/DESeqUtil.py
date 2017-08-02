@@ -263,10 +263,12 @@ class DESeqUtil:
 
         for item in items:
             expression_ref = item['ref']
-            expression_data = self.ws.get_objects2({'objects':
-                                                    [{'ref': expression_ref}]})['data'][0]['data']
+            expression_object = self.ws.get_objects2({'objects':
+                                                     [{'ref': expression_ref}]})['data'][0]
+            expression_data = expression_object['data']
+            expression_info = expression_object['info']
             handle_id = expression_data.get('file').get('hid')
-            expression_name = expression_data.get('id')
+            expression_name = expression_info[1]
 
             tmp_gtf_directory = os.path.join(gtf_directory, expression_name)
             self._mkdir_p(tmp_gtf_directory)
@@ -298,6 +300,7 @@ class DESeqUtil:
         """
         _generate_diff_expression_csv: get different expression matrix with DESeq2
         """
+
         result_files = os.listdir(result_directory)
         if 'gene_count_matrix.csv' not in result_files:
             error_msg = 'Missing gene_count_matrix.csv, available files: {}'.format(result_files)
@@ -333,9 +336,11 @@ class DESeqUtil:
         expr_name_condition_mapping = {}
         for item in items:
             expression_ref = item['ref']
-            expr_data = self.ws.get_objects2({'objects':
-                                             [{'ref': expression_ref}]})['data'][0]['data']
-            expr_name = expr_data['id']
+            expr_object = self.ws.get_objects2({'objects':
+                                               [{'ref': expression_ref}]})['data'][0]
+            expr_data = expr_object['data']
+            expr_info = expr_object['info']
+            expr_name = expr_info[1]
             expr_condition = expr_data['condition']
             expr_name_list = expr_name_condition_mapping.get(expr_condition)
             if expr_name_list:

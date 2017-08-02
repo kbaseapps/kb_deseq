@@ -217,7 +217,7 @@ class kb_deseqTest(unittest.TestCase):
         #                                                          "disable_trimming": 1
         #                                                          })['expression_obj_ref']
 
-        cls.expressionset_ref = '2409/348/1'
+        cls.expressionset_ref = '2409/391/8'
         cls.condition_1 = 'WildThang'
         cls.condition_2 = 'Hybrid'
 
