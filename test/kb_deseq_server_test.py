@@ -217,9 +217,9 @@ class kb_deseqTest(unittest.TestCase):
         #                                                          "disable_trimming": 1
         #                                                          })['expression_obj_ref']
 
-        cls.expressionset_ref = '2409/391/8'
-        cls.condition_1 = 'WildThang'
-        cls.condition_2 = 'Hybrid'
+        cls.expressionset_ref = '22998/18/2'
+        cls.condition_1 = 'glutamine'
+        cls.condition_2 = 'heatshock'
 
     def getWsClient(self):
         return self.__class__.wsClient
@@ -233,66 +233,66 @@ class kb_deseqTest(unittest.TestCase):
     def getContext(self):
         return self.__class__.ctx
 
-    def test_bad_run_deseq2_app_params(self):
-        invalidate_input_params = {'missing_expressionset_ref': 'expressionset_ref',
-                                   'diff_expression_obj_name': 'diff_expression_obj_name',
-                                   'workspace_name': 'workspace_name',
-                                   'alpha_cutoff': 'alpha_cutoff',
-                                   'fold_change_cutoff': 'fold_change_cutoff',
-                                   'condition_labels': 'condition_labels'}
-        with self.assertRaisesRegexp(ValueError, 
-                                     '"expressionset_ref" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    # def test_bad_run_deseq2_app_params(self):
+    #     invalidate_input_params = {'missing_expressionset_ref': 'expressionset_ref',
+    #                                'diff_expression_obj_name': 'diff_expression_obj_name',
+    #                                'workspace_name': 'workspace_name',
+    #                                'alpha_cutoff': 'alpha_cutoff',
+    #                                'fold_change_cutoff': 'fold_change_cutoff',
+    #                                'condition_labels': 'condition_labels'}
+    #     with self.assertRaisesRegexp(ValueError, 
+    #                                  '"expressionset_ref" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-        invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
-                                   'missing_diff_expression_obj_name': 'diff_expression_obj_name',
-                                   'workspace_name': 'workspace_name',
-                                   'alpha_cutoff': 'alpha_cutoff',
-                                   'fold_change_cutoff': 'fold_change_cutoff',
-                                   'condition_labels': 'condition_labels'}
-        with self.assertRaisesRegexp(ValueError, 
-                                     '"diff_expression_obj_name" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    #     invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
+    #                                'missing_diff_expression_obj_name': 'diff_expression_obj_name',
+    #                                'workspace_name': 'workspace_name',
+    #                                'alpha_cutoff': 'alpha_cutoff',
+    #                                'fold_change_cutoff': 'fold_change_cutoff',
+    #                                'condition_labels': 'condition_labels'}
+    #     with self.assertRaisesRegexp(ValueError, 
+    #                                  '"diff_expression_obj_name" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-        invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
-                                   'diff_expression_obj_name': 'diff_expression_obj_name',
-                                   'missing_workspace_name': 'workspace_name',
-                                   'alpha_cutoff': 'alpha_cutoff',
-                                   'fold_change_cutoff': 'fold_change_cutoff',
-                                   'condition_labels': 'condition_labels'}
-        with self.assertRaisesRegexp(ValueError, 
-                                     '"workspace_name" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    #     invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
+    #                                'diff_expression_obj_name': 'diff_expression_obj_name',
+    #                                'missing_workspace_name': 'workspace_name',
+    #                                'alpha_cutoff': 'alpha_cutoff',
+    #                                'fold_change_cutoff': 'fold_change_cutoff',
+    #                                'condition_labels': 'condition_labels'}
+    #     with self.assertRaisesRegexp(ValueError, 
+    #                                  '"workspace_name" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-        invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
-                                   'diff_expression_obj_name': 'diff_expression_obj_name',
-                                   'workspace_name': 'workspace_name',
-                                   'missing_alpha_cutoff': 'alpha_cutoff',
-                                   'fold_change_cutoff': 'fold_change_cutoff',
-                                   'condition_labels': 'condition_labels'}
-        with self.assertRaisesRegexp(ValueError, 
-                                     '"alpha_cutoff" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    #     invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
+    #                                'diff_expression_obj_name': 'diff_expression_obj_name',
+    #                                'workspace_name': 'workspace_name',
+    #                                'missing_alpha_cutoff': 'alpha_cutoff',
+    #                                'fold_change_cutoff': 'fold_change_cutoff',
+    #                                'condition_labels': 'condition_labels'}
+    #     with self.assertRaisesRegexp(ValueError, 
+    #                                  '"alpha_cutoff" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-        invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
-                                   'diff_expression_obj_name': 'diff_expression_obj_name',
-                                   'workspace_name': 'workspace_name',
-                                   'alpha_cutoff': 'alpha_cutoff',
-                                   'missing_fold_change_cutoff': 'fold_change_cutoff',
-                                   'condition_labels': 'condition_labels'}
-        with self.assertRaisesRegexp(ValueError, 
-                                     '"fold_change_cutoff" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    #     invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
+    #                                'diff_expression_obj_name': 'diff_expression_obj_name',
+    #                                'workspace_name': 'workspace_name',
+    #                                'alpha_cutoff': 'alpha_cutoff',
+    #                                'missing_fold_change_cutoff': 'fold_change_cutoff',
+    #                                'condition_labels': 'condition_labels'}
+    #     with self.assertRaisesRegexp(ValueError, 
+    #                                  '"fold_change_cutoff" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-        invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
-                                   'diff_expression_obj_name': 'diff_expression_obj_name',
-                                   'workspace_name': 'workspace_name',
-                                   'alpha_cutoff': 'alpha_cutoff',
-                                   'fold_change_cutoff': 'fold_change_cutoff',
-                                   'missing_condition_labels': 'condition_labels'}
-        with self.assertRaisesRegexp(ValueError, 
-                                     '"condition_labels" parameter is required, but missing'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+    #     invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
+    #                                'diff_expression_obj_name': 'diff_expression_obj_name',
+    #                                'workspace_name': 'workspace_name',
+    #                                'alpha_cutoff': 'alpha_cutoff',
+    #                                'fold_change_cutoff': 'fold_change_cutoff',
+    #                                'missing_condition_labels': 'condition_labels'}
+    #     with self.assertRaisesRegexp(ValueError, 
+    #                                  '"condition_labels" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
     # def test_run_deseq2_app(self):
 

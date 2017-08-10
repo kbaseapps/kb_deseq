@@ -260,6 +260,7 @@ class DESeqUtil:
 
         gtf_directory = os.path.join(self.scratch, str(uuid.uuid4()))
         self._mkdir_p(gtf_directory)
+        print gtf_directory
 
         for item in items:
             expression_ref = item['ref']
@@ -269,8 +270,9 @@ class DESeqUtil:
             expression_info = expression_object['info']
             handle_id = expression_data.get('file').get('hid')
             expression_name = expression_info[1]
+            expression_folder_name = expression_name.replace('.', '_')
 
-            tmp_gtf_directory = os.path.join(gtf_directory, expression_name)
+            tmp_gtf_directory = os.path.join(gtf_directory, expression_folder_name)
             self._mkdir_p(tmp_gtf_directory)
 
             self.dfu.shock_to_file({'handle_id': handle_id,
