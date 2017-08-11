@@ -260,7 +260,6 @@ class DESeqUtil:
 
         gtf_directory = os.path.join(self.scratch, str(uuid.uuid4()))
         self._mkdir_p(gtf_directory)
-        print gtf_directory
 
         for item in items:
             expression_ref = item['ref']
@@ -355,7 +354,8 @@ class DESeqUtil:
             if condition_label in expr_name_condition_mapping.keys():
                 expression_names = expr_name_condition_mapping.get(condition_label)
                 for expression_name in expression_names:
-                    pos = columns.index(expression_name)
+                    expression_folder_name = expression_name.replace('.', '_')
+                    pos = columns.index(expression_folder_name)
                     condition_list[pos] = condition_label
             else:
                 error_msg = 'Condition: {} is not availalbe. '.format(condition_label)
