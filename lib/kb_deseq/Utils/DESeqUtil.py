@@ -261,6 +261,9 @@ class DESeqUtil:
         gtf_directory = os.path.join(self.scratch, str(uuid.uuid4()))
         self._mkdir_p(gtf_directory)
 
+        transcript_directory = os.path.join(self.scratch, str(uuid.uuid4()))
+        self._mkdir_p(transcript_directory)
+
         for item in items:
             expression_ref = item['ref']
             expression_object = self.ws.get_objects2({'objects':
@@ -269,16 +272,23 @@ class DESeqUtil:
             expression_info = expression_object['info']
             handle_id = expression_data.get('file').get('hid')
             expression_name = expression_info[1]
-            expression_folder_name = expression_name.replace('.', '_')
 
-            tmp_gtf_directory = os.path.join(gtf_directory, expression_folder_name)
+            tmp_gtf_directory = os.path.join(gtf_directory, expression_name)
             self._mkdir_p(tmp_gtf_directory)
 
             self.dfu.shock_to_file({'handle_id': handle_id,
                                     'file_path': tmp_gtf_directory,
                                     'unpack': 'unpack'})
 
-        self._run_prepDE(result_directory, gtf_directory)
+            tmp_transcript_directory = os.path.join(transcript_directory, expression_name)
+            self._mkdir_p(tmp_transcript_directory)
+
+            cp_command = 'cp {} {}'.format(os.path.join(tmp_gtf_directory, 'transcripts.gtf'),
+                                           tmp_transcript_directory)
+
+            self._run_command(cp_command)
+
+        self._run_prepDE(result_directory, transcript_directory)
 
     def _run_prepDE(self, result_directory, input_directory):
         """
@@ -354,8 +364,7 @@ class DESeqUtil:
             if condition_label in expr_name_condition_mapping.keys():
                 expression_names = expr_name_condition_mapping.get(condition_label)
                 for expression_name in expression_names:
-                    expression_folder_name = expression_name.replace('.', '_')
-                    pos = columns.index(expression_folder_name)
+                    pos = columns.index(expression_name)
                     condition_list[pos] = condition_label
             else:
                 error_msg = 'Condition: {} is not availalbe. '.format(condition_label)
