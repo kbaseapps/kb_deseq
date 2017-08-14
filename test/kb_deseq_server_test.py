@@ -217,10 +217,10 @@ class kb_deseqTest(unittest.TestCase):
                                                                  "disable_trimming": 1
                                                                  })['expression_obj_ref']
 
-        cls.expressionset_ref = '22998/23/3'
-        cls.condition_1 = 'glutamine'
-        cls.condition_2 = 'heatshock'
-        cls.condition_2 = 'stationary'
+        # cls.expressionset_ref = '22998/23/3'
+        # cls.condition_1 = 'glutamine'
+        # cls.condition_2 = 'heatshock'
+        # cls.condition_2 = 'stationary'
 
     def getWsClient(self):
         return self.__class__.wsClient
@@ -321,10 +321,10 @@ class kb_deseqTest(unittest.TestCase):
         with open(os.path.join(result['result_directory'], 'gene_count_matrix.csv'), "rb") as f:
             reader = csv.reader(f)
             columns = reader.next()[1:]
-        # expect_columns = ['test_stringtie_expression_1',
-        #                   'test_stringtie_expression_2',
-        #                   'test_stringtie_expression_3']
-        # self.assertItemsEqual(expect_columns, columns)
+        expect_columns = ['test_stringtie_expression_1',
+                          'test_stringtie_expression_2',
+                          'test_stringtie_expression_3']
+        self.assertItemsEqual(expect_columns, columns)
         self.assertTrue('diff_expression_obj_ref' in result)
         diff_expr_obj_ref = result.get('diff_expression_obj_ref')
         diff_expr_data = self.ws.get_objects2({'objects': 
@@ -360,9 +360,9 @@ class kb_deseqTest(unittest.TestCase):
         with open(os.path.join(result['result_directory'], 'gene_count_matrix.csv'), "rb") as f:
             reader = csv.reader(f)
             columns = reader.next()[1:]
-        # expect_columns = ['test_stringtie_expression_1',
-        #                   'test_stringtie_expression_2']
-        # self.assertItemsEqual(expect_columns, columns)
+        expect_columns = ['test_stringtie_expression_1',
+                          'test_stringtie_expression_2']
+        self.assertItemsEqual(expect_columns, columns)
 
         self.assertTrue('diff_expression_obj_ref' in result)
         diff_expr_obj_ref = result.get('diff_expression_obj_ref')
