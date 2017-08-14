@@ -25,6 +25,7 @@ from GenomeFileUtil.GenomeFileUtilClient import GenomeFileUtil
 from ReadsUtils.ReadsUtilsClient import ReadsUtils
 from ReadsAlignmentUtils.ReadsAlignmentUtilsClient import ReadsAlignmentUtils
 from DataFileUtil.DataFileUtilClient import DataFileUtil
+from kb_stringtie.kb_stringtieClient import kb_stringtie
 from ExpressionUtils. ExpressionUtilsClient import ExpressionUtils
 
 class kb_deseqTest(unittest.TestCase):
@@ -64,7 +65,7 @@ class kb_deseqTest(unittest.TestCase):
         cls.dfu = DataFileUtil(cls.callback_url)
         cls.ru = ReadsUtils(cls.callback_url)
         cls.rau = ReadsAlignmentUtils(cls.callback_url, service_ver='dev')
-        # cls.stringtie = kb_stringtie(cls.callback_url, service_ver='dev')
+        cls.stringtie = kb_stringtie(cls.callback_url, service_ver='dev')
         cls.eu = ExpressionUtils(cls.callback_url, service_ver='dev')
 
         cls.deseq_runner = DESeqUtil(cls.cfg)
