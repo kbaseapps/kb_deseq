@@ -17,7 +17,8 @@ notifications:
 
 env:
   global:
-    secure: qoTHxQ8GQlOp2eiM6jumwyHK5vKIwyiyecJoyAzRLQU5fgvrMVDVxISja9RmOypuERSD5zaeUbpsIn9oPqO/GtTHnumq2YGBWtFFvBNPOI2Er2gh+7R1raXuxZR0+2/B522Ltc1bgB84SrLXp4SMOGsRitVxPecxOyCYDfzb33Vcun72UX65NfgDZdVPgBM3k6u7IWIZuYML27IE70ONtU/1yTINTrtXx/Ses4Pck/mhQtjWwEfh/+PSlJQeVuepMnKD26L98cx2YGygmVfKw5qpa323zavH5XG2NXpwABh4NtU2VlllI0hciAWnP9Ay2mbzCHe7qUTl3TFItDHFbKyc4Uu+yIoMLHCdJmWbhix8SwwgYeGmIW9q6dIgEselMiUBnLVbSdDPYFKupVs0fq/yLe2wJaaJpz0bFkJagCMfTwwsTfccXdFPnksk0wTyuKYnA2Fi+vn7x/Q14Y3wPuM65T9wHi2n35ClCQTr3BeTi9KYbcK8niij3uh994+hs42bRBmme60pg39JRe415Dte5+skJhUaMTVWpENQqOou0m9h41FVJHEEizltDHm6VTUzOJePKxk63HNk6x01YR2ptgX7UMfoz/I0xSuoC2DOlK9v7cfQI4aLoJpxpUEfyzc470m63LMZp7KoNXntipB+W3MY8WBJUkNTwWKz57g=
+    secure: vaUXBwg0sJwKduIqiTDsABSQFu06E+UvNFWeUbnuyfvBnAjz7p5DsaG6Rx/B7tcn4hpZUj91VoimKtbtKRhiXxROGWSHmwT3eiaHlYsJuoRyrQv+5kF0aa2tnpF/+t4b+a7uV1T1mwDDqS6+aDq3PUAr89sEFaYzT7Rir8hbJeiXeUCHilAR65AbtvO1K027fZpc4K4MLTadfjfAoeP9RrhjmreWwRwh4rq3XenU8fJBs1y6vLcrOvs/F3VcNriNWSP8XIe1D58We3AD7PPNgucwVEdOeAYj7O/Btnpe6MzJBB/wyuoJ0sMlGk81LKhZUtB35QKMN+uvZirQtE3JipVjbZIE0RGTrfhtdmE96iAlfFpPPr9jRM9a1KyK7SChwKZ27x3I6l2+lZRO1hRsechj/YsKHsXYqErALE2x2sMA+10gFHLFZVX54PCofLgQFi+it1VOr/gJu+y63srYoO2OrnPlzHmNYxMx76/t1c+9QZLVsoulxRRp3tldYdx8IkFSb0Tfh/hE0pBqujw3q1kCm8IB9pW+/pdDJ9Hlk1B/RFi2aoDa8MvuxGx5ij5WWGiLOzg9KjRG7fliNEPYocaV4l+Fi4AqjEoFdUgoGAtBx14p3JnB4of/IU2YEopD2GWC7Z20FnRhgRgAXOCbiH4J26rBoe0hA4BDyfn9AZ4=
+
 branches:
   only:
   - master
@@ -38,7 +39,7 @@ install:
 - docker images
 - export PATH=$(pwd)/bin:$PATH
 - cd ../
-- git clone https://github.com/kbaseapps/kb_deseq.git
+- git clone https://github.com/Tianhao-Gu/kb_deseq.git
 - cd kb_deseq
 - kb-sdk test || true
 - sed -i "s/test_token=/test_token=$TEST_TOKEN/" test_local/test.cfg
