@@ -62,7 +62,7 @@ class kb_deseqTest(unittest.TestCase):
         cls.callback_url = os.environ['SDK_CALLBACK_URL']
 
         cls.gfu = GenomeFileUtil(cls.callback_url)
-        cls.dfu = DataFileUtil(cls.callback_url)
+        cls.dfu = DataFileUtil(cls.callback_url, service_ver='dev')
         cls.ru = ReadsUtils(cls.callback_url)
         cls.rau = ReadsAlignmentUtils(cls.callback_url, service_ver='dev')
         cls.stringtie = kb_stringtie(cls.callback_url, service_ver='dev')
@@ -73,6 +73,7 @@ class kb_deseqTest(unittest.TestCase):
         suffix = int(time.time() * 1000)
         cls.wsName = "test_kb_stringtie_" + str(suffix)
         cls.wsClient.create_workspace({'workspace': cls.wsName})
+        cls.dfu.ws_name_to_id(cls.wsName)
 
         cls.prepare_data()
 
@@ -217,10 +218,10 @@ class kb_deseqTest(unittest.TestCase):
                                                                  "disable_trimming": 1
                                                                  })['expression_obj_ref']
 
-        # cls.expressionset_ref = '22998/23/3'
-        # cls.condition_1 = 'glutamine'
-        # cls.condition_2 = 'heatshock'
-        # cls.condition_2 = 'stationary'
+        cls.expressionset_ref = '22998/23/3'
+        cls.condition_1 = 'glutamine'
+        cls.condition_2 = 'heatshock'
+        cls.condition_2 = 'stationary'
 
     def getWsClient(self):
         return self.__class__.wsClient
