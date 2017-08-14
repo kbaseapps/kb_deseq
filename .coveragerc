@@ -1,0 +1,20 @@
+[run]
+branch = True
+
+omit =
+    /kb/module/lib/kb_deseq/authclient.py
+    /kb/module/lib/kb_deseq/baseclient.py
+    /kb/module/lib/kb_deseq/kb_deseqClient.py
+    /kb/module/lib/kb_deseq/kb_deseqServer.py
+source = /kb/module/lib/kb_deseq
+
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+    # Don't complain if tests don't hit defensive assertion code:
+    raise NotImplementedError
+
+show_missing = 1
