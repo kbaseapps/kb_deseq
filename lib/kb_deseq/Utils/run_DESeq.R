@@ -32,13 +32,13 @@ input_file <- paste(opt$result_directory, "/gene_count_matrix.csv", sep='')
 condition_string <- opt$condition_string
 alpha_cutoff <- opt$alpha_cutoff
 fold_change_cutoff <- opt$fold_change_cutoff
-gene_results_file <- paste(opt$result_directory, "/gene_results.csv", sep='')
-diff_genes_file <- paste(opt$result_directory, "/diff_genes.csv", sep='')
-sig_genes_results_file <- paste(opt$result_directory, "/sig_genes_results.csv", sep='')
-sig_genes_up_regulated_file <- paste(opt$result_directory, "/sig_genes_up_regulated.txt", sep='')
-sig_genes_down_regulated_file <- paste(opt$result_directory, "/sig_genes_down_regulated.txt", sep='')
-pvaluesPlot_file <- paste(opt$result_directory, "/pvaluesPlot.png", sep='')
-qvaluesPlot_file <- paste(opt$result_directory, "/qvaluesPlot.png", sep='')
+gene_results_file <- paste(opt$result_directory, "/deseq_results.csv", sep='')
+# diff_genes_file <- paste(opt$result_directory, "/diff_genes.csv", sep='')
+# sig_genes_results_file <- paste(opt$result_directory, "/sig_genes_results.csv", sep='')
+# sig_genes_up_regulated_file <- paste(opt$result_directory, "/sig_genes_up_regulated.txt", sep='')
+# sig_genes_down_regulated_file <- paste(opt$result_directory, "/sig_genes_down_regulated.txt", sep='')
+# pvaluesPlot_file <- paste(opt$result_directory, "/pvaluesPlot.png", sep='')
+# qvaluesPlot_file <- paste(opt$result_directory, "/qvaluesPlot.png", sep='')
 deseq2_MAplot_file <- paste(opt$result_directory, "/deseq2_MAplot.png", sep='')
 PCA_MAplot_file <- paste(opt$result_directory, "/PCA_MAplot.png", sep='')
 
@@ -61,37 +61,37 @@ write.csv(res, gene_results_file, row.names=TRUE)
 summary(res)
 sum(res$padj < alpha_cutoff, na.rm=TRUE)
 rld<- rlogTransformation(dds, blind=TRUE)
-vsd<-varianceStabilizingTransformation(dds, blind=TRUE)
+# vsd<-varianceStabilizingTransformation(dds, blind=TRUE)
 
 #  Identify genes with a q value <0.05, classify up and down regulated
-sig_g=subset(res,res$padj < alpha_cutoff)
-summary(sig_g)
-sig_g_res <- rownames(sig_g)
-write.csv(sig_g_res, diff_genes_file, row.names=FALSE)
-write.csv(sig_g, sig_genes_results_file, row.names=TRUE)
+# sig_g=subset(res,res$padj < alpha_cutoff)
+# summary(sig_g)
+# sig_g_res <- rownames(sig_g)
+# write.csv(sig_g_res, diff_genes_file, row.names=FALSE)
+# write.csv(sig_g, sig_genes_results_file, row.names=TRUE)
 
-sig_g_fc_up=subset(sig_g,sig_g$log2FoldChange  > fold_change_cutoff)
-sig_g_fc_res_up <- rownames(sig_g_fc_up)
-write.table(sig_g_fc_res_up, sig_genes_up_regulated_file, row.names=FALSE)
+# sig_g_fc_up=subset(sig_g,sig_g$log2FoldChange  > fold_change_cutoff)
+# sig_g_fc_res_up <- rownames(sig_g_fc_up)
+# write.table(sig_g_fc_res_up, sig_genes_up_regulated_file, row.names=FALSE)
 
-sig_g_fc_down=subset(sig_g,sig_g$log2FoldChange < -fold_change_cutoff)
-sig_g_fc_res_down <- rownames(sig_g_fc_down)
-write.table(sig_g_fc_res_down, sig_genes_down_regulated_file, row.names=FALSE)
+# sig_g_fc_down=subset(sig_g,sig_g$log2FoldChange < -fold_change_cutoff)
+# sig_g_fc_res_down <- rownames(sig_g_fc_down)
+# write.table(sig_g_fc_res_down, sig_genes_down_regulated_file, row.names=FALSE)
 
 dmesg("Start plotting results")
 # p-values for genes
-png(pvaluesPlot_file)
-hist(res$pvalue, main='DESeq2 gene pvalues', col="grey", xlab='Range of p-values for genes')
-dev.off()
+# png(pvaluesPlot_file)
+# hist(res$pvalue, main='DESeq2 gene pvalues', col="grey", xlab='Range of p-values for genes')
+# dev.off()
 
 # q-values for genes
-png(qvaluesPlot_file)
-hist(sig_g$padj, main='DESeq2 gene qvalues', col="grey", xlab='Range of q-values for genes')
-dev.off()
+# png(qvaluesPlot_file)
+# hist(sig_g$padj, main='DESeq2 gene qvalues', col="grey", xlab='Range of q-values for genes')
+# dev.off()
 
 # dispersion plots
 png(deseq2_MAplot_file)
-plotMA(dds,ylim=c(-2,2),main='DESeq2')
+plotMA(dds,ylim=c(-2,2),main=paste(unique(conds)[1], 'over', unique(conds)[2]))
 dev.off()
 
 # PCA plots

@@ -17,13 +17,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * <pre>
  * required params:
  * expressionset_ref: ExpressionSet object reference
- * diff_expression_obj_name: RNASeqDifferetialExpression object name
+ * differential_expression_set_suffix: DifferentialExpressoinMatrixSet object suffix
+ * workspace_name: the name of the workspace it gets saved to
+ * optional params:
  * condition_labels: conditions for expression set object
  * alpha_cutoff: q value cutoff
  * fold_change_cutoff: fold change cutoff
  * num_threads: number of threads
- * workspace_name: the name of the workspace it gets saved to
- * optional params:
  * fold_scale_type: one of ["linear", "log2+1", "log10+1"]
  * </pre>
  * 
@@ -32,20 +32,22 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
     "expressionset_ref",
-    "diff_expression_obj_name",
+    "differential_expression_set_suffix",
+    "workspace_name",
     "condition_labels",
     "alpha_cutoff",
     "fold_change_cutoff",
     "num_threads",
-    "workspace_name",
     "fold_scale_type"
 })
 public class DESeqInput {
 
     @JsonProperty("expressionset_ref")
     private java.lang.String expressionsetRef;
-    @JsonProperty("diff_expression_obj_name")
-    private java.lang.String diffExpressionObjName;
+    @JsonProperty("differential_expression_set_suffix")
+    private java.lang.String differentialExpressionSetSuffix;
+    @JsonProperty("workspace_name")
+    private java.lang.String workspaceName;
     @JsonProperty("condition_labels")
     private List<String> conditionLabels;
     @JsonProperty("alpha_cutoff")
@@ -54,8 +56,6 @@ public class DESeqInput {
     private Double foldChangeCutoff;
     @JsonProperty("num_threads")
     private Long numThreads;
-    @JsonProperty("workspace_name")
-    private java.lang.String workspaceName;
     @JsonProperty("fold_scale_type")
     private java.lang.String foldScaleType;
     private Map<java.lang.String, Object> additionalProperties = new HashMap<java.lang.String, Object>();
@@ -75,18 +75,33 @@ public class DESeqInput {
         return this;
     }
 
-    @JsonProperty("diff_expression_obj_name")
-    public java.lang.String getDiffExpressionObjName() {
-        return diffExpressionObjName;
+    @JsonProperty("differential_expression_set_suffix")
+    public java.lang.String getDifferentialExpressionSetSuffix() {
+        return differentialExpressionSetSuffix;
     }
 
-    @JsonProperty("diff_expression_obj_name")
-    public void setDiffExpressionObjName(java.lang.String diffExpressionObjName) {
-        this.diffExpressionObjName = diffExpressionObjName;
+    @JsonProperty("differential_expression_set_suffix")
+    public void setDifferentialExpressionSetSuffix(java.lang.String differentialExpressionSetSuffix) {
+        this.differentialExpressionSetSuffix = differentialExpressionSetSuffix;
     }
 
-    public DESeqInput withDiffExpressionObjName(java.lang.String diffExpressionObjName) {
-        this.diffExpressionObjName = diffExpressionObjName;
+    public DESeqInput withDifferentialExpressionSetSuffix(java.lang.String differentialExpressionSetSuffix) {
+        this.differentialExpressionSetSuffix = differentialExpressionSetSuffix;
+        return this;
+    }
+
+    @JsonProperty("workspace_name")
+    public java.lang.String getWorkspaceName() {
+        return workspaceName;
+    }
+
+    @JsonProperty("workspace_name")
+    public void setWorkspaceName(java.lang.String workspaceName) {
+        this.workspaceName = workspaceName;
+    }
+
+    public DESeqInput withWorkspaceName(java.lang.String workspaceName) {
+        this.workspaceName = workspaceName;
         return this;
     }
 
@@ -150,21 +165,6 @@ public class DESeqInput {
         return this;
     }
 
-    @JsonProperty("workspace_name")
-    public java.lang.String getWorkspaceName() {
-        return workspaceName;
-    }
-
-    @JsonProperty("workspace_name")
-    public void setWorkspaceName(java.lang.String workspaceName) {
-        this.workspaceName = workspaceName;
-    }
-
-    public DESeqInput withWorkspaceName(java.lang.String workspaceName) {
-        this.workspaceName = workspaceName;
-        return this;
-    }
-
     @JsonProperty("fold_scale_type")
     public java.lang.String getFoldScaleType() {
         return foldScaleType;
@@ -192,7 +192,7 @@ public class DESeqInput {
 
     @Override
     public java.lang.String toString() {
-        return ((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", numThreads=")+ numThreads)+", workspaceName=")+ workspaceName)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", differentialExpressionSetSuffix=")+ differentialExpressionSetSuffix)+", workspaceName=")+ workspaceName)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", numThreads=")+ numThreads)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

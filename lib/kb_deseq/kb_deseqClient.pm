@@ -123,12 +123,12 @@ $params is a kb_deseq.DESeqInput
 $returnVal is a kb_deseq.DESeqResult
 DESeqInput is a reference to a hash where the following keys are defined:
 	expressionset_ref has a value which is a kb_deseq.obj_ref
-	diff_expression_obj_name has a value which is a string
+	differential_expression_set_suffix has a value which is a string
+	workspace_name has a value which is a string
 	condition_labels has a value which is a reference to a list where each element is a string
 	alpha_cutoff has a value which is a float
 	fold_change_cutoff has a value which is a float
 	num_threads has a value which is an int
-	workspace_name has a value which is a string
 	fold_scale_type has a value which is a string
 obj_ref is a string
 DESeqResult is a reference to a hash where the following keys are defined:
@@ -147,12 +147,12 @@ $params is a kb_deseq.DESeqInput
 $returnVal is a kb_deseq.DESeqResult
 DESeqInput is a reference to a hash where the following keys are defined:
 	expressionset_ref has a value which is a kb_deseq.obj_ref
-	diff_expression_obj_name has a value which is a string
+	differential_expression_set_suffix has a value which is a string
+	workspace_name has a value which is a string
 	condition_labels has a value which is a reference to a list where each element is a string
 	alpha_cutoff has a value which is a float
 	fold_change_cutoff has a value which is a float
 	num_threads has a value which is an int
-	workspace_name has a value which is a string
 	fold_scale_type has a value which is a string
 obj_ref is a string
 DESeqResult is a reference to a hash where the following keys are defined:
@@ -382,14 +382,14 @@ a string
 
 required params:
 expressionset_ref: ExpressionSet object reference
-diff_expression_obj_name: RNASeqDifferetialExpression object name
+differential_expression_set_suffix: DifferentialExpressoinMatrixSet object suffix
+workspace_name: the name of the workspace it gets saved to
+
+optional params:
 condition_labels: conditions for expression set object
 alpha_cutoff: q value cutoff
 fold_change_cutoff: fold change cutoff
 num_threads: number of threads
-workspace_name: the name of the workspace it gets saved to
-
-optional params:
 fold_scale_type: one of ["linear", "log2+1", "log10+1"]
 
 
@@ -400,12 +400,12 @@ fold_scale_type: one of ["linear", "log2+1", "log10+1"]
 <pre>
 a reference to a hash where the following keys are defined:
 expressionset_ref has a value which is a kb_deseq.obj_ref
-diff_expression_obj_name has a value which is a string
+differential_expression_set_suffix has a value which is a string
+workspace_name has a value which is a string
 condition_labels has a value which is a reference to a list where each element is a string
 alpha_cutoff has a value which is a float
 fold_change_cutoff has a value which is a float
 num_threads has a value which is an int
-workspace_name has a value which is a string
 fold_scale_type has a value which is a string
 
 </pre>
@@ -416,12 +416,12 @@ fold_scale_type has a value which is a string
 
 a reference to a hash where the following keys are defined:
 expressionset_ref has a value which is a kb_deseq.obj_ref
-diff_expression_obj_name has a value which is a string
+differential_expression_set_suffix has a value which is a string
+workspace_name has a value which is a string
 condition_labels has a value which is a reference to a list where each element is a string
 alpha_cutoff has a value which is a float
 fold_change_cutoff has a value which is a float
 num_threads has a value which is an int
-workspace_name has a value which is a string
 fold_scale_type has a value which is a string
 
 

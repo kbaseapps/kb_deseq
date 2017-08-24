@@ -10,6 +10,7 @@ import csv
 import numpy
 import fileinput
 import re
+import itertools
 
 from DataFileUtil.DataFileUtilClient import DataFileUtil
 from Workspace.WorkspaceClient import Workspace as Workspace
@@ -37,9 +38,8 @@ class DESeqUtil:
         log('start validating run_deseq2_app params')
 
         # check for required parameters
-        for p in ['expressionset_ref', 'diff_expression_obj_name',
-                  'condition_labels', 'workspace_name',
-                  'alpha_cutoff', 'fold_change_cutoff']:
+        for p in ['expressionset_ref', 'differential_expression_set_suffix',
+                  'workspace_name']:
             if p not in params:
                 raise ValueError('"{}" parameter is required, but missing'.format(p))
 
@@ -87,44 +87,57 @@ class DESeqUtil:
         self._mkdir_p(output_directory)
         result_file_path = os.path.join(output_directory, 'report.html')
 
-        shutil.copy2(os.path.join(result_directory, 'deseq2_MAplot.png'),
-                     os.path.join(output_directory, 'dispersion_plots.png'))
-        shutil.copy2(os.path.join(result_directory, 'PCA_MAplot.png'),
-                     os.path.join(output_directory, 'PCA_plots.png'))
-        shutil.copy2(os.path.join(result_directory, 'pvaluesPlot.png'),
-                     os.path.join(output_directory, 'pvalues_plots.png'))
-        shutil.copy2(os.path.join(result_directory, 'qvaluesPlot.png'),
-                     os.path.join(output_directory, 'qvalues_plots.png'))
+        result_directory
 
+        result_dirs = os.listdir(result_directory)
+        visualization_content = ''
+        for result_dir in result_dirs:
+            dispersion_plots_name = result_dir + '_dispersion_plots.png'
+            dispersion_plots_display_name = '{} {} dispersion plot'.format(result_dir.split('_')[0],
+                                                                           result_dir.split('_')[1])
+
+            shutil.copy2(os.path.join(result_directory, result_dir, 'deseq2_MAplot.png'),
+                         os.path.join(output_directory, dispersion_plots_name))
+            visualization_content += '<div class="gallery">'
+            visualization_content += '<a target="_blank" href="{}">'.format(dispersion_plots_name)
+            visualization_content += '<img src="{}" '.format(dispersion_plots_name)
+            visualization_content += 'alt="{}" width="600" height="400">'.format(dispersion_plots_display_name)
+            visualization_content += '</a><div class="desc">{}</div></div>'.format(dispersion_plots_display_name)
+
+            pca_plots_name = result_dir + '_PCA_MAplot.png'
+            pca_plots_display_name = '{} {} PCA plot'.format(result_dir.split('_')[0],
+                                                             result_dir.split('_')[1])
+
+            shutil.copy2(os.path.join(result_directory, result_dir, 'PCA_MAplot.png'),
+                         os.path.join(output_directory, pca_plots_name))
+            visualization_content += '<div class="gallery">'
+            visualization_content += '<a target="_blank" href="{}">'.format(pca_plots_name)
+            visualization_content += '<img src="{}" '.format(pca_plots_name)
+            visualization_content += 'alt="{}" width="600" height="400">'.format(pca_plots_display_name)
+            visualization_content += '</a><div class="desc">{}</div></div>'.format(pca_plots_display_name)
+          
         diff_expr_set_data = self.ws.get_objects2({'objects':
                                                   [{'ref': 
                                                    diff_expression_obj_ref}]})['data'][0]['data']
 
-        diff_expr_ref = diff_expr_set_data['items'][0]['ref']
-        diff_expr_object = self.ws.get_objects2({'objects':
-                                                [{'ref': diff_expr_ref}]})['data'][0]
+        items = diff_expr_set_data['items']
 
-        diff_expr_data = diff_expr_object['data']
-        diff_expr_info = diff_expr_object['info']
-        diff_expr_name = diff_expr_info[1]
-        number_features = len(diff_expr_data['data']['row_ids'])
-
-        expression_ref = self.expression_set_data['items'][0]['ref']
-        expression_object = self.ws.get_objects2({'objects':
-                                                 [{'ref': expression_ref}]})['data'][0]
-        expression_data = expression_object['data']
-        genome_ref = expression_data['genome_id']
-        genome_name = self.ws.get_object_info([{"ref": genome_ref}], includeMetadata=None)[0][1]
+        # expression_ref = self.expression_set_data['items'][0]['ref']
+        # expression_object = self.ws.get_objects2({'objects':
+        #                                          [{'ref': expression_ref}]})['data'][0]
+        # expression_data = expression_object['data']
+        # genome_ref = expression_data['genome_id']
+        # genome_name = self.ws.get_object_info([{"ref": genome_ref}], includeMetadata=None)[0][1]
         
-        feature_num = self.gsu.search({'ref': genome_ref})['num_found']
-        genome_features = self.gsu.search({'ref': genome_ref,
-                                           'limit': feature_num,
-                                           'sort_by': [['feature_id', True]]})['features']
-        feature_ids = []
-        for genome_feature in genome_features:
-            if not re.match('.*\.\d*', genome_feature.get('feature_id')):
-                feature_ids.append(genome_feature.get('feature_id'))
-        total_feature_num = len(feature_ids)
+        # feature_num = self.gsu.search({'ref': genome_ref})['num_found']
+        # genome_features = self.gsu.search({'ref': genome_ref,
+        #                                    'limit': feature_num,
+        #                                    'sort_by': [['feature_id', True]]})['features']
+        # feature_ids = []
+        # for genome_feature in genome_features:
+        #     if not re.match('.*\.\d*', genome_feature.get('feature_id')):
+        #         feature_ids.append(genome_feature.get('feature_id'))
+        # total_feature_num = len(feature_ids)
 
         overview_content = ''
         overview_content += '<br/><table><tr><th>Generated DifferentialExpressionMatrixSet'
@@ -138,15 +151,25 @@ class DESeqUtil:
         overview_content += '<br/><table><tr><th>Generated DifferentialExpressionMatrix'
         overview_content += ' Object</th><th></th><th></th><th></th></tr>'
         overview_content += '<tr><th>Differential Expression Matrix Name</th>'
-        overview_content += '<th>Reference Genome</th>'
-        overview_content += '<th>Reference Genome Feature Count</th>'
-        overview_content += '<th>Filtered Feature Count</th>'
+        # overview_content += '<th>Reference Genome</th>'
+        # overview_content += '<th>Reference Genome Feature Count</th>'
+        overview_content += '<th>Feature Count</th>'
         overview_content += '</tr>'
-        overview_content += '<tr><td>{} ({})</td>'.format(diff_expr_name, diff_expr_ref)
-        overview_content += '<td>{} ({})</td>'.format(genome_name, genome_ref)
-        overview_content += '<td>{}</td>'.format(total_feature_num)
-        overview_content += '<td>{}</td>'.format(number_features)
-        overview_content += '</tr></table>'
+        for item in items:
+            diff_expr_ref = item['ref']
+            diff_expr_object = self.ws.get_objects2({'objects':
+                                                    [{'ref': diff_expr_ref}]})['data'][0]
+
+            diff_expr_data = diff_expr_object['data']
+            diff_expr_info = diff_expr_object['info']
+            diff_expr_name = diff_expr_info[1]
+            number_features = len(diff_expr_data['data']['row_ids'])
+
+            overview_content += '<tr><td>{} ({})</td>'.format(diff_expr_name, diff_expr_ref)
+            # overview_content += '<td>{} ({})</td>'.format(genome_name, genome_ref)
+            # overview_content += '<td>{}</td>'.format(total_feature_num)
+            overview_content += '<td>{}</td></tr>'.format(number_features)
+        overview_content += '</table>'
 
         with open(result_file_path, 'w') as result_file:
             with open(os.path.join(os.path.dirname(__file__), 'report_template.html'),
@@ -154,6 +177,8 @@ class DESeqUtil:
                 report_template = report_template_file.read()
                 report_template = report_template.replace('<p>Overview_Content</p>',
                                                           overview_content)
+                report_template = report_template.replace('<p>Visualization_Content</p>',
+                                                          visualization_content)
                 result_file.write(report_template)
 
         report_shock_id = self.dfu.file_to_shock({'file_path': output_directory,
@@ -186,7 +211,8 @@ class DESeqUtil:
                     if not (file.endswith('.zip') or
                             file.endswith('.png') or
                             file.endswith('.DS_Store')):
-                        zip_file.write(os.path.join(root, file), file)
+                        zip_file.write(os.path.join(root, file), 
+                                       os.path.join(os.path.basename(root), file))
 
         output_files.append({'path': result_file,
                              'name': os.path.basename(result_file),
@@ -199,7 +225,8 @@ class DESeqUtil:
             for root, dirs, files in os.walk(result_directory):
                 for file in files:
                     if file.endswith('.png'):
-                        zip_file.write(os.path.join(root, file), file)
+                        zip_file.write(os.path.join(root, file), 
+                                       os.path.join(os.path.basename(root), file))
 
         output_files.append({'path': plot_file,
                              'name': os.path.basename(plot_file),
@@ -225,16 +252,22 @@ class DESeqUtil:
                                                   [{'ref': 
                                                    diff_expression_obj_ref}]})['data'][0]['data']
 
-        diff_expr_ref = diff_expr_set_data['items'][0]['ref']
+        items = diff_expr_set_data['items']
 
         description_set = 'DifferentialExpressionMatrixSet generated by DESeq2'
         description_object = 'DifferentialExpressionMatrix generated by DESeq2'
+        objects_created = []
+        objects_created.append({'ref': diff_expression_obj_ref,
+                                'description': description_set})
+
+        for item in items:
+            diff_expr_ref = item['ref']
+            objects_created.append({'ref': diff_expr_ref,
+                                   'description': description_object})
+
         report_params = {'message': '',
                          'workspace_name': params.get('workspace_name'),
-                         'objects_created': [{'ref': diff_expression_obj_ref,
-                                              'description': description_set},
-                                             {'ref': diff_expr_ref,
-                                              'description': description_object}],
+                         'objects_created': objects_created,
                          'file_links': output_files,
                          'html_links': output_html_files,
                          'direct_html_link_index': 0,
@@ -400,6 +433,79 @@ class DESeqUtil:
 
         log('start saving KBaseFeatureValues.DifferentialExpressionMatrix object')
 
+        workspace_name = params.get('workspace_name')
+        diff_expression_obj_name = params.get('diff_expression_obj_name')
+
+        destination_ref = workspace_name + '/' + diff_expression_obj_name
+
+        result_dirs = os.listdir(result_directory)
+
+        diff_expr_files = list()
+
+        for result_dir in result_dirs:
+
+            diff_expr_file = dict()
+            condition_labels = result_dir.split('_')
+
+            genes_results_filepath = os.path.join(result_directory, result_dir, 
+                                                  'deseq_results.csv')
+
+            with open(genes_results_filepath, "rb") as f:
+                reader = csv.reader(f)
+                columns = reader.next()[1:]
+
+            columns[columns.index('log2FoldChange')] = 'log2_fold_change'
+            columns[columns.index('pvalue')] = 'p_value'
+            columns[columns.index('padj')] = 'q_value'
+            for line in fileinput.input(genes_results_filepath, inplace=True):
+                if fileinput.isfirstline():
+                    print 'gene_id,' + ','.join(columns)
+                else:
+                    print line,
+
+            reader = csv.DictReader(open(genes_results_filepath))
+
+            diffexpr_filepath = os.path.join(result_directory, result_dir, 
+                                             'differential_expression_result.csv')
+            with open(diffexpr_filepath, 'w') as csvfile:
+                fieldnames = ['gene_id', 'log2_fold_change', 'p_value', 'q_value']
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+                writer.writeheader()
+
+                for row in reader:
+                    writer.writerow({'gene_id': row.get('gene_id'), 
+                                     'log2_fold_change': row.get('log2_fold_change'),
+                                     'p_value': row.get('p_value'),
+                                     'q_value': row.get('q_value')})
+
+            diff_expr_file.update({'condition_mapping': 
+                                   {condition_labels[0]: condition_labels[1]}})
+            diff_expr_file.update({'diffexpr_filepath': diffexpr_filepath})
+
+            diff_expr_files.append(diff_expr_file)
+
+        expression_ref = self.expression_set_data['items'][0]['ref']
+        expression_data = self.ws.get_objects2({'objects':
+                                                [{'ref': expression_ref}]})['data'][0]['data']
+        genome_ref = expression_data['genome_id']
+
+        upload_diff_expr_params = {'destination_ref': destination_ref,
+                                   'diffexpr_data': diff_expr_files,
+                                   'tool_used': 'deseq',
+                                   'tool_version': '1.16.1',
+                                   'genome_ref': genome_ref}
+
+        deu_upload_return = self.deu.save_differential_expression_matrix_set(upload_diff_expr_params)
+
+        diff_expression_obj_ref = deu_upload_return['diffExprMatrixSet_ref']
+
+        return diff_expression_obj_ref
+
+    def _generate_deseq_files(self, result_directory, params):
+        """
+        _generate_deseq_files: generate DESeq files
+        """
         gene_result_file = os.path.join(result_directory, 'gene_count_matrix.csv')
         with open(gene_result_file, "rb") as f:
             reader = csv.reader(f)
@@ -411,44 +517,44 @@ class DESeqUtil:
             else:
                 print line,
 
-        workspace_name = params.get('workspace_name')
-        diff_expression_obj_name = params.get('diff_expression_obj_name')
-
         condition_string = self._get_condition_string(result_directory,
                                                       params.get('condition_labels'))
 
         self._generate_diff_expression_csv(result_directory, params.get('alpha_cutoff'),
                                            params.get('fold_change_cutoff'), condition_string)
 
-        destination_ref = workspace_name + '/' + diff_expression_obj_name
-        diffexpr_filepath = os.path.join(result_directory, 'sig_genes_results.csv')
+    def _get_condition_labels(self):
+        """
+        _get_condition_labels: get all possible condition label pairs
+        """
+        log('getting all possible condition pairs')
 
-        with open(diffexpr_filepath, "rb") as f:
-            reader = csv.reader(f)
-            columns = reader.next()[1:]
-
-        for line in fileinput.input(diffexpr_filepath, inplace=True):
-            if fileinput.isfirstline():
-                print 'geneID,' + ','.join(columns)
+        condition_label_pairs = []
+        items = self.expression_set_data.get('items')
+        condition_replicate_name_mapping = {}
+        for item in items:
+            expression_ref = item['ref']
+            expr_object = self.ws.get_objects2({'objects':
+                                               [{'ref': expression_ref}]})['data'][0]
+            expr_data = expr_object['data']
+            expr_info = expr_object['info']
+            expr_name = expr_info[1]
+            expr_condition = expr_data['condition']
+            expr_name_list = condition_replicate_name_mapping.get(expr_condition)
+            if expr_name_list:
+                expr_name_list.append(expr_name)
+                condition_replicate_name_mapping.update({expr_condition: expr_name_list})
             else:
-                print line,
+                condition_replicate_name_mapping.update({expr_condition: [expr_name]})
 
-        expression_ref = self.expression_set_data['items'][0]['ref']
-        expression_data = self.ws.get_objects2({'objects':
-                                                [{'ref': expression_ref}]})['data'][0]['data']
-        genome_ref = expression_data['genome_id']
+        condition_labels = condition_replicate_name_mapping.keys()
 
-        upload_diff_expr_params = {'destination_ref': destination_ref,
-                                   'diffexpr_filepath': diffexpr_filepath,
-                                   'tool_used': 'DESeq2',
-                                   'tool_version': '1.16.1',
-                                   'genome_ref': genome_ref}
+        condition_label_pairs = [list(pair) for pair in itertools.combinations(condition_labels, 
+                                                                               2)]
 
-        deu_upload_return = self.deu.upload_differentialExpression(upload_diff_expr_params)
+        log('all pssible conditon pairs:\n{}'.format(condition_label_pairs))
 
-        diff_expression_obj_ref = deu_upload_return['diffExprMatrixSet_ref']
-
-        return diff_expression_obj_ref
+        return condition_label_pairs
 
     def __init__(self, config):
         self.ws_url = config["workspace-url"]
@@ -469,13 +575,14 @@ class DESeqUtil:
 
         required params:
             expressionset_ref: ExpressionSet object reference
-            diff_expression_obj_name: RNASeqDifferetialExpression object name
-            condition_labels: conditions for expression set object
-            alpha_cutoff: q value cutoff
-            fold_change_cutoff: fold change cutoff
+            differential_expression_set_suffix: DifferentialExpressoinMatrixSet object suffix
             workspace_name: the name of the workspace it gets saved to
 
         optional params:
+            condition_labels: conditions for expression set object
+            alpha_cutoff: q value cutoff
+            fold_change_cutoff: fold change cutoff
+            num_threads: number of threads
             fold_scale_type: one of ["linear", "log2+1", "log10+1"]
 
         return:
@@ -493,12 +600,35 @@ class DESeqUtil:
         self._mkdir_p(result_directory)
 
         expressionset_ref = params.get('expressionset_ref')
-        self.expression_set_data = self.ws.get_objects2({'objects':
-                                                        [{'ref': 
-                                                         expressionset_ref}]})['data'][0]['data']
+        expression_set_obj = self.ws.get_objects2({'objects':
+                                                  [{'ref': expressionset_ref}]})['data'][0]
+        self.expression_set_data = expression_set_obj['data']
+        expression_set_name = expression_set_obj['info'][1]
 
-        # run prepDE.py and save count matrix file to result_directory
-        self._save_count_matrix_file(expressionset_ref, result_directory)
+        differential_expression_set_suffix = params.get('differential_expression_set_suffix')
+        if re.match('.*_*[Ee]xpression_*[Ss]et', expression_set_name):
+            diff_expression_obj_name = re.sub('_*[Ee]xpression_*[Ss]et',
+                                              differential_expression_set_suffix,
+                                              expression_set_name)
+        else:
+            diff_expression_obj_name = expression_set_name + differential_expression_set_suffix
+
+        params['diff_expression_obj_name'] = diff_expression_obj_name
+
+        condition_label_pairs = self._get_condition_labels()
+
+        for condition_label_pair in condition_label_pairs:
+            params['condition_labels'] = condition_label_pair
+
+            dir_suffix = '_'.join(condition_label_pair)
+
+            sub_result_directory = os.path.join(result_directory, dir_suffix)
+            self._mkdir_p(sub_result_directory)
+
+            # run prepDE.py and save count matrix file
+            self._save_count_matrix_file(expressionset_ref, sub_result_directory)
+
+            self._generate_deseq_files(sub_result_directory, params)
 
         diff_expression_obj_ref = self._save_diff_expression(result_directory,
                                                              params)
