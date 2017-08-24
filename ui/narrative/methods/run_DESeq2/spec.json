@@ -1,6 +1,6 @@
 {
   "ver" : "1.0.0",
-  "authors" : [ ],
+  "authors" : ["tgu2"],
   "contact" : "help@kbase.us",
   "visible" : true,
   "categories" : ["active","expression"],
@@ -19,44 +19,12 @@
       "valid_ws_types" : ["KBaseSets.ExpressionSet"]
     }
   },{
-    "id": "condition_labels",
-    "optional": false,
-    "advanced": false,
-    "allow_multiple": true,
-    "default_values": [""],
-    "field_type": "text",
-    "text_options": {}
-  },{
-    "id" : "diff_expression_obj_name",
+    "id" : "differential_expression_set_suffix",
     "optional" : false,
-    "advanced" : false,
+    "advanced" : true,
     "allow_multiple" : false,
-    "default_values" : [ "" ],
-    "field_type" : "text",
-    "text_options" : {
-      "valid_ws_types" : ["KBaseFeatureValues.DifferentialExpressionMatrix"],
-      "is_output_name": true
-    }
-  },{
-    "id" : "fold_change_cutoff",
-    "optional" : false,
-    "advanced" : false,
-    "allow_multiple" : false,
-    "default_values" : [ "1.5" ],    
-    "field_type" : "text",
-    "text_options" : {
-      "validate_as": "float"
-    }
-  },{
-    "id" : "alpha_cutoff",
-    "optional" : false,
-    "advanced" : false,
-    "allow_multiple" : false,
-    "default_values" : [ "1" ],    
-    "field_type" : "text",
-    "text_options" : {
-      "validate_as": "float"
-    }
+    "default_values" : [ "_differential_expression_matrix_set" ],
+    "field_type" : "text"
   }],
   "behavior" : {
     "service-mapping" : {
@@ -82,26 +50,18 @@
           "target_property" : "expressionset_ref"
         },
         {
-          "input_parameter" : "condition_labels",
-          "target_property" : "condition_labels"
-        },
-        {
-          "input_parameter" : "alpha_cutoff",
+          "constant_value"  : 1,
           "target_property" : "alpha_cutoff"
         },
         {
-          "input_parameter" : "fold_change_cutoff",
+          "constant_value"  : 1.5,
           "target_property" : "fold_change_cutoff"
         },
         {
-          "input_parameter" : "diff_expression_obj_name",
-          "target_property" : "diff_expression_obj_name"
+          "input_parameter" : "differential_expression_set_suffix",
+          "target_property" : "differential_expression_set_suffix"
         }],
       "output_mapping" : [
-        {
-          "input_parameter" : "diff_expression_obj_name",
-          "target_property" : "diff_expression_obj_name"
-        },
         {
           "service_method_output_path": [0, "result_directory"],
           "target_property": "result_directory"
