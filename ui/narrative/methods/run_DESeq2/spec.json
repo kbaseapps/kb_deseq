@@ -37,13 +37,23 @@
       "unchecked_value": 0
     }
   },{
-    "id": "condition_labels",
-    "optional": true,
-    "advanced": true,
-    "allow_multiple": true,
-    "default_values": [""],
-    "field_type": "text",
-    "text_options": {}
+      "id" : "condition_labels",
+      "optional" : true,
+      "advanced" : true,
+      "allow_multiple" : true,
+      "default_values" : [ "" ],
+      "field_type" : "textsubdata",
+      "textsubdata_options" : {
+        "subdata_selection": {
+          "parameter_id" : "expressionset_ref",
+          "subdata_included" : ["items/[*]/label"],
+          "path_to_subdata": ["label"],
+          "selection_id": "label"
+        },
+        "multiselection":true,
+        "show_src_obj":false,
+        "allow_custom":false
+      }
   }],
   "parameter-groups": [
     {
@@ -52,6 +62,7 @@
         "condition_labels"
       ],
       "optional": true,
+      "advanced": true,
       "allow_multiple": true,
       "with_border": false
     }

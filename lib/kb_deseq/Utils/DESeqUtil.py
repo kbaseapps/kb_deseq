@@ -625,23 +625,23 @@ class DESeqUtil:
         condition_pairs = params.get('condition_pairs')
         if not self._xor(run_all_combinations, condition_pairs):
             raise ValueError(
-                'One and only one of a list of assembly references or files is required')
+                'One and only one of a list of "run all paired combinations" or "choose conditions" is required')
 
         if run_all_combinations:
             condition_label_pairs = available_condition_label_pairs
         else:
-            condition_labels = condition_pairs.get('condition_labels')
-            condition_label_pairs = list()
-            for condition_label in condition_labels:
-                if len(condition_label) != 2:
+            for condition_pair in condition_pairs:
+                condition_labels = condition_pair.get('condition_labels')
+                condition_label_pairs = list()
+                if len(condition_labels) != 2:
                     raise ValueError('Please provide only 2 condition lebals')
-                elif (condition_label[0] not in available_condition_labels or 
-                      condition_label[1] not in available_condition_labels):
-                    error_msg = 'One of condition: {} is not availalbe. '.format(condition_label)
+                elif (condition_labels[0] not in available_condition_labels or 
+                      condition_labels[1] not in available_condition_labels):
+                    error_msg = 'One of condition: {} is not availalbe. '.format(condition_labels)
                     error_msg += 'Available conditions: {}'.format(available_condition_labels)
                     raise ValueError(error_msg)
                 else:
-                    condition_label_pairs.append(condition_label)
+                    condition_label_pairs.append(condition_labels)
 
         for condition_label_pair in condition_label_pairs:
             params['condition_labels'] = condition_label_pair
