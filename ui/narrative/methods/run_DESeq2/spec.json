@@ -46,9 +46,9 @@
       "textsubdata_options" : {
         "subdata_selection": {
           "parameter_id" : "expressionset_ref",
-          "subdata_included" : ["items/[*]/label"],
-          "path_to_subdata": ["items"],
-          "selection_id": "label"
+          "subdata_included" : ["items/[*]/ref"],
+          "path_to_subdata": ["items", "ref"],
+          "selection_id": "ref"
         },
         "multiselection":true,
         "show_src_obj":false,
