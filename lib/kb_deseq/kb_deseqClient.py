@@ -42,14 +42,17 @@ class kb_deseq(object):
            differential_expression_set_suffix:
            DifferentialExpressoinMatrixSet object suffix workspace_name: the
            name of the workspace it gets saved to optional params:
+           run_all_combinations: run all paired condition combinations
            condition_labels: conditions for expression set object
            alpha_cutoff: q value cutoff fold_change_cutoff: fold change
            cutoff num_threads: number of threads fold_scale_type: one of
            ["linear", "log2+1", "log10+1"]) -> structure: parameter
            "expressionset_ref" of type "obj_ref" (An X/Y/Z style reference),
            parameter "differential_expression_set_suffix" of String,
-           parameter "workspace_name" of String, parameter "condition_labels"
-           of list of String, parameter "alpha_cutoff" of Double, parameter
+           parameter "workspace_name" of String, parameter
+           "run_all_combinations" of type "boolean" (A boolean - 0 for false,
+           1 for true. @range (0, 1)), parameter "condition_labels" of list
+           of String, parameter "alpha_cutoff" of Double, parameter
            "fold_change_cutoff" of Double, parameter "num_threads" of Long,
            parameter "fold_scale_type" of String
         :returns: instance of type "DESeqResult" (result_directory: folder

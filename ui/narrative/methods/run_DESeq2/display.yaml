@@ -33,11 +33,26 @@ parameters :
       Differential Expression Matrix Set Object Name Suffix
     short-hint : |
       Provide the name suffix of the differential expression analysis output
+  run_all_combinations:
+    ui-name : |
+      Run All Paired Condition Combinations
+    short-hint : |
+      Run All Paired Condition Combinations
   condition_labels:
       ui-name : |
           Condition Label
       short-hint : |
-          Condition Label
+          Select two condition labels to run
+  condition_pairs:
+      ui-name : |
+          Choose Condition Pairs
+      short-hint : |
+          Choose Condition Pairs
+
+parameter-groups :
+    condition_pairs :
+        ui-name : Condition Pairs
+        short-hint : Select condition pairs to run
 
 description : |
     <p>This App uses the transcripts for two or more samples obtained from either Cufflinks or StringTie to calculate gene and transcript levels in more than one condition and finds significant changes in the expression levels.</p>
