@@ -22,14 +22,14 @@
   },{
     "id" : "differential_expression_set_suffix",
     "optional" : false,
-    "advanced" : true,
+    "advanced" : false,
     "allow_multiple" : false,
     "default_values" : [ "_diff_exp_mtx_set" ],
     "field_type" : "text"
   },{
     "id" : "run_all_combinations",
     "optional":false,
-    "advanced":true,
+    "advanced":false,
     "allow_multiple":false,
     "default_values":["1"],
     "field_type" : "checkbox",
@@ -38,23 +38,14 @@
       "unchecked_value": 0
     }
   },{
-    "id" : "condition_labels",
-    "optional" : true,
-    "advanced" : true,
-    "allow_multiple" : true,
-    "default_values" : [ "" ],
-    "field_type" : "textsubdata",
-    "textsubdata_options" : {
-      "subdata_selection": {
-        "parameter_id" : "expressionset_ref",
-        "subdata_included" : ["items/label"],
-        "path_to_subdata": ["items", "label"]
-        },
-    "multiselection":true,
-    "show_src_obj":false,
-    "allow_custom":false
-    }
-  }],
+      "id": "condition_labels",
+      "optional": true,
+      "advanced": true,
+      "allow_multiple": true,
+      "default_values": [""],
+      "field_type": "text",
+      "text_options": {}
+    }],
   "parameter-groups": [
     {
       "id": "condition_pairs",
