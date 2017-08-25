@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * differential_expression_set_suffix: DifferentialExpressoinMatrixSet object suffix
  * workspace_name: the name of the workspace it gets saved to
  * optional params:
+ * run_all_combinations: run all paired condition combinations
  * condition_labels: conditions for expression set object
  * alpha_cutoff: q value cutoff
  * fold_change_cutoff: fold change cutoff
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "expressionset_ref",
     "differential_expression_set_suffix",
     "workspace_name",
+    "run_all_combinations",
     "condition_labels",
     "alpha_cutoff",
     "fold_change_cutoff",
@@ -48,6 +50,8 @@ public class DESeqInput {
     private java.lang.String differentialExpressionSetSuffix;
     @JsonProperty("workspace_name")
     private java.lang.String workspaceName;
+    @JsonProperty("run_all_combinations")
+    private Long runAllCombinations;
     @JsonProperty("condition_labels")
     private List<String> conditionLabels;
     @JsonProperty("alpha_cutoff")
@@ -102,6 +106,21 @@ public class DESeqInput {
 
     public DESeqInput withWorkspaceName(java.lang.String workspaceName) {
         this.workspaceName = workspaceName;
+        return this;
+    }
+
+    @JsonProperty("run_all_combinations")
+    public Long getRunAllCombinations() {
+        return runAllCombinations;
+    }
+
+    @JsonProperty("run_all_combinations")
+    public void setRunAllCombinations(Long runAllCombinations) {
+        this.runAllCombinations = runAllCombinations;
+    }
+
+    public DESeqInput withRunAllCombinations(Long runAllCombinations) {
+        this.runAllCombinations = runAllCombinations;
         return this;
     }
 
@@ -192,7 +211,7 @@ public class DESeqInput {
 
     @Override
     public java.lang.String toString() {
-        return ((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", differentialExpressionSetSuffix=")+ differentialExpressionSetSuffix)+", workspaceName=")+ workspaceName)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", numThreads=")+ numThreads)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", differentialExpressionSetSuffix=")+ differentialExpressionSetSuffix)+", workspaceName=")+ workspaceName)+", runAllCombinations=")+ runAllCombinations)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", numThreads=")+ numThreads)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

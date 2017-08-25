@@ -263,6 +263,7 @@ class kb_deseqTest(unittest.TestCase):
             'expressionset_ref': self.expressionset_ref,
             'differential_expression_set_suffix': '_MyDiffExpression',
             'workspace_name': self.getWsName(),
+            'run_all_combinations': 1
         }
 
         result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]

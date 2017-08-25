@@ -24,7 +24,7 @@ class kb_deseq:
     ######################################### noqa
     VERSION = "1.0.3"
     GIT_URL = "https://github.com/Tianhao-Gu/kb_deseq.git"
-    GIT_COMMIT_HASH = "7b31a270d7448daca589ec64392903c2e87a33d8"
+    GIT_COMMIT_HASH = "3a5de84107d36a80f46d2c6d27d93bb011c254d3"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -49,14 +49,17 @@ class kb_deseq:
            differential_expression_set_suffix:
            DifferentialExpressoinMatrixSet object suffix workspace_name: the
            name of the workspace it gets saved to optional params:
+           run_all_combinations: run all paired condition combinations
            condition_labels: conditions for expression set object
            alpha_cutoff: q value cutoff fold_change_cutoff: fold change
            cutoff num_threads: number of threads fold_scale_type: one of
            ["linear", "log2+1", "log10+1"]) -> structure: parameter
            "expressionset_ref" of type "obj_ref" (An X/Y/Z style reference),
            parameter "differential_expression_set_suffix" of String,
-           parameter "workspace_name" of String, parameter "condition_labels"
-           of list of String, parameter "alpha_cutoff" of Double, parameter
+           parameter "workspace_name" of String, parameter
+           "run_all_combinations" of type "boolean" (A boolean - 0 for false,
+           1 for true. @range (0, 1)), parameter "condition_labels" of list
+           of String, parameter "alpha_cutoff" of Double, parameter
            "fold_change_cutoff" of Double, parameter "num_threads" of Long,
            parameter "fold_scale_type" of String
         :returns: instance of type "DESeqResult" (result_directory: folder

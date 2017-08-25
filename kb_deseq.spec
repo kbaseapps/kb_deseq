@@ -20,6 +20,7 @@ module kb_deseq {
       workspace_name: the name of the workspace it gets saved to
 
       optional params:
+      run_all_combinations: run all paired condition combinations
       condition_labels: conditions for expression set object
       alpha_cutoff: q value cutoff
       fold_change_cutoff: fold change cutoff
@@ -32,6 +33,7 @@ module kb_deseq {
         string differential_expression_set_suffix;
         string workspace_name;
 
+        boolean run_all_combinations;
         list<string> condition_labels;  
         float alpha_cutoff;
         float fold_change_cutoff;

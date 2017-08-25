@@ -57,6 +57,9 @@ class DESeqUtil:
             else:
                 raise
 
+    def _xor(self, a, b):
+        return bool(a) != bool(b)
+
     def _run_command(self, command):
         """
         _run_command: run command and print result
@@ -554,7 +557,7 @@ class DESeqUtil:
 
         log('all pssible conditon pairs:\n{}'.format(condition_label_pairs))
 
-        return condition_label_pairs
+        return condition_label_pairs, condition_labels
 
     def __init__(self, config):
         self.ws_url = config["workspace-url"]
@@ -579,6 +582,7 @@ class DESeqUtil:
             workspace_name: the name of the workspace it gets saved to
 
         optional params:
+            run_all_combinations: run all paired condition combinations
             condition_labels: conditions for expression set object
             alpha_cutoff: q value cutoff
             fold_change_cutoff: fold change cutoff
@@ -615,7 +619,29 @@ class DESeqUtil:
 
         params['diff_expression_obj_name'] = diff_expression_obj_name
 
-        condition_label_pairs = self._get_condition_labels()
+        available_condition_label_pairs, available_condition_labels = self._get_condition_labels()
+
+        run_all_combinations = params.get('run_all_combinations')
+        condition_pairs = params.get('condition_pairs')
+        if not self._xor(run_all_combinations, condition_pairs):
+            raise ValueError(
+                'One and only one of a list of assembly references or files is required')
+
+        if run_all_combinations:
+            condition_label_pairs = available_condition_label_pairs
+        else:
+            condition_labels = condition_pairs.get('condition_labels')
+            condition_label_pairs = list()
+            for condition_label in condition_labels:
+                if len(condition_label) != 2:
+                    raise ValueError('Please provide only 2 condition lebals')
+                elif (condition_label[0] not in available_condition_labels or 
+                      condition_label[1] not in available_condition_labels):
+                    error_msg = 'One of condition: {} is not availalbe. '.format(condition_label)
+                    error_msg += 'Available conditions: {}'.format(available_condition_labels)
+                    raise ValueError(error_msg)
+                else:
+                    condition_label_pairs.append(condition_label)
 
         for condition_label_pair in condition_label_pairs:
             params['condition_labels'] = condition_label_pair
