@@ -83,8 +83,7 @@
       ],
       "optional": true,
       "allow_multiple": true,
-      "with_border": false,
-      "advanced": true
+      "with_border": false
     }
   ],
   "behavior" : {
