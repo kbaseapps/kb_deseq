@@ -29,7 +29,7 @@
   },{
     "id" : "run_all_combinations",
     "optional":false,
-    "advanced":false,
+    "advanced":true,
     "allow_multiple":false,
     "default_values":["1"],
     "field_type" : "checkbox",
@@ -58,11 +58,21 @@
   },{
       "id": "condition_label_2",
       "optional": false,
-      "advanced": true,
+      "advanced": false,
       "allow_multiple": false,
       "default_values": [""],
-      "field_type": "text",
-      "text_options": {}
+      "field_type": "textsubdata",
+      "textsubdata_options" : {
+        "subdata_selection": {
+          "parameter_id" : "expressionset_ref",
+          "subdata_included" : ["items/[*]/label"],
+          "path_to_subdata": ["items"],
+          "selection_id": "label"
+          },
+          "multiselection":true,
+          "show_src_obj":false,
+          "allow_custom":false
+      }
   }],
   "parameter-groups": [
     {
@@ -73,7 +83,8 @@
       ],
       "optional": true,
       "allow_multiple": true,
-      "with_border": false
+      "with_border": false,
+      "advanced": true
     }
   ],
   "behavior" : {

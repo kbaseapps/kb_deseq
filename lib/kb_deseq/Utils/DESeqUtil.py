@@ -566,8 +566,8 @@ class DESeqUtil:
         checked = True
         for condition_pair in condition_pairs:
 
-            first_label = condition_pair['condition_label_1'].strip()
-            second_label = condition_pair['condition_label_2'].strip()
+            first_label = condition_pair['condition_label_1'][0].strip()
+            second_label = condition_pair['condition_label_2'][0].strip()
             if first_label not in available_condition_labels:
                 error_msg = 'Condition: {} is not availalbe. '.format(first_label)
                 error_msg += 'Available conditions: {}'.format(available_condition_labels)
@@ -658,8 +658,8 @@ class DESeqUtil:
             if self._check_input_labels(condition_pairs, available_condition_labels):
                 condition_label_pairs = list()
                 for condition_pair in condition_pairs:
-                    condition_labels = [condition_pair.get('condition_label_1').strip(),
-                                        condition_pair.get('condition_label_2').strip()]
+                    condition_labels = [condition_pair.get('condition_label_1')[0].strip(),
+                                        condition_pair.get('condition_label_2')[0].strip()]
                     condition_label_pairs.append(condition_labels)
 
         for condition_label_pair in condition_label_pairs:

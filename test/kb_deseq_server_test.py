@@ -294,10 +294,10 @@ class kb_deseqTest(unittest.TestCase):
             'differential_expression_set_suffix': '_MyDiffExpression',
             'workspace_name': self.getWsName(),
             'run_all_combinations': 0,
-            "condition_pairs": [{'condition_label_1': 'glutamine', 
-                                 'condition_label_2': 'heatshock'}, 
-                                {'condition_label_1': 'glutamine', 
-                                 'condition_label_2': 'stationary'}]
+            "condition_pairs": [{'condition_label_1': ['glutamine'], 
+                                 'condition_label_2': ['heatshock']}, 
+                                {'condition_label_1': ['glutamine'], 
+                                 'condition_label_2': ['stationary']}]
         }
 
         result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
