@@ -47,7 +47,7 @@
         "subdata_selection": {
           "parameter_id" : "expressionset_ref",
           "subdata_included" : ["items/[*]/ref"],
-          "path_to_subdata": ["items", "ref"],
+          "path_to_subdata": ["items"],
           "selection_id": "ref"
         },
         "multiselection":true,
