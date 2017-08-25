@@ -559,6 +559,34 @@ class DESeqUtil:
 
         return condition_label_pairs, condition_labels
 
+    def _check_input_labels(self, condition_pairs, available_condition_labels):
+        """
+        _check_input_labels: check input condition pairs
+        """
+        checked = True
+        for condition_pair in condition_pairs:
+            condition_labels = condition_pair.get('condition_labels')
+            
+            if len(condition_labels) != 2:
+                raise ValueError('Please provide only 2 condition lebals')
+
+            first_label = condition_labels[0].strip()
+            second_label = condition_labels[1].strip()
+            if first_label not in available_condition_labels:
+                error_msg = 'Condition: {} is not availalbe. '.format(first_label)
+                error_msg += 'Available conditions: {}'.format(available_condition_labels)
+                raise ValueError(error_msg)
+
+            if second_label not in available_condition_labels:
+                error_msg = 'Condition: {} is not availalbe. '.format(second_label)
+                error_msg += 'Available conditions: {}'.format(available_condition_labels)
+                raise ValueError(error_msg)
+
+            if first_label == second_label:
+                raise ValueError('Input conditions are the same')
+
+        return checked
+
     def __init__(self, config):
         self.ws_url = config["workspace-url"]
         self.callback_url = config['SDK_CALLBACK_URL']
@@ -630,18 +658,11 @@ class DESeqUtil:
         if run_all_combinations:
             condition_label_pairs = available_condition_label_pairs
         else:
-            for condition_pair in condition_pairs:
-                condition_labels = condition_pair.get('condition_labels')
+            if self._check_input_labels(condition_pairs, available_condition_labels):
                 condition_label_pairs = list()
-                if len(condition_labels) != 2:
-                    raise ValueError('Please provide only 2 condition lebals')
-                elif (condition_labels[0] not in available_condition_labels or 
-                      condition_labels[1] not in available_condition_labels):
-                    error_msg = 'One of condition: {} is not availalbe. '.format(condition_labels)
-                    error_msg += 'Available conditions: {}'.format(available_condition_labels)
-                    raise ValueError(error_msg)
-                else:
-                    condition_label_pairs.append(condition_labels)
+                for condition_pair in condition_pairs:
+                    condition_labels = condition_pair.get('condition_labels')
+                    condition_label_pairs.append([x.strip() for x in condition_labels])
 
         for condition_label_pair in condition_label_pairs:
             params['condition_labels'] = condition_label_pair
