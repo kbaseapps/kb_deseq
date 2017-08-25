@@ -29,7 +29,7 @@
   },{
     "id" : "run_all_combinations",
     "optional":false,
-    "advanced":true,
+    "advanced":false,
     "allow_multiple":false,
     "default_values":["1"],
     "field_type" : "checkbox",
@@ -83,8 +83,7 @@
       ],
       "optional": true,
       "allow_multiple": true,
-      "with_border": false,
-      "advanced": true
+      "with_border": false
     }
   ],
   "behavior" : {
