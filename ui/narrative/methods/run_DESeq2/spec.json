@@ -46,9 +46,8 @@
       "textsubdata_options" : {
         "subdata_selection": {
           "parameter_id" : "expressionset_ref",
-          "subdata_included" : ["items/[*]/ref"],
-          "path_to_subdata": ["items"],
-          "selection_id": "ref"
+          "subdata_included" : ["items/label"],
+          "path_to_subdata": ["items", "label"]
         },
         "multiselection":true,
         "show_src_obj":false,
@@ -89,10 +88,6 @@
           "input_parameter" : "expressionset_ref",
           "target_type_transform": "resolved-ref",
           "target_property" : "expressionset_ref"
-        },
-        {
-          "input_parameter" : "condition_labels",
-          "target_property" : "condition_labels"
         },
         {
           "input_parameter" : "condition_pairs",
