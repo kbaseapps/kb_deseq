@@ -565,13 +565,9 @@ class DESeqUtil:
         """
         checked = True
         for condition_pair in condition_pairs:
-            condition_labels = condition_pair.get('condition_labels')
-            
-            if len(condition_labels) != 2:
-                raise ValueError('Please provide only 2 condition lebals')
 
-            first_label = condition_labels[0].strip()
-            second_label = condition_labels[1].strip()
+            first_label = condition_pair['condition_label_1'].strip()
+            second_label = condition_pair['condition_label_2'].strip()
             if first_label not in available_condition_labels:
                 error_msg = 'Condition: {} is not availalbe. '.format(first_label)
                 error_msg += 'Available conditions: {}'.format(available_condition_labels)
@@ -652,8 +648,9 @@ class DESeqUtil:
         run_all_combinations = params.get('run_all_combinations')
         condition_pairs = params.get('condition_pairs')
         if not self._xor(run_all_combinations, condition_pairs):
-            raise ValueError(
-                'One and only one of a list of "run all paired combinations" or "choose conditions" is required')
+            error_msg = "Invalid input:\nselect 'Run All Paired Condition Combinations' "
+            error_msg += "or provide partial condition pairs. Don't do both"
+            raise ValueError(error_msg)
 
         if run_all_combinations:
             condition_label_pairs = available_condition_label_pairs
@@ -661,8 +658,9 @@ class DESeqUtil:
             if self._check_input_labels(condition_pairs, available_condition_labels):
                 condition_label_pairs = list()
                 for condition_pair in condition_pairs:
-                    condition_labels = condition_pair.get('condition_labels')
-                    condition_label_pairs.append([x.strip() for x in condition_labels])
+                    condition_labels = [condition_pair.get('condition_label_1').strip(),
+                                        condition_pair.get('condition_label_2').strip()]
+                    condition_label_pairs.append(condition_labels)
 
         for condition_label_pair in condition_label_pairs:
             params['condition_labels'] = condition_label_pair
