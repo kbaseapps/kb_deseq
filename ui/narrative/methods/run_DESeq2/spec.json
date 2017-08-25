@@ -16,7 +16,8 @@
     "default_values" : [ "" ],
     "field_type" : "text",
     "text_options" : {
-      "valid_ws_types" : ["KBaseSets.ExpressionSet"]
+      "valid_ws_types" : ["KBaseSets.ExpressionSet"],
+      "is_output_name": false
     }
   },{
     "id" : "differential_expression_set_suffix",
@@ -37,23 +38,14 @@
       "unchecked_value": 0
     }
   },{
-      "id" : "condition_labels",
-      "optional" : true,
-      "advanced" : true,
-      "allow_multiple" : true,
-      "default_values" : [ "" ],
-      "field_type" : "textsubdata",
-      "textsubdata_options" : {
-        "subdata_selection": {
-          "parameter_id" : "expressionset_ref",
-          "subdata_included" : ["items/label"],
-          "path_to_subdata": ["items", "label"]
-        },
-        "multiselection":true,
-        "show_src_obj":false,
-        "allow_custom":false
-      }
-  }],
+      "id": "condition_labels",
+      "optional": true,
+      "advanced": true,
+      "allow_multiple": true,
+      "default_values": [""],
+      "field_type": "text",
+      "text_options": {}
+    }],
   "parameter-groups": [
     {
       "id": "condition_pairs",
