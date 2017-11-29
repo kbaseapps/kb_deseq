@@ -5,6 +5,9 @@ name     : Create Differential Expression Matrix using DESeq2 - v1.0.3
 
 tooltip  : |
     Create differential expression matrix based on a given threshold cutoff
+
+icon: deseq2-yellow.png
+
 screenshots :
     []
 

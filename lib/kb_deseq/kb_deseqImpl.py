@@ -22,8 +22,8 @@ class kb_deseq:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "1.0.3"
-    GIT_URL = "https://github.com/Tianhao-Gu/kb_deseq.git"
+    VERSION = "1.0.4"
+    GIT_URL = "https://github.com/kbaseapps/kb_deseq"
     GIT_COMMIT_HASH = "3a5de84107d36a80f46d2c6d27d93bb011c254d3"
 
     #BEGIN_CLASS_HEADER

@@ -5,3 +5,7 @@
 1.0.2: add ExpressionMatrix object
 
 1.0.3: using DifferentialExpressionUtils to generate output object
+
+1.0.4: added App icon
+
+
