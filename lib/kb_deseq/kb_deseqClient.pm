@@ -129,6 +129,7 @@ DESeqInput is a reference to a hash where the following keys are defined:
 	condition_labels has a value which is a reference to a list where each element is a string
 	alpha_cutoff has a value which is a float
 	fold_change_cutoff has a value which is a float
+	input_type has a value which is a string
 	num_threads has a value which is an int
 	fold_scale_type has a value which is a string
 obj_ref is a string
@@ -155,6 +156,7 @@ DESeqInput is a reference to a hash where the following keys are defined:
 	condition_labels has a value which is a reference to a list where each element is a string
 	alpha_cutoff has a value which is a float
 	fold_change_cutoff has a value which is a float
+	input_type has a value which is a string
 	num_threads has a value which is an int
 	fold_scale_type has a value which is a string
 obj_ref is a string
@@ -394,6 +396,7 @@ run_all_combinations: run all paired condition combinations
 condition_labels: conditions for expression set object
 alpha_cutoff: q value cutoff
 fold_change_cutoff: fold change cutoff
+input_type: one of ["genes", "transcripts"]
 num_threads: number of threads
 fold_scale_type: one of ["linear", "log2+1", "log10+1"]
 
@@ -411,6 +414,7 @@ run_all_combinations has a value which is a kb_deseq.boolean
 condition_labels has a value which is a reference to a list where each element is a string
 alpha_cutoff has a value which is a float
 fold_change_cutoff has a value which is a float
+input_type has a value which is a string
 num_threads has a value which is an int
 fold_scale_type has a value which is a string
 
@@ -428,6 +432,7 @@ run_all_combinations has a value which is a kb_deseq.boolean
 condition_labels has a value which is a reference to a list where each element is a string
 alpha_cutoff has a value which is a float
 fold_change_cutoff has a value which is a float
+input_type has a value which is a string
 num_threads has a value which is an int
 fold_scale_type has a value which is a string
 

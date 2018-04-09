@@ -12,7 +12,8 @@ option_tab = matrix(c(
                        'result_directory',   'o', 1, 'character',  #result directory
                        'alpha_cutoff',       'a', 1, 'double',     #alpha_cutoff
                        'fold_change_cutoff', 'f', 1, 'double',     #fold_change_cutoff
-                       'condition_string',   'c', 1, 'character',  #conditions separated with comma 
+                       'condition_string',   'c', 1, 'character',  #conditions separated with comma
+                       'transcripts',   't', 0, 'logical',    #process the transcript file
                        'help',               'h', 0, 'logical'
                       ), 
                     byrow=TRUE, ncol=4);
@@ -28,7 +29,11 @@ dmesg("Here is the option_tab matrix of arguments")
 print(option_tab)
 
 # set up input params
-input_file <- paste(opt$result_directory, "/gene_count_matrix.csv", sep='')
+if (is.null(opt$transcripts)){
+    input_file <- paste(opt$result_directory, "/gene_count_matrix.csv", sep='')
+} else {
+    input_file <- paste(opt$result_directory, "/transcript_count_matrix.csv", sep='')
+}
 condition_string <- opt$condition_string
 alpha_cutoff <- opt$alpha_cutoff
 fold_change_cutoff <- opt$fold_change_cutoff
@@ -44,7 +49,11 @@ PCA_MAplot_file <- paste(opt$result_directory, "/PCA_MAplot.png", sep='')
 
 dmesg("Start processing count matrix input")
 cntTable <- read.csv(input_file, header = TRUE)
-rownames(cntTable) <- cntTable$gene_id
+if (is.null(opt$transcripts)){
+    rownames(cntTable) <- cntTable$gene_id
+} else {
+    rownames(cntTable) <- cntTable$transcript_id
+}
 cntTable <- cntTable[,-1]
 
 conds <- factor(strsplit(condition_string, ",")[[1]])

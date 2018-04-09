@@ -36,6 +36,11 @@ parameters :
       Differential Expression Matrix Set Object Name Suffix
     short-hint : |
       Provide the name suffix of the differential expression analysis output
+  input_type:
+    ui-name : |
+      Data Type
+    short-hint : |
+      Should DESeq be run on the gene or transcript level?
   run_all_combinations:
     ui-name : |
       Run All Paired Condition Combinations

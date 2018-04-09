@@ -287,7 +287,7 @@ class DESeqUtil:
     def _save_count_matrix_file(self, expressionset_ref, result_directory):
         """
         _save_count_matrix_file: download gtf file for each expression
-                                 run prepDE.py on them and save reault count matrix file
+                                 run prepDE.py on them and save result count matrix file
         """
 
         log('generating count matrix file')
@@ -343,7 +343,7 @@ class DESeqUtil:
         self._run_command(command)
 
     def _generate_diff_expression_csv(self, result_directory, alpha_cutoff, fold_change_cutoff,
-                                      condition_string):
+                                      condition_string, transcripts='genes'):
         """
         _generate_diff_expression_csv: get different expression matrix with DESeq2
         """
@@ -358,6 +358,8 @@ class DESeqUtil:
         rcmd_list.extend(['--alpha_cutoff', alpha_cutoff])
         rcmd_list.extend(['--fold_change_cutoff', fold_change_cutoff])
         rcmd_list.extend(['--condition_string', condition_string])
+        if transcripts == 'transcripts':
+            rcmd_list.extend(['--transcripts'])
 
         rcmd_str = " ".join(str(x) for x in rcmd_list)
 
@@ -524,7 +526,8 @@ class DESeqUtil:
                                                       params.get('condition_labels'))
 
         self._generate_diff_expression_csv(result_directory, params.get('alpha_cutoff'),
-                                           params.get('fold_change_cutoff'), condition_string)
+                                           params.get('fold_change_cutoff'), condition_string,
+                                           params.get('input_type'))
 
     def _get_condition_labels(self):
         """

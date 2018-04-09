@@ -8,17 +8,38 @@
     "input" : "kbaseNarrativeMethodInput",
     "output" : "no-display"
   },
-  "parameters" : [ {
-    "id" : "expressionset_ref",
-    "optional" : false,
-    "advanced" : false,
-    "allow_multiple" : false,
-    "default_values" : [ "" ],
-    "field_type" : "text",
-    "text_options" : {
-      "valid_ws_types" : ["KBaseSets.ExpressionSet"],
-      "is_output_name": false
-    }
+  "parameters" : [
+  {
+      "id": "expressionset_ref",
+      "optional": false,
+      "advanced": false,
+      "allow_multiple": false,
+      "default_values": [
+        ""
+      ],
+      "field_type": "text",
+      "text_options": {
+        "valid_ws_types": [
+          "KBaseSets.ExpressionSet"
+        ],
+        "is_output_name": false
+      }
+  },{
+      "id": "input_type",
+      "optional": false,
+      "advanced": false,
+      "allow_multiple": false,
+      "default_values": [ "" ],
+      "field_type": "dropdown",
+      "dropdown_options": {
+          "options": [{
+              "display": "Genes",
+              "value": "genes"
+          }, {
+              "display": "Transcripts",
+              "value": "transcripts"
+          }]
+      }
   },{
     "id" : "differential_expression_set_suffix",
     "optional" : false,
@@ -120,6 +141,10 @@
         {
           "input_parameter" : "condition_label_2",
           "target_property" : "condition_label_2"
+        },
+        {
+          "input_parameter" : "input_type",
+          "target_property" : "input_type"
         },
         {
           "input_parameter" : "run_all_combinations",
