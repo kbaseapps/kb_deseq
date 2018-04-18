@@ -24,6 +24,7 @@ module kb_deseq {
       condition_labels: conditions for expression set object
       alpha_cutoff: q value cutoff
       fold_change_cutoff: fold change cutoff
+      input_type: one of ["genes", "transcripts"]
       num_threads: number of threads
       fold_scale_type: one of ["linear", "log2+1", "log10+1"]
       
@@ -37,6 +38,7 @@ module kb_deseq {
         list<string> condition_labels;  
         float alpha_cutoff;
         float fold_change_cutoff;
+        string input_type;
         int num_threads;
         string fold_scale_type;
     } DESeqInput;

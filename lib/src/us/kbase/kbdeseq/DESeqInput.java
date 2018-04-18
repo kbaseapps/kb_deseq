@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * condition_labels: conditions for expression set object
  * alpha_cutoff: q value cutoff
  * fold_change_cutoff: fold change cutoff
+ * input_type: one of ["genes", "transcripts"]
  * num_threads: number of threads
  * fold_scale_type: one of ["linear", "log2+1", "log10+1"]
  * </pre>
@@ -39,6 +40,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "condition_labels",
     "alpha_cutoff",
     "fold_change_cutoff",
+    "input_type",
     "num_threads",
     "fold_scale_type"
 })
@@ -58,6 +60,8 @@ public class DESeqInput {
     private Double alphaCutoff;
     @JsonProperty("fold_change_cutoff")
     private Double foldChangeCutoff;
+    @JsonProperty("input_type")
+    private java.lang.String inputType;
     @JsonProperty("num_threads")
     private Long numThreads;
     @JsonProperty("fold_scale_type")
@@ -169,6 +173,21 @@ public class DESeqInput {
         return this;
     }
 
+    @JsonProperty("input_type")
+    public java.lang.String getInputType() {
+        return inputType;
+    }
+
+    @JsonProperty("input_type")
+    public void setInputType(java.lang.String inputType) {
+        this.inputType = inputType;
+    }
+
+    public DESeqInput withInputType(java.lang.String inputType) {
+        this.inputType = inputType;
+        return this;
+    }
+
     @JsonProperty("num_threads")
     public Long getNumThreads() {
         return numThreads;
@@ -211,7 +230,7 @@ public class DESeqInput {
 
     @Override
     public java.lang.String toString() {
-        return ((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", differentialExpressionSetSuffix=")+ differentialExpressionSetSuffix)+", workspaceName=")+ workspaceName)+", runAllCombinations=")+ runAllCombinations)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", numThreads=")+ numThreads)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", differentialExpressionSetSuffix=")+ differentialExpressionSetSuffix)+", workspaceName=")+ workspaceName)+", runAllCombinations=")+ runAllCombinations)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", inputType=")+ inputType)+", numThreads=")+ numThreads)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }
