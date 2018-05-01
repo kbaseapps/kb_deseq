@@ -11,6 +11,7 @@ import numpy
 import fileinput
 import re
 import itertools
+import collections
 
 from DataFileUtil.DataFileUtilClient import DataFileUtil
 from Workspace.WorkspaceClient import Workspace as Workspace
@@ -284,7 +285,7 @@ class DESeqUtil:
 
         return report_output
 
-    def _save_count_matrix_file(self, expressionset_ref, result_directory):
+    def _save_count_matrix_file(self, result_directory):
         """
         _save_count_matrix_file: download gtf file for each expression
                                  run prepDE.py on them and save result count matrix file
@@ -367,7 +368,7 @@ class DESeqUtil:
 
     def _get_condition_string(self, result_directory, condition_labels):
         """
-        _get_condition_string: get condition string corresponding to givin condition_labels
+        _get_condition_string: get condition string corresponding to given condition_labels
         """
 
         log('generating condition string')
@@ -535,9 +536,8 @@ class DESeqUtil:
         """
         log('getting all possible condition pairs')
 
-        condition_label_pairs = []
         items = self.expression_set_data.get('items')
-        condition_replicate_name_mapping = {}
+        condition_replicate_name_mapping = collections.OrderedDict()
         for item in items:
             expression_ref = item['ref']
             expr_object = self.ws.get_objects2({'objects':
@@ -674,7 +674,7 @@ class DESeqUtil:
             self._mkdir_p(sub_result_directory)
 
             # run prepDE.py and save count matrix file
-            self._save_count_matrix_file(expressionset_ref, sub_result_directory)
+            self._save_count_matrix_file(sub_result_directory)
 
             self._generate_deseq_files(sub_result_directory, params)
 
