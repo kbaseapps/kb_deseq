@@ -33,7 +33,7 @@ if (is.null(opt$transcripts)){
     input_file <- paste(opt$result_directory, "/transcript_count_matrix.csv", sep='')
 }
 condition_string <- opt$condition_string
-gene_results_file <- paste(opt$result_directory, "/deseq_results.csv", sep='')
+gene_results_file <- paste(opt$result_directory, "/WT_ydcR_deseq_results.csv", sep='')
 # pvaluesPlot_file <- paste(opt$result_directory, "/pvaluesPlot.png", sep='')
 # qvaluesPlot_file <- paste(opt$result_directory, "/qvaluesPlot.png", sep='')
 deseq2_MAplot_file <- paste(opt$result_directory, "/deseq2_MAplot.png", sep='')
