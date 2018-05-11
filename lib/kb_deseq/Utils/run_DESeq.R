@@ -11,7 +11,8 @@ dmesg("Running run_DESeq.R")
 option_tab = matrix(c(
                        'result_directory',   'o', 1, 'character',  #result directory
                        'condition_string',   'c', 1, 'character',  #conditions separated with comma
-                       'transcripts',   't', 0, 'logical',    #process the transcript file
+                       'contrast_pairs',     'p', 1, 'character',  #pairs of conditions separated with comma
+                       'transcripts',        't', 0, 'logical',    #process the transcript file
                        'help',               'h', 0, 'logical'
                       ), 
                     byrow=TRUE, ncol=4);
@@ -33,7 +34,8 @@ if (is.null(opt$transcripts)){
     input_file <- paste(opt$result_directory, "/transcript_count_matrix.csv", sep='')
 }
 condition_string <- opt$condition_string
-gene_results_file <- paste(opt$result_directory, "/WT_ydcR_deseq_results.csv", sep='')
+contrast_pairs <- strsplit(opt$contrast_pairs, ",")[[1]]
+
 # pvaluesPlot_file <- paste(opt$result_directory, "/pvaluesPlot.png", sep='')
 # qvaluesPlot_file <- paste(opt$result_directory, "/qvaluesPlot.png", sep='')
 deseq2_MAplot_file <- paste(opt$result_directory, "/deseq2_MAplot.png", sep='')
@@ -53,13 +55,17 @@ conds <- factor(strsplit(condition_string, ",")[[1]])
 ddsFromMatrix <- DESeqDataSetFromMatrix(cntTable, DataFrame(conds), ~ conds)
 colData(ddsFromMatrix)$conds<-factor(colData(ddsFromMatrix)$conds, levels=unique(strsplit(condition_string, ",")[[1]]))
 dds<-DESeq(ddsFromMatrix)
-res<-results(dds, alpha=1)
-res<-res[order(res$padj),]
+for (pair in contrast_pairs){
+    gene_results_file <- paste(opt$result_directory, "/", pair, "_deseq_results.csv", sep='')
+    split_pair <- strsplit(pair, "_vs_")[[1]]
+    res<-results(dds, alpha=1, contrast=c("conds",split_pair[2],split_pair[1]))
+    res<-res[order(res$padj),]
 
-dmesg("DESeq2 result file head")
-head(res)
-write.csv(res, gene_results_file, row.names=TRUE)
-summary(res)
+    dmesg("DESeq2 result file head")
+    head(res)
+    write.csv(res, gene_results_file, row.names=TRUE)
+    summary(res)
+}
 rld<- rlogTransformation(dds, blind=TRUE)
 
 dmesg("Start plotting results")

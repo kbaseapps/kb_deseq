@@ -318,8 +318,7 @@ class DESeqUtil:
 
         self._run_command(command)
 
-    def _generate_diff_expression_csv(self, result_directory, condition_string,
-                                      transcripts='genes'):
+    def _generate_diff_expression_csv(self, result_directory, condition_string, params):
         """
         _generate_diff_expression_csv: get different expression matrix with DESeq2
         """
@@ -328,11 +327,12 @@ class DESeqUtil:
         if 'gene_count_matrix.csv' not in result_files:
             error_msg = 'Missing gene_count_matrix.csv, available files: {}'.format(result_files)
             raise ValueError(error_msg)
-
+        pair_string = ",".join(["_vs_".join(x) for x in params['condition_labels']])
         rcmd_list = ['Rscript', os.path.join(os.path.dirname(__file__), 'run_DESeq.R')]
         rcmd_list.extend(['--result_directory', result_directory])
         rcmd_list.extend(['--condition_string', condition_string])
-        if transcripts == 'transcripts':
+        rcmd_list.extend(['--contrast_pairs', pair_string])
+        if params.get('input_type') == 'transcripts':
             rcmd_list.extend(['--transcripts'])
 
         rcmd_str = " ".join(str(x) for x in rcmd_list)
@@ -462,18 +462,14 @@ class DESeqUtil:
 
             diff_expr_files.append(diff_expr_file)
 
-        expression_ref = self.expression_set_data['items'][0]['ref']
-        expression_data = self.ws.get_objects2({'objects':
-                                                [{'ref': expression_ref}]})['data'][0]['data']
-        genome_ref = expression_data['genome_id']
-
         upload_diff_expr_params = {'destination_ref': destination_ref,
                                    'diffexpr_data': diff_expr_files,
                                    'tool_used': 'deseq',
                                    'tool_version': '1.16.1',
                                    'genome_ref': params['genome_ref']}
 
-        deu_upload_return = self.deu.save_differential_expression_matrix_set(upload_diff_expr_params)
+        deu_upload_return = self.deu.save_differential_expression_matrix_set(
+            upload_diff_expr_params)
 
         diff_expression_obj_ref = deu_upload_return['diffExprMatrixSet_ref']
 
@@ -641,11 +637,9 @@ class DESeqUtil:
         # run prepDE.py and save count matrix file
         condition_string, params['genome_ref'] = self._save_count_matrix_file(result_directory)
 
-        self._generate_diff_expression_csv(result_directory, condition_string,
-                                           params.get('input_type'))
+        self._generate_diff_expression_csv(result_directory, condition_string, params)
 
-        diff_expression_obj_ref = self._save_diff_expression(result_directory,
-                                                             params)
+        diff_expression_obj_ref = self._save_diff_expression(result_directory, params)
 
         returnVal = {'result_directory': result_directory,
                      'diff_expression_obj_ref': diff_expression_obj_ref}
