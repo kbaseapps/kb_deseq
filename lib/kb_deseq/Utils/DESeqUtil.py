@@ -1,24 +1,24 @@
-import time
+import collections
+import csv
+import errno
+import fileinput
+import itertools
 import json
 import os
-import uuid
-import errno
-import subprocess
-import zipfile
-import shutil
-import csv
-import numpy
-import fileinput
 import re
-import itertools
-import collections
+import shutil
+import subprocess
+import time
+import uuid
+import zipfile
 
 from DataFileUtil.DataFileUtilClient import DataFileUtil
-from Workspace.WorkspaceClient import Workspace as Workspace
+from DifferentialExpressionUtils.DifferentialExpressionUtilsClient import \
+    DifferentialExpressionUtils
+from GenomeSearchUtil.GenomeSearchUtilClient import GenomeSearchUtil
 from KBaseReport.KBaseReportClient import KBaseReport
 from ReadsAlignmentUtils.ReadsAlignmentUtilsClient import ReadsAlignmentUtils
-from DifferentialExpressionUtils.DifferentialExpressionUtilsClient import DifferentialExpressionUtils
-from GenomeSearchUtil.GenomeSearchUtilClient import GenomeSearchUtil
+from Workspace.WorkspaceClient import Workspace as Workspace
 
 
 def log(message, prefix_newline=False):
@@ -339,72 +339,6 @@ class DESeqUtil:
 
         self._run_command(rcmd_str)
 
-    def _get_condition_string(self, result_directory, condition_labels):
-        """
-        _get_condition_string: get condition string corresponding to given condition_labels
-        """
-
-        log('generating condition string')
-
-        count_matrix_file = os.path.join(result_directory, 'gene_count_matrix.csv')
-        tmp_count_matrix_file = os.path.join(result_directory, 'tmp_gene_count_matrix.csv')
-
-        with open(count_matrix_file, "rb") as f:
-            reader = csv.reader(f)
-            columns = reader.next()[1:]
-
-        condition_list = [None] * len(columns)
-
-        items = self.expression_set_data.get('items')
-        expr_name_condition_mapping = {}
-        for item in items:
-            expression_ref = item['ref']
-            expr_object = self.ws.get_objects2({'objects':
-                                               [{'ref': expression_ref}]})['data'][0]
-            expr_data = expr_object['data']
-            expr_info = expr_object['info']
-            expr_name = expr_info[1]
-            expr_condition = expr_data['condition']
-            expr_name_list = expr_name_condition_mapping.get(expr_condition)
-            if expr_name_list:
-                expr_name_list.append(expr_name)
-                expr_name_condition_mapping.update({expr_condition: expr_name_list})
-            else:
-                expr_name_condition_mapping.update({expr_condition: [expr_name]})
-
-        for condition_label in condition_labels:
-            if condition_label in expr_name_condition_mapping.keys():
-                expression_names = expr_name_condition_mapping.get(condition_label)
-                for expression_name in expression_names:
-                    pos = columns.index(expression_name)
-                    condition_list[pos] = condition_label
-            else:
-                error_msg = 'Condition: {} is not available. '.format(condition_label)
-                error_msg += 'Available conditions: {}'.format(expr_name_condition_mapping.keys())
-                raise ValueError(error_msg)
-
-        if None in condition_list:
-            filtered_pos = [0]
-            filtered_condition_list = []
-            for condition in condition_list:
-                if condition:
-                    pos = [i + 1 for i, val in enumerate(condition_list) if val == condition]
-                    filtered_pos += pos
-                    filtered_condition_list.append(condition)
-            filtered_pos = list(set(filtered_pos))
-            with open(count_matrix_file, "rb") as source:
-                rdr = csv.reader(source)
-                with open(tmp_count_matrix_file, "wb") as result:
-                    wtr = csv.writer(result)
-                    for r in rdr:
-                        wtr.writerow(tuple(list(numpy.array(r)[filtered_pos])))
-            os.rename(tmp_count_matrix_file, count_matrix_file)
-            condition_string = ','.join(filtered_condition_list)
-        else:
-            condition_string = ','.join(condition_list)
-
-        return condition_string
-
     def _save_diff_expression(self, result_directory, params):
         """
         _save_diff_expression: save DifferentialExpression object to workspace
@@ -474,27 +408,6 @@ class DESeqUtil:
         diff_expression_obj_ref = deu_upload_return['diffExprMatrixSet_ref']
 
         return diff_expression_obj_ref
-
-    def _generate_deseq_files(self, result_directory, params):
-        """
-        _generate_deseq_files: generate DESeq files
-        """
-        gene_result_file = os.path.join(result_directory, 'gene_count_matrix.csv')
-        with open(gene_result_file, "rb") as f:
-            reader = csv.reader(f)
-            columns = reader.next()[1:]
-
-        for line in fileinput.input(gene_result_file, inplace=True):
-            if fileinput.isfirstline():
-                print 'gene_id,' + ','.join(columns)
-            else:
-                print line,
-
-        condition_string = self._get_condition_string(result_directory,
-                                                      params.get('condition_labels'))
-
-        self._generate_diff_expression_csv(result_directory, condition_string,
-                                           params.get('input_type'))
 
     def _get_condition_labels(self):
         """
@@ -580,7 +493,6 @@ class DESeqUtil:
             condition_labels: conditions for expression set object
             alpha_cutoff: q value cutoff
             fold_change_cutoff: fold change cutoff
-            num_threads: number of threads
             fold_scale_type: one of ["linear", "log2+1", "log10+1"]
 
         return:
@@ -630,7 +542,6 @@ class DESeqUtil:
                 condition_labels = [condition_pair.get('condition_label_1')[0].strip(),
                                     condition_pair.get('condition_label_2')[0].strip()]
                 condition_label_pairs.append(condition_labels)
-        print(condition_label_pairs)
 
         params['condition_labels'] = condition_label_pairs
 
