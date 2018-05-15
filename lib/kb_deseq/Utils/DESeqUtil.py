@@ -68,14 +68,14 @@ class DESeqUtil:
         log('Start executing command:\n{}'.format(command))
         pipe = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         output = pipe.communicate()[0]
-        exitCode = pipe.returncode
+        exit_code = pipe.returncode
 
-        if (exitCode == 0):
-            log('Executed commend:\n{}\n'.format(command) +
-                'Exit Code: {}\nOutput:\n{}'.format(exitCode, output))
+        if exit_code == 0:
+            log('Executed command:\n{}\n'.format(command) +
+                'Exit Code: {}\nOutput:\n{}'.format(exit_code, output))
         else:
-            error_msg = 'Error running commend:\n{}\n'.format(command)
-            error_msg += 'Exit Code: {}\nOutput:\n{}'.format(exitCode, output)
+            error_msg = 'Error running command:\n{}\n'.format(command)
+            error_msg += 'Exit Code: {}\nOutput:\n{}'.format(exit_code, output)
             raise ValueError(error_msg)
 
     def _generate_html_report(self, result_directory, diff_expression_obj_ref,
@@ -90,8 +90,6 @@ class DESeqUtil:
         output_directory = os.path.join(self.scratch, str(uuid.uuid4()))
         self._mkdir_p(output_directory)
         result_file_path = os.path.join(output_directory, 'report.html')
-
-        result_directory
 
         result_dirs = os.listdir(result_directory)
         visualization_content = ''
@@ -126,23 +124,6 @@ class DESeqUtil:
 
         items = diff_expr_set_data['items']
 
-        # expression_ref = self.expression_set_data['items'][0]['ref']
-        # expression_object = self.ws.get_objects2({'objects':
-        #                                          [{'ref': expression_ref}]})['data'][0]
-        # expression_data = expression_object['data']
-        # genome_ref = expression_data['genome_id']
-        # genome_name = self.ws.get_object_info([{"ref": genome_ref}], includeMetadata=None)[0][1]
-        
-        # feature_num = self.gsu.search({'ref': genome_ref})['num_found']
-        # genome_features = self.gsu.search({'ref': genome_ref,
-        #                                    'limit': feature_num,
-        #                                    'sort_by': [['feature_id', True]]})['features']
-        # feature_ids = []
-        # for genome_feature in genome_features:
-        #     if not re.match('.*\.\d*', genome_feature.get('feature_id')):
-        #         feature_ids.append(genome_feature.get('feature_id'))
-        # total_feature_num = len(feature_ids)
-
         overview_content = ''
         overview_content += '<br/><table><tr><th>Generated DifferentialExpressionMatrixSet'
         overview_content += ' Object</th></tr>'
@@ -155,8 +136,6 @@ class DESeqUtil:
         overview_content += '<br/><table><tr><th>Generated DifferentialExpressionMatrix'
         overview_content += ' Object</th><th></th><th></th><th></th></tr>'
         overview_content += '<tr><th>Differential Expression Matrix Name</th>'
-        # overview_content += '<th>Reference Genome</th>'
-        # overview_content += '<th>Reference Genome Feature Count</th>'
         overview_content += '<th>Feature Count</th>'
         overview_content += '</tr>'
         for item in items:
@@ -170,8 +149,6 @@ class DESeqUtil:
             number_features = len(diff_expr_data['data']['row_ids'])
 
             overview_content += '<tr><td>{} ({})</td>'.format(diff_expr_name, diff_expr_ref)
-            # overview_content += '<td>{} ({})</td>'.format(genome_name, genome_ref)
-            # overview_content += '<td>{}</td>'.format(total_feature_num)
             overview_content += '<td>{}</td></tr>'.format(number_features)
         overview_content += '</table>'
 
@@ -288,7 +265,7 @@ class DESeqUtil:
     def _save_count_matrix_file(self, result_directory):
         """
         _save_count_matrix_file: download gtf file for each expression
-                                 run prepDE.py on them and save result count matrix file
+                                 run prepDE.py on them and save resulting count matrix file
         """
 
         log('generating count matrix file')
@@ -343,8 +320,8 @@ class DESeqUtil:
 
         self._run_command(command)
 
-    def _generate_diff_expression_csv(self, result_directory, alpha_cutoff, fold_change_cutoff,
-                                      condition_string, transcripts='genes'):
+    def _generate_diff_expression_csv(self, result_directory, condition_string,
+                                      transcripts='genes'):
         """
         _generate_diff_expression_csv: get different expression matrix with DESeq2
         """
@@ -356,8 +333,6 @@ class DESeqUtil:
 
         rcmd_list = ['Rscript', os.path.join(os.path.dirname(__file__), 'run_DESeq.R')]
         rcmd_list.extend(['--result_directory', result_directory])
-        rcmd_list.extend(['--alpha_cutoff', alpha_cutoff])
-        rcmd_list.extend(['--fold_change_cutoff', fold_change_cutoff])
         rcmd_list.extend(['--condition_string', condition_string])
         if transcripts == 'transcripts':
             rcmd_list.extend(['--transcripts'])
@@ -526,8 +501,7 @@ class DESeqUtil:
         condition_string = self._get_condition_string(result_directory,
                                                       params.get('condition_labels'))
 
-        self._generate_diff_expression_csv(result_directory, params.get('alpha_cutoff'),
-                                           params.get('fold_change_cutoff'), condition_string,
+        self._generate_diff_expression_csv(result_directory, condition_string,
                                            params.get('input_type'))
 
     def _get_condition_labels(self):
@@ -558,11 +532,12 @@ class DESeqUtil:
         condition_label_pairs = [list(pair) for pair in itertools.combinations(condition_labels, 
                                                                                2)]
 
-        log('all pssible conditon pairs:\n{}'.format(condition_label_pairs))
+        log('all possible condition pairs:\n{}'.format(condition_label_pairs))
 
         return condition_label_pairs, condition_labels
 
-    def _check_input_labels(self, condition_pairs, available_condition_labels):
+    @staticmethod
+    def _check_input_labels(condition_pairs, available_condition_labels):
         """
         _check_input_labels: check input condition pairs
         """
@@ -572,12 +547,12 @@ class DESeqUtil:
             first_label = condition_pair['condition_label_1'][0].strip()
             second_label = condition_pair['condition_label_2'][0].strip()
             if first_label not in available_condition_labels:
-                error_msg = 'Condition: {} is not availalbe. '.format(first_label)
+                error_msg = 'Condition: {} is not available. '.format(first_label)
                 error_msg += 'Available conditions: {}'.format(available_condition_labels)
                 raise ValueError(error_msg)
 
             if second_label not in available_condition_labels:
-                error_msg = 'Condition: {} is not availalbe. '.format(second_label)
+                error_msg = 'Condition: {} is not available. '.format(second_label)
                 error_msg += 'Available conditions: {}'.format(available_condition_labels)
                 raise ValueError(error_msg)
 

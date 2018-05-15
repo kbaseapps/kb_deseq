@@ -93,6 +93,7 @@ class kb_deseq:
                              'returnVal is not type dict as required.')
         # return the results
         return [returnVal]
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
