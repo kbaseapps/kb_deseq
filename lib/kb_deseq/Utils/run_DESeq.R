@@ -36,11 +36,6 @@ if (is.null(opt$transcripts)){
 condition_string <- opt$condition_string
 contrast_pairs <- strsplit(opt$contrast_pairs, ",")[[1]]
 
-# pvaluesPlot_file <- paste(opt$result_directory, "/pvaluesPlot.png", sep='')
-# qvaluesPlot_file <- paste(opt$result_directory, "/qvaluesPlot.png", sep='')
-deseq2_MAplot_file <- paste(opt$result_directory, "/deseq2_MAplot.png", sep='')
-PCA_MAplot_file <- paste(opt$result_directory, "/PCA_MAplot.png", sep='')
-
 dmesg("Start processing count matrix input")
 cntTable <- read.csv(input_file, header = TRUE)
 if (is.null(opt$transcripts)){
@@ -65,26 +60,32 @@ for (pair in contrast_pairs){
     head(res)
     write.csv(res, gene_results_file, row.names=TRUE)
     summary(res)
+
+    # p-values for genes
+    pvaluesPlot_file <- paste(opt$result_directory, "/", pair, "_pvaluesPlot.png", sep='')
+    png(pvaluesPlot_file)
+    hist(res$pvalue, main=paste(pair, ' transcript pvalues'), col="grey", xlab='Range of p-values')
+    dev.off()
+
+    # q-values for genes
+    qvaluesPlot_file <- paste(opt$result_directory, "/", pair, "_qvaluesPlot.png", sep='')
+    png(qvaluesPlot_file)
+    hist(res$padj, main=paste(pair, ' transcript qvalues'), col="grey", xlab='Range of q-values')
+    dev.off()
+
 }
 rld<- rlogTransformation(dds, blind=TRUE)
 
 dmesg("Start plotting results")
-# p-values for genes
-# png(pvaluesPlot_file)
-# hist(res$pvalue, main='DESeq2 gene pvalues', col="grey", xlab='Range of p-values for genes')
-# dev.off()
-
-# q-values for genes
-# png(qvaluesPlot_file)
-# hist(sig_g$padj, main='DESeq2 gene qvalues', col="grey", xlab='Range of q-values for genes')
-# dev.off()
 
 # dispersion plots
+deseq2_MAplot_file <- paste(opt$result_directory, "/deseq2_dispersion_plot.png", sep='')
 png(deseq2_MAplot_file)
-plotMA(dds,ylim=c(-2,2),main=paste(unique(conds)[1], 'over', unique(conds)[2]))
+plotMA(dds, ylim=c(-2,2), main='DESeq2')
 dev.off()
 
 # PCA plots
+PCA_MAplot_file <- paste(opt$result_directory, "/deseq2_PCA_plot.png", sep='')
 png(PCA_MAplot_file)
 plotPCA(rld, intgroup=c('conds'))
 dev.off()
