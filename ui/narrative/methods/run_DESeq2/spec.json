@@ -118,10 +118,6 @@
           "target_property" : "workspace_name"
         },
         {
-          "constant_value"  : 4,
-          "target_property" : "num_threads"
-        },
-        {
           "constant_value"  : "log2",
           "target_property" : "fold_scale_type"
         },
