@@ -1,3 +1,5 @@
+1.0.6: Update handling of multi-condition experiments
+
 1.0.5: Add transcript options
 
 1.0.4: added App icon
