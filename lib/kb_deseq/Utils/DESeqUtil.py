@@ -92,10 +92,10 @@ class DESeqUtil:
         result_file_path = os.path.join(output_directory, 'report.html')
 
         visualization_content = ''
-        dispersion_plots_name = 'dispersion_plots.png'
+        dispersion_plots_name = 'deseq2_dispersion_plot.png'
         dispersion_plots_display_name = 'Dispersion plot'
 
-        shutil.copy2(os.path.join(result_directory, 'deseq2_MAplot.png'),
+        shutil.copy2(os.path.join(result_directory, dispersion_plots_name),
                      os.path.join(output_directory, dispersion_plots_name))
         visualization_content += '<div class="gallery">'
         visualization_content += '<a target="_blank" href="{}">'.format(dispersion_plots_name)
@@ -105,10 +105,10 @@ class DESeqUtil:
         visualization_content += '</a><div class="desc">{}</div></div>'.format(
             dispersion_plots_display_name)
 
-        pca_plots_name = 'PCA_MAplot.png'
+        pca_plots_name = 'deseq2_PCA_plot.png'
         pca_plots_display_name = 'PCA plot'
 
-        shutil.copy2(os.path.join(result_directory, 'PCA_MAplot.png'),
+        shutil.copy2(os.path.join(result_directory, pca_plots_name),
                      os.path.join(output_directory, pca_plots_name))
         visualization_content += '<div class="gallery">'
         visualization_content += '<a target="_blank" href="{}">'.format(pca_plots_name)

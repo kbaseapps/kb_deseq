@@ -231,6 +231,25 @@ class kb_deseqTest(unittest.TestCase):
     def getContext(self):
         return self.__class__.ctx
 
+    def check_output(self, result):
+        self.assertTrue('result_directory' in result)
+        result_files = os.listdir(result['result_directory'])
+        expect_result_files = ['gene_count_matrix.csv', 'transcript_count_matrix.csv',
+                               'deseq2_PCA_plot.png', 'deseq2_dispersion_plot.png',
+                               'differential_expression_result.csv']
+        for x in expect_result_files:
+            self.assertIn(x, result_files)
+
+        self.assertTrue('diff_expression_obj_ref' in result)
+        diff_expr_obj_ref = result.get('diff_expression_obj_ref')
+        diff_expr_data = self.ws.get_objects2(
+            {'objects': [{'ref': diff_expr_obj_ref}]})['data'][0]['data']
+        self.assertTrue('description' in diff_expr_data)
+        self.assertTrue('items' in diff_expr_data)
+        self.assertTrue('report_name' in result)
+        self.assertTrue('report_ref' in result)
+
+
     def test_missing_run_deseq2_app_params(self):
         invalidate_input_params = {'missing_expressionset_ref': 'expressionset_ref',
                                    'differential_expression_set_suffix':
@@ -312,22 +331,7 @@ class kb_deseqTest(unittest.TestCase):
 
         result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
 
-        self.assertTrue('result_directory' in result)
-        result_files = os.listdir(result['result_directory'])
-        expect_result_files = ['gene_count_matrix.csv', 'transcript_count_matrix.csv',
-                               'deseq2_MAplot.png', 'PCA_MAplot.png',
-                               'differential_expression_result.csv']
-        for x in expect_result_files:
-            self.assertTrue(x in result_files)
-
-        self.assertTrue('diff_expression_obj_ref' in result)
-        diff_expr_obj_ref = result.get('diff_expression_obj_ref')
-        diff_expr_data = self.ws.get_objects2({'objects': 
-                                              [{'ref': diff_expr_obj_ref}]})['data'][0]['data']
-        self.assertTrue('description' in diff_expr_data)
-        self.assertTrue('items' in diff_expr_data)
-        self.assertTrue('report_name' in result)
-        self.assertTrue('report_ref' in result)
+        self.check_output(result)
 
     def test_run_deseq2_app_transcripts(self):
         input_params = {
@@ -340,22 +344,7 @@ class kb_deseqTest(unittest.TestCase):
 
         result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
 
-        self.assertTrue('result_directory' in result)
-        result_files = os.listdir(result['result_directory'])
-        expect_result_files = ['gene_count_matrix.csv', 'transcript_count_matrix.csv',
-                               'deseq2_MAplot.png', 'PCA_MAplot.png',
-                               'differential_expression_result.csv']
-        for x in expect_result_files:
-            self.assertTrue(x in result_files)
-
-        self.assertTrue('diff_expression_obj_ref' in result)
-        diff_expr_obj_ref = result.get('diff_expression_obj_ref')
-        diff_expr_data = self.ws.get_objects2({'objects':
-                                              [{'ref': diff_expr_obj_ref}]})['data'][0]['data']
-        self.assertTrue('description' in diff_expr_data)
-        self.assertTrue('items' in diff_expr_data)
-        self.assertTrue('report_name' in result)
-        self.assertTrue('report_ref' in result)
+        self.check_output(result)
 
     def test_run_deseq2_app_partial_conditions(self):
 
@@ -370,19 +359,4 @@ class kb_deseqTest(unittest.TestCase):
 
         result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
 
-        self.assertTrue('result_directory' in result)
-        result_files = os.listdir(result['result_directory'])
-        expect_result_files = ['gene_count_matrix.csv', 'transcript_count_matrix.csv',
-                               'deseq2_MAplot.png', 'PCA_MAplot.png',
-                               'differential_expression_result.csv']
-        for x in expect_result_files:
-            self.assertTrue(x in result_files)
-
-        self.assertTrue('diff_expression_obj_ref' in result)
-        diff_expr_obj_ref = result.get('diff_expression_obj_ref')
-        diff_expr_data = self.ws.get_objects2({'objects': 
-                                              [{'ref': diff_expr_obj_ref}]})['data'][0]['data']
-        self.assertTrue('description' in diff_expr_data)
-        self.assertTrue('items' in diff_expr_data)
-        self.assertTrue('report_name' in result)
-        self.assertTrue('report_ref' in result)
+        self.check_output(result)
