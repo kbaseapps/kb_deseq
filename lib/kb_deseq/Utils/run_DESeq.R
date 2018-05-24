@@ -1,6 +1,7 @@
 
 library(getopt, lib.loc="/kb/deployment/bin/prepDE")
 library(DESeq2)
+sessionInfo()
 
 dmesg <- function( msg, ... ) 
   {cat("##################", msg, ..., "##################\n")}
