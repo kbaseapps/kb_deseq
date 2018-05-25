@@ -1,7 +1,7 @@
 #
 # Define basic display information
 #
-name     : Create Differential Expression Matrix using DESeq2 - v1.2.10
+name     : Create Differential Expression Matrix using DESeq2 - v1.20.0
 
 tooltip  : |
     Create differential expression matrix based on a given threshold cutoff

@@ -26,14 +26,13 @@ RUN cd /kb/dev_container/modules && \
 # -----------------------------------------
 
 # install R dependency
-RUN CODENAME=`grep CODENAME /etc/lsb-release | cut -c 18-` && \
-    echo "deb http://cran.cnr.berkeley.edu/bin/linux/ubuntu $CODENAME/" >> /etc/apt/sources.list && \
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 && \
+RUN sudo add-apt-repository ppa:marutter/rrutter3.5 -y && \
     sudo apt-get update && \
     yes '' | sudo apt-get -y install r-base && \
     yes '' | sudo apt-get -y install r-base-dev && \
-    wget "https://bioconductor.org/biocLite.R" -O /kb/deployment/bin/prepDE/biocLite.R && \
-    echo 'install.packages(c("getopt"), lib="/kb/deployment/bin/prepDE", repos="http://cran.us.r-project.org", dependencies=TRUE)\nsource("http://bioconductor.org/biocLite.R")\nbiocLite(c("DESeq2"), dependencies = TRUE)' > /kb/deployment/bin/prepDE/packages.R && \
+    wget "https://bioconductor.org/biocLite.R" -O /kb/deployment/bin/prepDE/biocLite.R
+
+RUN echo 'update.packages(ask = FALSE, checkBuilt = TRUE)\ninstall.packages(c("getopt"), lib="/kb/deployment/bin/prepDE", repos="http://cran.us.r-project.org", dependencies=TRUE)\nremove.packages("BiocInstaller", lib=.libPaths())\nsource("http://bioconductor.org/biocLite.R")\nbiocLite("Biobase")\nsource("http://bioconductor.org/biocLite.R")\nbiocLite("DESeq2")' > /kb/deployment/bin/prepDE/packages.R && \
     Rscript /kb/deployment/bin/prepDE/packages.R
 
 # -----------------------------------------
