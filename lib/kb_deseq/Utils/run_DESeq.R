@@ -1,13 +1,11 @@
-
-library(getopt, lib.loc="/kb/deployment/bin/prepDE")
-library(DESeq2)
-sessionInfo()
-
-dmesg <- function( msg, ... ) 
+dmesg <- function( msg, ... )
   {cat("##################", msg, ..., "##################\n")}
 
 dmesg("Running run_DESeq.R")
-
+library(getopt, lib.loc="/kb/deployment/bin/prepDE")
+library(DESeq2)
+dmesg("Package Info")
+sessionInfo()
 
 option_tab = matrix(c(
                        'result_directory',   'o', 1, 'character',  #result directory
@@ -24,9 +22,6 @@ if (!is.null(opt$help)){
     dmesg(getopt(option_tab, usage=TRUE));
     q( status = 1 );
 }
-
-dmesg("Here is the option_tab matrix of arguments")
-print(option_tab)
 
 # set up input params
 if (is.null(opt$transcripts)){
@@ -57,10 +52,9 @@ for (pair in contrast_pairs){
     res<-results(dds, alpha=0.99999, contrast=c("conds",split_pair[2],split_pair[1]))
     res<-res[order(res$padj),]
 
-    dmesg("DESeq2 result file head")
-    head(res)
+    dmesg("DESeq2 results")
     write.csv(res, gene_results_file, row.names=TRUE)
-    summary(res)
+    print(summary(res))
 
     # p-values for genes
     pvaluesPlot_file <- paste(opt$result_directory, "/", pair, "_pvaluesPlot.png", sep='')

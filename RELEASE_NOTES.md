@@ -1,3 +1,5 @@
+1.0.7: Update DESeq version to 1.20.0 and update output file naming
+
 1.0.6: Update handling of multi-condition experiments
 
 1.0.5: Add transcript options
