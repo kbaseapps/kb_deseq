@@ -235,8 +235,7 @@ class kb_deseqTest(unittest.TestCase):
         self.assertTrue('result_directory' in result)
         result_files = os.listdir(result['result_directory'])
         expect_result_files = ['gene_count_matrix.csv', 'transcript_count_matrix.csv',
-                               'deseq2_PCA_plot.png', 'deseq2_dispersion_plot.png',
-                               'differential_expression_result.csv']
+                               'deseq2_PCA_plot.png', 'deseq2_dispersion_plot.png']
         for x in expect_result_files:
             self.assertIn(x, result_files)
 
@@ -249,8 +248,8 @@ class kb_deseqTest(unittest.TestCase):
         self.assertTrue('report_name' in result)
         self.assertTrue('report_ref' in result)
 
-
     def test_missing_run_deseq2_app_params(self):
+
         invalidate_input_params = {'missing_expressionset_ref': 'expressionset_ref',
                                    'differential_expression_set_suffix':
                                        'differential_expression_set_suffix',
@@ -276,6 +275,7 @@ class kb_deseqTest(unittest.TestCase):
             self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
     def test_bad_condition_params(self):
+
         invalidate_input_params = {
             'expressionset_ref': self.expressionset_ref,
             'differential_expression_set_suffix': '_MyDiffExpression',
@@ -334,6 +334,7 @@ class kb_deseqTest(unittest.TestCase):
         self.check_output(result)
 
     def test_run_deseq2_app_transcripts(self):
+
         input_params = {
             'expressionset_ref': self.expressionset_ref,
             'differential_expression_set_suffix': '_TranscriptDiffExpression',

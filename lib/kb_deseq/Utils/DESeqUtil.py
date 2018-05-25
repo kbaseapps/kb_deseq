@@ -356,8 +356,7 @@ class DESeqUtil:
         for res_file in os.listdir(result_directory):
             if 'deseq_results.csv' not in res_file:
                 continue
-            diff_expr_file = dict()
-            condition_labels = res_file.split('_', 2)[:2]
+            condition_labels = res_file.replace('_deseq_results.csv', '').split('_vs_', 2)[:2]
 
             genes_results_filepath = os.path.join(result_directory, res_file)
 
@@ -376,8 +375,9 @@ class DESeqUtil:
 
             reader = csv.DictReader(open(genes_results_filepath))
 
-            diffexpr_filepath = os.path.join(result_directory,
-                                             'differential_expression_result.csv')
+            diffexpr_filepath = genes_results_filepath.replace(
+                'deseq_results.csv', 'differential_expression_result.csv')
+
             with open(diffexpr_filepath, 'w') as csvfile:
                 fieldnames = ['gene_id', 'log2_fold_change', 'p_value', 'q_value']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -390,11 +390,10 @@ class DESeqUtil:
                                      'p_value': row.get('p_value'),
                                      'q_value': row.get('q_value')})
 
-            diff_expr_file.update({'condition_mapping':
-                                       {condition_labels[0]: condition_labels[1]}})
-            diff_expr_file.update({'diffexpr_filepath': diffexpr_filepath})
-
-            diff_expr_files.append(diff_expr_file)
+            diff_expr_files.append({
+                'condition_mapping': {condition_labels[0]: condition_labels[1]},
+                'diffexpr_filepath': diffexpr_filepath
+            })
 
         upload_diff_expr_params = {'destination_ref': destination_ref,
                                    'diffexpr_data': diff_expr_files,
