@@ -329,9 +329,9 @@ class DESeqUtil:
             raise ValueError(error_msg)
         pair_string = ",".join(["_vs_".join(x) for x in params['condition_labels']])
         rcmd_list = ['Rscript', os.path.join(os.path.dirname(__file__), 'run_DESeq.R')]
-        rcmd_list.extend(['--result_directory', result_directory])
-        rcmd_list.extend(['--condition_string', condition_string])
-        rcmd_list.extend(['--contrast_pairs', pair_string])
+        rcmd_list.extend(['--result_directory', '"{}"'.format(result_directory)])
+        rcmd_list.extend(['--condition_string', '"{}"'.format(condition_string)])
+        rcmd_list.extend(['--contrast_pairs', '"{}"'.format(pair_string)])
         if params.get('input_type') == 'transcripts':
             rcmd_list.extend(['--transcripts'])
 
