@@ -313,10 +313,15 @@ class DESeqUtil:
 
         command = self.PREPDE_TOOLKIT_PATH + '/prepDE.py '
         command += '-i {} '.format(input)
-        command += '-g {} '.format(os.path.join(result_directory, 'gene_count_matrix.csv'))
+        command += '-g {} '.format(os.path.join(result_directory, 'raw_gene_count_matrix.csv'))
         command += '-t {} '.format(os.path.join(result_directory, 'transcript_count_matrix.csv'))
 
         self._run_command(command)
+
+        # remove novel genes from results (ideally should compare against expression set)
+        with open(os.path.join(result_directory, 'raw_gene_count_matrix.csv')) as infile, open(
+                os.path.join(result_directory, 'gene_count_matrix.csv'), 'w') as outfile:
+            outfile.writelines([l for l in infile if "STRG." not in l])
 
     def _generate_diff_expression_csv(self, result_directory, condition_string, params):
         """
