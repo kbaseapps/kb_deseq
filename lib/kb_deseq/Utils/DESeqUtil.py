@@ -313,10 +313,15 @@ class DESeqUtil:
 
         command = self.PREPDE_TOOLKIT_PATH + '/prepDE.py '
         command += '-i {} '.format(input)
-        command += '-g {} '.format(os.path.join(result_directory, 'gene_count_matrix.csv'))
+        command += '-g {} '.format(os.path.join(result_directory, 'raw_gene_count_matrix.csv'))
         command += '-t {} '.format(os.path.join(result_directory, 'transcript_count_matrix.csv'))
 
         self._run_command(command)
+
+        # remove novel genes from results (ideally should compare against expression set)
+        with open(os.path.join(result_directory, 'raw_gene_count_matrix.csv')) as infile, open(
+                os.path.join(result_directory, 'gene_count_matrix.csv'), 'w') as outfile:
+            outfile.writelines([l for l in infile if "STRG." not in l])
 
     def _generate_diff_expression_csv(self, result_directory, condition_string, params):
         """
@@ -329,9 +334,9 @@ class DESeqUtil:
             raise ValueError(error_msg)
         pair_string = ",".join(["_vs_".join(x) for x in params['condition_labels']])
         rcmd_list = ['Rscript', os.path.join(os.path.dirname(__file__), 'run_DESeq.R')]
-        rcmd_list.extend(['--result_directory', result_directory])
-        rcmd_list.extend(['--condition_string', condition_string])
-        rcmd_list.extend(['--contrast_pairs', pair_string])
+        rcmd_list.extend(['--result_directory', '"{}"'.format(result_directory)])
+        rcmd_list.extend(['--condition_string', '"{}"'.format(condition_string)])
+        rcmd_list.extend(['--contrast_pairs', '"{}"'.format(pair_string)])
         if params.get('input_type') == 'transcripts':
             rcmd_list.extend(['--transcripts'])
 
