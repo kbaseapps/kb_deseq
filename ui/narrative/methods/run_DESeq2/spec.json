@@ -41,12 +41,16 @@
           }]
       }
   },{
-    "id" : "differential_expression_set_suffix",
-    "optional" : false,
-    "advanced" : false,
-    "allow_multiple" : false,
-    "default_values" : [ "_diff_exp_mtx_set" ],
-    "field_type" : "text"
+      "id" : "diff_expression_obj_name",
+      "optional" : false,
+      "advanced" : false,
+      "allow_multiple" : false,
+      "default_values" : [ "" ],
+      "field_type" : "text",
+      "text_options" : {
+        "valid_ws_types" : ["KBaseSets.DifferentialExpressionMatrixSet"],
+        "is_output_name": true
+      }
   },{
     "id" : "run_all_combinations",
     "optional":false,
@@ -147,8 +151,8 @@
           "target_property" : "run_all_combinations"
         },
         {
-          "input_parameter" : "differential_expression_set_suffix",
-          "target_property" : "differential_expression_set_suffix"
+          "input_parameter" : "diff_expression_obj_name",
+          "target_property" : "diff_expression_obj_name"
         }],
       "output_mapping" : [
         {

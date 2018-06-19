@@ -251,24 +251,14 @@ class kb_deseqTest(unittest.TestCase):
     def test_missing_run_deseq2_app_params(self):
 
         invalidate_input_params = {'missing_expressionset_ref': 'expressionset_ref',
-                                   'differential_expression_set_suffix':
-                                       'differential_expression_set_suffix',
+                                   'diff_expression_obj_name': 'differential_expression_set',
                                    'workspace_name': 'workspace_name'}
         with self.assertRaisesRegexp(ValueError, 
                                      '"expressionset_ref" parameter is required, but missing'):
             self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
         invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
-                                   'missing_differential_expression_set_suffix':
-                                       'differential_expression_set_suffix',
-                                   'workspace_name': 'workspace_name'}
-        with self.assertRaisesRegexp(ValueError, 
-                                     '"differential_expression_set_suffix" parameter is required'):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
-
-        invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
-                                   'differential_expression_set_suffix':
-                                       'differential_expression_set_suffix',
+                                   'diff_expression_obj_name': 'differential_expression_set',
                                    'missing_workspace_name': 'workspace_name'}
         with self.assertRaisesRegexp(ValueError, 
                                      '"workspace_name" parameter is required, but missing'):
@@ -278,7 +268,7 @@ class kb_deseqTest(unittest.TestCase):
 
         invalidate_input_params = {
             'expressionset_ref': self.expressionset_ref,
-            'differential_expression_set_suffix': '_MyDiffExpression',
+            'diff_expression_obj_name': 'MyDiffExpression',
             'workspace_name': self.getWsName(),
             'run_all_combinations': 1,
             "condition_pairs": [{'condition_label_1': ['Ecoli_WT'],
@@ -289,7 +279,7 @@ class kb_deseqTest(unittest.TestCase):
 
         invalidate_input_params = {
             'expressionset_ref': self.expressionset_ref,
-            'differential_expression_set_suffix': '_MyDiffExpression',
+            'diff_expression_obj_name': 'MyDiffExpression',
             'workspace_name': self.getWsName(),
             'run_all_combinations': 0,
             "condition_pairs": [{'condition_label_1': ['meh'],
@@ -300,7 +290,7 @@ class kb_deseqTest(unittest.TestCase):
 
         invalidate_input_params = {
             'expressionset_ref': self.expressionset_ref,
-            'differential_expression_set_suffix': '_MyDiffExpression',
+            'diff_expression_obj_name': 'MyDiffExpression',
             'workspace_name': self.getWsName(),
             'run_all_combinations': 0,
             "condition_pairs": [{'condition_label_1': ['Ecoli_WT'],
@@ -311,7 +301,7 @@ class kb_deseqTest(unittest.TestCase):
 
         invalidate_input_params = {
             'expressionset_ref': self.expressionset_ref,
-            'differential_expression_set_suffix': '_MyDiffExpression',
+            'diff_expression_obj_name': 'MyDiffExpression',
             'workspace_name': self.getWsName(),
             'run_all_combinations': 0,
             "condition_pairs": [{'condition_label_1': ['Ecoli_WT'],
@@ -324,7 +314,7 @@ class kb_deseqTest(unittest.TestCase):
 
         input_params = {
             'expressionset_ref': '30881/40/1',
-            'differential_expression_set_suffix': '_MyDiffExpression',
+            'diff_expression_obj_name': 'MyDiffExpression',
             'workspace_name': self.getWsName(),
             'run_all_combinations': 1
         }
@@ -337,7 +327,7 @@ class kb_deseqTest(unittest.TestCase):
 
         input_params = {
             'expressionset_ref': self.expressionset_ref,
-            'differential_expression_set_suffix': '_TranscriptDiffExpression',
+            'diff_expression_obj_name': 'TranscriptDiffExpression',
             'workspace_name': self.getWsName(),
             'run_all_combinations': 1,
             'input_type': 'transcripts'
@@ -351,7 +341,7 @@ class kb_deseqTest(unittest.TestCase):
 
         input_params = {
             'expressionset_ref': self.expressionset_ref,
-            'differential_expression_set_suffix': '_MyDiffExpression',
+            'diff_expression_obj_name': 'MyDiffExpression',
             'workspace_name': self.getWsName(),
             'run_all_combinations': 0,
             "condition_pairs": [{'condition_label_1': ['Ecoli_WT'],
