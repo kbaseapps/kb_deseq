@@ -39,8 +39,7 @@ class DESeqUtil:
         log('start validating run_deseq2_app params')
 
         # check for required parameters
-        for p in ['expressionset_ref', 'differential_expression_set_suffix',
-                  'workspace_name']:
+        for p in ['expressionset_ref', 'workspace_name']:
             if p not in params:
                 raise ValueError('"{}" parameter is required, but missing'.format(p))
 
@@ -517,7 +516,9 @@ class DESeqUtil:
         expression_set_obj = self.ws.get_objects2({'objects':
                                                   [{'ref': expressionset_ref}]})['data'][0]
         self.expression_set_data = expression_set_obj['data']
-        expression_set_name = expression_set_obj['info'][1]
+
+        # old version that uses suffix rather than name
+        """expression_set_name = expression_set_obj['info'][1]
 
         differential_expression_set_suffix = params.get('differential_expression_set_suffix')
         if re.match('.*_*[Ee]xpression_*[Ss]et', expression_set_name):
@@ -527,7 +528,7 @@ class DESeqUtil:
         else:
             diff_expression_obj_name = expression_set_name + differential_expression_set_suffix
 
-        params['diff_expression_obj_name'] = diff_expression_obj_name
+        params['diff_expression_obj_name'] = diff_expression_obj_name"""
 
         available_condition_label_pairs, available_condition_labels = self._get_condition_labels()
 
