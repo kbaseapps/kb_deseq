@@ -567,7 +567,7 @@ class DESeqUtil:
         condition_ids, params['genome_ref'] = self._save_count_matrix_file(result_directory)
 
         conditionset_ref = params.get('conditionset_ref')
-        group_factor = params.get('group_factor')[0]
+        group_factor = params.get('group_factor')
 
         # overwrite condition_string with conditionset factors
         condition_string = self._generate_condition_string(self.expression_set_data,
