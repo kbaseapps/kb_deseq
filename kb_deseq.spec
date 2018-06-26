@@ -16,7 +16,7 @@ module kb_deseq {
     /*
       required params:
       expressionset_ref: ExpressionSet object reference
-      differential_expression_set_suffix: DifferentialExpressoinMatrixSet object suffix
+      diff_expression_obj_name: DifferentialExpressoinMatrixSet object name
       workspace_name: the name of the workspace it gets saved to
 
       optional params:
@@ -31,7 +31,7 @@ module kb_deseq {
     */
     typedef structure{
         obj_ref expressionset_ref;
-        string differential_expression_set_suffix;
+        string diff_expression_obj_name;
         string workspace_name;
 
         boolean run_all_combinations;
