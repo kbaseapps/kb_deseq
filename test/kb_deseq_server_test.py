@@ -28,6 +28,7 @@ from DataFileUtil.DataFileUtilClient import DataFileUtil
 from kb_stringtie.kb_stringtieClient import kb_stringtie
 from ExpressionUtils. ExpressionUtilsClient import ExpressionUtils
 
+
 class kb_deseqTest(unittest.TestCase):
 
     @classmethod
@@ -62,7 +63,7 @@ class kb_deseqTest(unittest.TestCase):
         cls.scratch = cls.cfg['scratch']
         cls.callback_url = os.environ['SDK_CALLBACK_URL']
 
-        cls.gfu = GenomeFileUtil(cls.callback_url)
+        cls.gfu = GenomeFileUtil(cls.callback_url, service_ver='dev')
         cls.dfu = DataFileUtil(cls.callback_url)
         cls.ru = ReadsUtils(cls.callback_url)
         cls.rau = ReadsAlignmentUtils(cls.callback_url)
@@ -74,8 +75,8 @@ class kb_deseqTest(unittest.TestCase):
         cls.wsName = "test_kb_stringtie_" + str(suffix)
         cls.wsClient.create_workspace({'workspace': cls.wsName})
         cls.dfu.ws_name_to_id(cls.wsName)
-        cls.expressionset_ref = '19340/149/1'
-        #cls.prepare_data()
+        # cls.expressionset_ref = '33565/28/1'
+        # cls.prepare_data()
 
     @classmethod
     def tearDownClass(cls):
@@ -102,95 +103,132 @@ class kb_deseqTest(unittest.TestCase):
         reads_file_path = os.path.join(cls.scratch, reads_file_name)
         shutil.copy(os.path.join('data', reads_file_name), reads_file_path)
 
-        reads_object_name_1 = 'test_Reads_1'
-        cls.reads_ref_1 = cls.ru.upload_reads({'fwd_file': reads_file_path,
-                                               'wsname': cls.wsName,
-                                               'sequencing_tech': 'Unknown',
-                                               'interleaved': 0,
-                                               'name': reads_object_name_1
-                                               })['obj_ref']
+        reads_object_name = 'test_Reads'
+        cls.reads_ref = cls.ru.upload_reads({'fwd_file': reads_file_path,
+                                             'wsname': cls.wsName,
+                                             'sequencing_tech': 'Unknown',
+                                             'interleaved': 0,
+                                             'name': reads_object_name})['obj_ref']
 
-        reads_object_name_2 = 'test_Reads_2'
-        cls.reads_ref_2 = cls.ru.upload_reads({'fwd_file': reads_file_path,
-                                               'wsname': cls.wsName,
-                                               'sequencing_tech': 'Unknown',
-                                               'interleaved': 0,
-                                               'name': reads_object_name_2
-                                               })['obj_ref']
+        # reads_object_name_2 = 'test_Reads_2'
+        # cls.reads_ref_2 = cls.ru.upload_reads({'fwd_file': reads_file_path,
+        #                                        'wsname': cls.wsName,
+        #                                        'sequencing_tech': 'Unknown',
+        #                                        'interleaved': 0,
+        #                                        'name': reads_object_name_2
+        #                                        })['obj_ref']
 
-        reads_object_name_3 = 'test_Reads_3'
-        cls.reads_ref_3 = cls.ru.upload_reads({'fwd_file': reads_file_path,
-                                               'wsname': cls.wsName,
-                                               'sequencing_tech': 'Unknown',
-                                               'interleaved': 0,
-                                               'name': reads_object_name_3
-                                               })['obj_ref']
+        # reads_object_name_3 = 'test_Reads_3'
+        # cls.reads_ref_3 = cls.ru.upload_reads({'fwd_file': reads_file_path,
+        #                                        'wsname': cls.wsName,
+        #                                        'sequencing_tech': 'Unknown',
+        #                                        'interleaved': 0,
+        #                                        'name': reads_object_name_3
+        #                                        })['obj_ref']
 
         # upload alignment object
         alignment_file_name = 'accepted_hits.bam'
         alignment_file_path = os.path.join(cls.scratch, alignment_file_name)
         shutil.copy(os.path.join('data', alignment_file_name), alignment_file_path)
 
-        alignment_object_name_1 = 'test_Alignment_1'
         cls.condition_1 = 'test_condition_1'
+        alignment_object_name_1 = 'test_Alignment_1'
         destination_ref = cls.wsName + '/' + alignment_object_name_1
         cls.alignment_ref_1 = cls.rau.upload_alignment({'file_path': alignment_file_path,
                                                         'destination_ref': destination_ref,
-                                                        'read_library_ref': cls.reads_ref_1,
+                                                        'read_library_ref': cls.reads_ref,
                                                         'condition': cls.condition_1,
                                                         'library_type': 'single_end',
                                                         'assembly_or_genome_ref': cls.genome_ref
                                                         })['obj_ref']
 
         alignment_object_name_2 = 'test_Alignment_2'
-        cls.condition_2 = 'test_condition_2'
         destination_ref = cls.wsName + '/' + alignment_object_name_2
         cls.alignment_ref_2 = cls.rau.upload_alignment({'file_path': alignment_file_path,
                                                         'destination_ref': destination_ref,
-                                                        'read_library_ref': cls.reads_ref_2,
-                                                        'condition': cls.condition_2,
+                                                        'read_library_ref': cls.reads_ref,
+                                                        'condition': cls.condition_1,
                                                         'library_type': 'single_end',
                                                         'assembly_or_genome_ref': cls.genome_ref
                                                         })['obj_ref']
 
+        cls.condition_2 = 'test_condition_2'
         alignment_object_name_3 = 'test_Alignment_3'
-        cls.condition_3 = 'test_condition_3'
         destination_ref = cls.wsName + '/' + alignment_object_name_3
         cls.alignment_ref_3 = cls.rau.upload_alignment({'file_path': alignment_file_path,
                                                         'destination_ref': destination_ref,
-                                                        'read_library_ref': cls.reads_ref_3,
+                                                        'read_library_ref': cls.reads_ref,
+                                                        'condition': cls.condition_2,
+                                                        'library_type': 'single_end',
+                                                        'assembly_or_genome_ref': cls.genome_ref,
+                                                        'library_type': 'single_end'
+                                                        })['obj_ref']
+
+        alignment_object_name_4 = 'test_Alignment_4'
+        destination_ref = cls.wsName + '/' + alignment_object_name_4
+        cls.alignment_ref_4 = cls.rau.upload_alignment({'file_path': alignment_file_path,
+                                                        'destination_ref': destination_ref,
+                                                        'read_library_ref': cls.reads_ref,
+                                                        'condition': cls.condition_2,
+                                                        'library_type': 'single_end',
+                                                        'assembly_or_genome_ref': cls.genome_ref,
+                                                        'library_type': 'single_end'
+                                                        })['obj_ref']
+        cls.condition_3 = 'test_condition_3'
+
+        alignment_object_name_5 = 'test_Alignment_5'
+        destination_ref = cls.wsName + '/' + alignment_object_name_5
+        cls.alignment_ref_5 = cls.rau.upload_alignment({'file_path': alignment_file_path,
+                                                        'destination_ref': destination_ref,
+                                                        'read_library_ref': cls.reads_ref,
                                                         'condition': cls.condition_3,
                                                         'library_type': 'single_end',
                                                         'assembly_or_genome_ref': cls.genome_ref,
                                                         'library_type': 'single_end'
                                                         })['obj_ref']
 
-        # upload sample_set object
-        workspace_id = cls.dfu.ws_name_to_id(cls.wsName)
-        sample_set_object_name = 'test_Sample_Set'
-        sample_set_data = {'sampleset_id': sample_set_object_name,
-                           'sampleset_desc': 'test sampleset object',
-                           'Library_type': 'SingleEnd',
-                           'condition': [cls.condition_1, cls.condition_2, cls.condition_3],
-                           'domain': 'Unknown',
-                           'num_samples': 3,
-                           'platform': 'Unknown'}
-        save_object_params = {
-            'id': workspace_id,
-            'objects': [{'type': 'KBaseRNASeq.RNASeqSampleSet',
-                         'data': sample_set_data,
-                         'name': sample_set_object_name}]
-        }
+        alignment_object_name_6 = 'test_Alignment_6'
+        destination_ref = cls.wsName + '/' + alignment_object_name_6
+        cls.alignment_ref_6 = cls.rau.upload_alignment({'file_path': alignment_file_path,
+                                                        'destination_ref': destination_ref,
+                                                        'read_library_ref': cls.reads_ref,
+                                                        'condition': cls.condition_3,
+                                                        'library_type': 'single_end',
+                                                        'assembly_or_genome_ref': cls.genome_ref,
+                                                        'library_type': 'single_end'
+                                                        })['obj_ref']
 
-        dfu_oi = cls.dfu.save_objects(save_object_params)[0]
-        cls.sample_set_ref = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
+        # # upload sample_set object
+        workspace_id = cls.dfu.ws_name_to_id(cls.wsName)
+        # sample_set_object_name = 'test_Sample_Set'
+        # sample_set_data = {'sampleset_id': sample_set_object_name,
+        #                    'sampleset_desc': 'test sampleset object',
+        #                    'Library_type': 'SingleEnd',
+        #                    'sample_ids': [cls.reads_ref_1, cls.reads_ref_2, cls.reads_ref_3],
+        #                    'condition': [cls.condition_1, cls.condition_2, cls.condition_3],
+        #                    'domain': 'Unknown',
+        #                    'num_samples': 3,
+        #                    'platform': 'Unknown'}
+        # save_object_params = {
+        #     'id': workspace_id,
+        #     'objects': [{'type': 'KBaseRNASeq.RNASeqSampleSet',
+        #                  'data': sample_set_data,
+        #                  'name': sample_set_object_name}]
+        # }
+
+        # dfu_oi = cls.dfu.save_objects(save_object_params)[0]
+        # cls.sample_set_ref = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
 
         # upload ReadsAlignmentSet object
         object_type = 'KBaseSets.ReadsAlignmentSet'
         alignment_set_object_name = 'test_reads_Alignment_Set'
         alignment_set_data = {'description': 'test ReadsAlignmentSet object',
-                              'items': [{'ref': cls.alignment_ref_1},
-                                        {'ref': cls.alignment_ref_2}]}
+                              'items': [{'ref': cls.alignment_ref_1, 'label': cls.condition_1},
+                                        {'ref': cls.alignment_ref_2, 'label': cls.condition_1},
+                                        {'ref': cls.alignment_ref_3, 'label': cls.condition_2},
+                                        {'ref': cls.alignment_ref_4, 'label': cls.condition_2},
+                                        {'ref': cls.alignment_ref_5, 'label': cls.condition_3},
+                                        {'ref': cls.alignment_ref_6, 'label': cls.condition_3}]}
         save_object_params = {
             'id': workspace_id,
             'objects': [{'type': object_type,
@@ -246,106 +284,159 @@ class kb_deseqTest(unittest.TestCase):
         self.assertTrue('description' in diff_expr_data)
         self.assertTrue('items' in diff_expr_data)
         self.assertTrue('report_name' in result)
-        self.assertTrue('report_ref' in result)
+        self.assertTrue('report_ref' in result) 
 
-    def test_missing_run_deseq2_app_params(self):
+    # def test_missing_run_deseq2_app_params(self):
+
+    #     invalidate_input_params = {'missing_expressionset_ref': 'expressionset_ref',
+    #                                'diff_expression_obj_name': 'differential_expression_set',
+    #                                'workspace_name': 'workspace_name'}
+    #     with self.assertRaisesRegexp(ValueError, 
+    #                                  '"expressionset_ref" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+    #     invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
+    #                                'diff_expression_obj_name': 'differential_expression_set',
+    #                                'missing_workspace_name': 'workspace_name'}
+    #     with self.assertRaisesRegexp(ValueError, 
+    #                                  '"workspace_name" parameter is required, but missing'):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+    # def test_bad_condition_params(self):
+
+    #     invalidate_input_params = {
+    #         'expressionset_ref': self.expressionset_ref,
+    #         'diff_expression_obj_name': 'MyDiffExpression',
+    #         'workspace_name': self.getWsName(),
+    #         'run_all_combinations': 1,
+    #         "condition_pairs": [{'condition_label_1': [self.condition_1],
+    #                              'condition_label_2': [self.condition_2]}]
+    #     }
+    #     with self.assertRaisesRegexp(ValueError, "Don't do both"):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+    #     invalidate_input_params = {
+    #         'expressionset_ref': self.expressionset_ref,
+    #         'diff_expression_obj_name': 'MyDiffExpression',
+    #         'workspace_name': self.getWsName(),
+    #         'run_all_combinations': 0,
+    #         "condition_pairs": [{'condition_label_1': ['meh'],
+    #                              'condition_label_2': [self.condition_2]}]
+    #     }
+    #     with self.assertRaisesRegexp(ValueError, "is not available"):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+    #     invalidate_input_params = {
+    #         'expressionset_ref': self.expressionset_ref,
+    #         'diff_expression_obj_name': 'MyDiffExpression',
+    #         'workspace_name': self.getWsName(),
+    #         'run_all_combinations': 0,
+    #         "condition_pairs": [{'condition_label_1': [self.condition_1],
+    #                              'condition_label_2': ['meh']}]
+    #     }
+    #     with self.assertRaisesRegexp(ValueError, "is not available"):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+    #     invalidate_input_params = {
+    #         'expressionset_ref': self.expressionset_ref,
+    #         'diff_expression_obj_name': 'MyDiffExpression',
+    #         'workspace_name': self.getWsName(),
+    #         'run_all_combinations': 0,
+    #         "condition_pairs": [{'condition_label_1': [self.condition_1],
+    #                              'condition_label_2': [self.condition_1]}]
+    #     }
+    #     with self.assertRaisesRegexp(ValueError, "Input conditions are the same"):
+    #         self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+    # def test_run_deseq2_app(self):
+
+    #     input_params = {
+    #         'expressionset_ref': self.expressionset_ref,
+    #         'diff_expression_obj_name': 'MyDiffExpression',
+    #         'workspace_name': self.getWsName(),
+    #         'run_all_combinations': 1
+    #     }
+
+    #     result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
+
+    #     self.check_output(result)
+
+    # def test_run_deseq2_app_transcripts(self):
+
+    #     input_params = {
+    #         'expressionset_ref': self.expressionset_ref,
+    #         'diff_expression_obj_name': 'TranscriptDiffExpression',
+    #         'workspace_name': self.getWsName(),
+    #         'run_all_combinations': 1,
+    #         'input_type': 'transcripts'
+    #     }
+
+    #     result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
+
+    #     self.check_output(result)
+
+    # def test_run_deseq2_app_partial_conditions(self):
+
+    #     input_params = {
+    #         'expressionset_ref': self.expressionset_ref,
+    #         'diff_expression_obj_name': 'MyDiffExpression',
+    #         'workspace_name': self.getWsName(),
+    #         'run_all_combinations': 0,
+    #         "condition_pairs": [{'condition_label_1': [self.condition_1],
+    #                              'condition_label_2': [self.condition_2]}]
+    #     }
+
+    #     result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
+
+    #     self.check_output(result)
+
+    def test_bad_run_deseq2_app_with_condition_set_params(self):
 
         invalidate_input_params = {'missing_expressionset_ref': 'expressionset_ref',
                                    'diff_expression_obj_name': 'differential_expression_set',
-                                   'workspace_name': 'workspace_name'}
-        with self.assertRaisesRegexp(ValueError, 
+                                   'workspace_name': 'workspace_name',
+                                   'conditionset_ref': 'conditionset_ref',
+                                   'group_factor': 'group_factor'}
+        with self.assertRaisesRegexp(ValueError,
                                      '"expressionset_ref" parameter is required, but missing'):
             self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
         invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
+                                   'missing_diff_expression_obj_name': 'differential_expression_set',
+                                   'workspace_name': 'workspace_name',
+                                   'conditionset_ref': 'conditionset_ref',
+                                   'group_factor': 'group_factor'}
+        with self.assertRaisesRegexp(ValueError,
+                                     '"diff_expression_obj_name" parameter is required, but missing'):
+            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
+
+        invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
                                    'diff_expression_obj_name': 'differential_expression_set',
-                                   'missing_workspace_name': 'workspace_name'}
-        with self.assertRaisesRegexp(ValueError, 
+                                   'missing_workspace_name': 'workspace_name',
+                                   'conditionset_ref': 'conditionset_ref',
+                                   'group_factor': 'group_factor'}
+        with self.assertRaisesRegexp(ValueError,
                                      '"workspace_name" parameter is required, but missing'):
             self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-    def test_bad_condition_params(self):
+        invalidate_input_params = {'expressionset_ref': 'expressionset_ref',
+                                   'diff_expression_obj_name': 'differential_expression_set',
+                                   'workspace_name': 'workspace_name',
+                                   'conditionset_ref': 'conditionset_ref',
+                                   'missing_group_factor': 'group_factor'}
+        with self.assertRaisesRegexp(ValueError,
+                                     '"group_factor" parameter is required, but missing'):
+            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
 
-        invalidate_input_params = {
-            'expressionset_ref': self.expressionset_ref,
+    def test_run_deseq2_app_with_condition_set(self):
+
+        input_params = {
+            'expressionset_ref': '33565/28/1',
             'diff_expression_obj_name': 'MyDiffExpression',
             'workspace_name': self.getWsName(),
             'run_all_combinations': 1,
-            "condition_pairs": [{'condition_label_1': ['Ecoli_WT'],
-                                 'condition_label_2': ['Ecoli_ydcR']}]
-        }
-        with self.assertRaisesRegexp(ValueError, "Don't do both"):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
-
-        invalidate_input_params = {
-            'expressionset_ref': self.expressionset_ref,
-            'diff_expression_obj_name': 'MyDiffExpression',
-            'workspace_name': self.getWsName(),
-            'run_all_combinations': 0,
-            "condition_pairs": [{'condition_label_1': ['meh'],
-                                 'condition_label_2': ['Ecoli_ydcR']}]
-        }
-        with self.assertRaisesRegexp(ValueError, "is not available"):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
-
-        invalidate_input_params = {
-            'expressionset_ref': self.expressionset_ref,
-            'diff_expression_obj_name': 'MyDiffExpression',
-            'workspace_name': self.getWsName(),
-            'run_all_combinations': 0,
-            "condition_pairs": [{'condition_label_1': ['Ecoli_WT'],
-                                 'condition_label_2': ['meh']}]
-        }
-        with self.assertRaisesRegexp(ValueError, "is not available"):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
-
-        invalidate_input_params = {
-            'expressionset_ref': self.expressionset_ref,
-            'diff_expression_obj_name': 'MyDiffExpression',
-            'workspace_name': self.getWsName(),
-            'run_all_combinations': 0,
-            "condition_pairs": [{'condition_label_1': ['Ecoli_WT'],
-                                 'condition_label_2': ['Ecoli_WT']}]
-        }
-        with self.assertRaisesRegexp(ValueError, "Input conditions are the same"):
-            self.getImpl().run_deseq2_app(self.getContext(), invalidate_input_params)
-
-    def test_run_deseq2_app(self):
-
-        input_params = {
-            'expressionset_ref': '30881/40/1',
-            'diff_expression_obj_name': 'MyDiffExpression',
-            'workspace_name': self.getWsName(),
-            'run_all_combinations': 1
-        }
-
-        result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
-
-        self.check_output(result)
-
-    def test_run_deseq2_app_transcripts(self):
-
-        input_params = {
-            'expressionset_ref': self.expressionset_ref,
-            'diff_expression_obj_name': 'TranscriptDiffExpression',
-            'workspace_name': self.getWsName(),
-            'run_all_combinations': 1,
-            'input_type': 'transcripts'
-        }
-
-        result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
-
-        self.check_output(result)
-
-    def test_run_deseq2_app_partial_conditions(self):
-
-        input_params = {
-            'expressionset_ref': self.expressionset_ref,
-            'diff_expression_obj_name': 'MyDiffExpression',
-            'workspace_name': self.getWsName(),
-            'run_all_combinations': 0,
-            "condition_pairs": [{'condition_label_1': ['Ecoli_WT'],
-                                 'condition_label_2': ['Ecoli_ydcR']}]
+            'conditionset_ref': '33565/2/1',
+            'group_factor': ['biological replicate']
         }
 
         result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]

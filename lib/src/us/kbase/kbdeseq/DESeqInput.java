@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * <pre>
  * required params:
  * expressionset_ref: ExpressionSet object reference
- * differential_expression_set_suffix: DifferentialExpressoinMatrixSet object suffix
+ * diff_expression_obj_name: DifferentialExpressoinMatrixSet object name
  * workspace_name: the name of the workspace it gets saved to
  * optional params:
  * run_all_combinations: run all paired condition combinations
@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
     "expressionset_ref",
-    "differential_expression_set_suffix",
+    "diff_expression_obj_name",
     "workspace_name",
     "run_all_combinations",
     "condition_labels",
@@ -48,8 +48,8 @@ public class DESeqInput {
 
     @JsonProperty("expressionset_ref")
     private java.lang.String expressionsetRef;
-    @JsonProperty("differential_expression_set_suffix")
-    private java.lang.String differentialExpressionSetSuffix;
+    @JsonProperty("diff_expression_obj_name")
+    private java.lang.String diffExpressionObjName;
     @JsonProperty("workspace_name")
     private java.lang.String workspaceName;
     @JsonProperty("run_all_combinations")
@@ -83,18 +83,18 @@ public class DESeqInput {
         return this;
     }
 
-    @JsonProperty("differential_expression_set_suffix")
-    public java.lang.String getDifferentialExpressionSetSuffix() {
-        return differentialExpressionSetSuffix;
+    @JsonProperty("diff_expression_obj_name")
+    public java.lang.String getDiffExpressionObjName() {
+        return diffExpressionObjName;
     }
 
-    @JsonProperty("differential_expression_set_suffix")
-    public void setDifferentialExpressionSetSuffix(java.lang.String differentialExpressionSetSuffix) {
-        this.differentialExpressionSetSuffix = differentialExpressionSetSuffix;
+    @JsonProperty("diff_expression_obj_name")
+    public void setDiffExpressionObjName(java.lang.String diffExpressionObjName) {
+        this.diffExpressionObjName = diffExpressionObjName;
     }
 
-    public DESeqInput withDifferentialExpressionSetSuffix(java.lang.String differentialExpressionSetSuffix) {
-        this.differentialExpressionSetSuffix = differentialExpressionSetSuffix;
+    public DESeqInput withDiffExpressionObjName(java.lang.String diffExpressionObjName) {
+        this.diffExpressionObjName = diffExpressionObjName;
         return this;
     }
 
@@ -230,7 +230,7 @@ public class DESeqInput {
 
     @Override
     public java.lang.String toString() {
-        return ((((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", differentialExpressionSetSuffix=")+ differentialExpressionSetSuffix)+", workspaceName=")+ workspaceName)+", runAllCombinations=")+ runAllCombinations)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", inputType=")+ inputType)+", numThreads=")+ numThreads)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((((((((("DESeqInput"+" [expressionsetRef=")+ expressionsetRef)+", diffExpressionObjName=")+ diffExpressionObjName)+", workspaceName=")+ workspaceName)+", runAllCombinations=")+ runAllCombinations)+", conditionLabels=")+ conditionLabels)+", alphaCutoff=")+ alphaCutoff)+", foldChangeCutoff=")+ foldChangeCutoff)+", inputType=")+ inputType)+", numThreads=")+ numThreads)+", foldScaleType=")+ foldScaleType)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

@@ -1,3 +1,5 @@
+1.0.9: Added run DESeq2 with ConditionSet app
+
 1.0.8: Handle conditions with special characters in labels
 
 1.0.7: Update DESeq version to 1.20.0 and update output file naming
