@@ -436,7 +436,7 @@ class kb_deseqTest(unittest.TestCase):
             'workspace_name': self.getWsName(),
             'run_all_combinations': 1,
             'conditionset_ref': '33565/2/1',
-            'group_factor': ['biological replicate']
+            'group_factor': 'biological replicate'
         }
 
         result = self.getImpl().run_deseq2_app(self.getContext(), input_params)[0]
