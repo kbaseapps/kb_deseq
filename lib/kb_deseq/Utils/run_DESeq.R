@@ -49,7 +49,7 @@ dds<-DESeq(ddsFromMatrix)
 for (pair in contrast_pairs){
     gene_results_file <- paste(opt$result_directory, "/", pair, "_deseq_results.csv", sep='')
     split_pair <- strsplit(pair, "_vs_")[[1]]
-    res<-results(dds, alpha=0.99999, contrast=c("conds",split_pair[2],split_pair[1]))
+    res<-results(dds, alpha=0.99999, contrast=c("conds",split_pair[1],split_pair[2]))
     res<-res[order(res$padj),]
 
     dmesg("DESeq2 results")
