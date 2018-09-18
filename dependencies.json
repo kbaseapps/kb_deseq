@@ -11,7 +11,27 @@
   "type" : "sdk",
   "version_tag" : "release"
 }, {
+  "module_name" : "GenomeFileUtil",
+  "type" : "sdk",
+  "version_tag" : "release"
+}, {
   "module_name" : "GenomeSearchUtil",
+  "type" : "sdk",
+  "version_tag" : "release"
+}, {
+  "module_name" : "kb_stringtie",
+  "type" : "sdk",
+  "version_tag" : "release"
+}, {
+  "module_name" : "KBaseReport",
+  "type" : "sdk",
+  "version_tag" : "release"
+}, {
+  "module_name" : "ReadsAlignmentUtils",
+  "type" : "sdk",
+  "version_tag" : "release"
+}, {
+  "module_name" : "ReadsUtils",
   "type" : "sdk",
   "version_tag" : "release"
 } ]

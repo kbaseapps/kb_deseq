@@ -25,7 +25,7 @@ class DifferentialExpressionUtils(object):
             password=None, token=None, ignore_authrc=False,
             trust_all_ssl_certificates=False,
             auth_svc='https://kbase.us/services/authorization/Sessions/Login',
-            service_ver='beta',
+            service_ver='release',
             async_job_check_time_ms=100, async_job_check_time_scale_percent=150, 
             async_job_check_max_time_ms=300000):
         if url is None:
@@ -176,6 +176,31 @@ class DifferentialExpressionUtils(object):
            "shock_id" of String
         """
         job_id = self._export_differentialExpression_submit(params, context)
+        async_job_check_time = self._client.async_job_check_time
+        while True:
+            time.sleep(async_job_check_time)
+            async_job_check_time = (async_job_check_time *
+                self._client.async_job_check_time_scale_percent / 100.0)
+            if async_job_check_time > self._client.async_job_check_max_time:
+                async_job_check_time = self._client.async_job_check_max_time
+            job_state = self._check_job(job_id)
+            if job_state['finished']:
+                return job_state['result'][0]
+
+    def _export_diff_expr_matrix_as_tsv_submit(self, params, context=None):
+        return self._client._submit_job(
+             'DifferentialExpressionUtils.export_diff_expr_matrix_as_tsv', [params],
+             self._service_ver, context)
+
+    def export_diff_expr_matrix_as_tsv(self, params, context=None):
+        """
+        Export DifferenitalExpressionMatrix object as tsv
+        :param params: instance of type "ExportMatrixTSVParams" -> structure:
+           parameter "input_ref" of String
+        :returns: instance of type "ExportMatrixTSVOutput" -> structure:
+           parameter "shock_id" of String
+        """
+        job_id = self._export_diff_expr_matrix_as_tsv_submit(params, context)
         async_job_check_time = self._client.async_job_check_time
         while True:
             time.sleep(async_job_check_time)
