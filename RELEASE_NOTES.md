@@ -1,3 +1,5 @@
+1.0.11: Updated citation to PLOS format
+
 1.0.9: Added run DESeq2 with ConditionSet app
 
 1.0.8: Handle conditions with special characters in labels
