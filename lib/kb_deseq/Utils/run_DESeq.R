@@ -2,7 +2,7 @@ dmesg <- function( msg, ... )
   {cat("##################", msg, ..., "##################\n")}
 
 dmesg("Running run_DESeq.R")
-library(getopt, lib.loc="/kb/deployment/bin/prepDE")
+library(getopt)
 library(DESeq2)
 dmesg("Package Info")
 sessionInfo()
