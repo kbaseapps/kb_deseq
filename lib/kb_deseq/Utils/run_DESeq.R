@@ -42,10 +42,10 @@ if (is.null(opt$transcripts)){
 cntTable <- cntTable[,-1]
 
 conds <- factor(strsplit(condition_string, ",")[[1]])
-
 ddsFromMatrix <- DESeqDataSetFromMatrix(cntTable, DataFrame(conds), ~ conds)
 colData(ddsFromMatrix)$conds<-factor(colData(ddsFromMatrix)$conds, levels=unique(strsplit(condition_string, ",")[[1]]))
 dds<-DESeq(ddsFromMatrix)
+
 for (pair in contrast_pairs){
     gene_results_file <- paste(opt$result_directory, "/", pair, "_deseq_results.csv", sep='')
     split_pair <- strsplit(pair, "_vs_")[[1]]
