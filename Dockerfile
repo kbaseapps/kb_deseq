@@ -9,9 +9,13 @@ MAINTAINER KBase Developer
 
 # install R dependencies
 RUN conda install -y r-essentials r-base r-xml r-rcurl
-RUN R -q -e 'install.packages("getopt",  repos="http://cran.us.r-project.org")'
+RUN apt-get update &&\
+    apt-get install -y g++
+RUN R -q -e 'install.packages("getopt",  repos="http://cran.us.r-project.org")' && \
+    R -q -e 'if (!require("getopt")) {quit(status=1)}'
 RUN R -q -e 'install.packages("BiocManager", repos="http://cran.us.r-project.org")' && \
-    R -q -e 'BiocManager::install("DESeq2", ask=FALSE)'
+    R -q -e 'BiocManager::install("DESeq2", ask=FALSE)' && \
+    R -q -e 'if (!require("DESeq2")) {quit(status=1)}'
 
 # -----------------------------------------
 
