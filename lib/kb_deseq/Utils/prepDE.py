@@ -79,12 +79,6 @@ RE_COVERAGE = re.compile('cov "([\-\+\d\.]+)"')
 RE_STRING = re.compile(re.escape(opts.string))
 
 #####
-## Sort the sample names by the sample ID
-#####
-samples.sort()
-
-
-#####
 ## Checks whether a given row is a transcript
 ## other options: ex. exon, transcript, mRNA, 5'UTR
 #####

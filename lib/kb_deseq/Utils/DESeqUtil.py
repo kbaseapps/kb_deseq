@@ -476,7 +476,7 @@ class DESeqUtil:
             position = factors.index(group_factor)
         except:
             error_msg = 'Group Factor {} is not available\n'.format(group_factor)
-            error_msg += 'Availbe factors {}'.format(factors)
+            error_msg += 'Available factors {}'.format(factors)
             raise ValueError(error_msg)
 
         for expr in expression_set_data.get('items'):
