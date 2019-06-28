@@ -1,3 +1,7 @@
+1.1.1: Fix condition order
+
+1.1.0: Updated to Python 3
+
 1.0.11: Updated citation to PLOS format
 
 1.0.9: Added run DESeq2 with ConditionSet app

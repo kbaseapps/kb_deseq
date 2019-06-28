@@ -2,6 +2,7 @@
 #BEGIN_HEADER
 import os
 import json
+import logging
 
 from kb_deseq.Utils.DESeqUtil import DESeqUtil
 #END_HEADER
@@ -22,9 +23,9 @@ class kb_deseq:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "1.0.10"
-    GIT_URL = "https://github.com/Tianhao-Gu/kb_deseq.git"
-    GIT_COMMIT_HASH = "6c202636c0f1b79368adf7d2d5cb96e45f8e3b28"
+    VERSION = "1.1.0"
+    GIT_URL = "https://github.com/kbaseapps/kb_deseq.git"
+    GIT_COMMIT_HASH = "461e1dc7819466ff2e13490e154dc71a640ac75a"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -36,6 +37,8 @@ class kb_deseq:
         self.config = config
         self.config['SDK_CALLBACK_URL'] = os.environ['SDK_CALLBACK_URL']
         self.config['KB_AUTH_TOKEN'] = os.environ['KB_AUTH_TOKEN']
+        logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
+                            level=logging.INFO)
         #END_CONSTRUCTOR
         pass
 
@@ -75,11 +78,11 @@ class kb_deseq:
         # ctx is the context object
         # return variables are: returnVal
         #BEGIN run_deseq2_app
-        print '--->\nRunning kb_deseq.run_deseq2_app\nparams:'
-        print json.dumps(params, indent=1)
+        print('--->\nRunning kb_deseq.run_deseq2_app\nparams:')
+        print(json.dumps(params, indent=1))
 
-        for key, value in params.iteritems():
-            if isinstance(value, basestring):
+        for key, value in params.items():
+            if isinstance(value, str):
                 params[key] = value.strip()
 
         deseq_runner = DESeqUtil(self.config)

@@ -12,10 +12,9 @@ from __future__ import print_function
 try:
     # baseclient and this client are in a package
     from .baseclient import BaseClient as _BaseClient  # @UnusedImport
-except:
+except ImportError:
     # no they aren't
     from baseclient import BaseClient as _BaseClient  # @Reimport
-import time
 
 
 class ExpressionUtils(object):
@@ -24,7 +23,7 @@ class ExpressionUtils(object):
             self, url=None, timeout=30 * 60, user_id=None,
             password=None, token=None, ignore_authrc=False,
             trust_all_ssl_certificates=False,
-            auth_svc='https://kbase.us/services/authorization/Sessions/Login',
+            auth_svc='https://ci.kbase.us/services/auth/api/legacy/KBase/Sessions/Login',
             service_ver='release',
             async_job_check_time_ms=100, async_job_check_time_scale_percent=150, 
             async_job_check_max_time_ms=300000):
@@ -39,14 +38,6 @@ class ExpressionUtils(object):
             async_job_check_time_ms=async_job_check_time_ms,
             async_job_check_time_scale_percent=async_job_check_time_scale_percent,
             async_job_check_max_time_ms=async_job_check_max_time_ms)
-
-    def _check_job(self, job_id):
-        return self._client._check_job('ExpressionUtils', job_id)
-
-    def _upload_expression_submit(self, params, context=None):
-        return self._client._submit_job(
-             'ExpressionUtils.upload_expression', [params],
-             self._service_ver, context)
 
     def upload_expression(self, params, context=None):
         """
@@ -73,22 +64,8 @@ class ExpressionUtils(object):
            from upload expression    *) -> structure: parameter "obj_ref" of
            String
         """
-        job_id = self._upload_expression_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _download_expression_submit(self, params, context=None):
-        return self._client._submit_job(
-             'ExpressionUtils.download_expression', [params],
-             self._service_ver, context)
+        return self._client.run_job('ExpressionUtils.upload_expression',
+                                    [params], self._service_ver, context)
 
     def download_expression(self, params, context=None):
         """
@@ -104,22 +81,8 @@ class ExpressionUtils(object):
            of the download method.  *) -> structure: parameter
            "destination_dir" of String
         """
-        job_id = self._download_expression_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _export_expression_submit(self, params, context=None):
-        return self._client._submit_job(
-             'ExpressionUtils.export_expression', [params],
-             self._service_ver, context)
+        return self._client.run_job('ExpressionUtils.download_expression',
+                                    [params], self._service_ver, context)
 
     def export_expression(self, params, context=None):
         """
@@ -133,22 +96,8 @@ class ExpressionUtils(object):
         :returns: instance of type "ExportOutput" -> structure: parameter
            "shock_id" of String
         """
-        job_id = self._export_expression_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _get_expressionMatrix_submit(self, params, context=None):
-        return self._client._submit_job(
-             'ExpressionUtils.get_expressionMatrix', [params],
-             self._service_ver, context)
+        return self._client.run_job('ExpressionUtils.export_expression',
+                                    [params], self._service_ver, context)
 
     def get_expressionMatrix(self, params, context=None):
         """
@@ -161,22 +110,8 @@ class ExpressionUtils(object):
            parameter "exprMatrix_FPKM_ref" of String, parameter
            "exprMatrix_TPM_ref" of String
         """
-        job_id = self._get_expressionMatrix_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
-
-    def _get_enhancedFilteredExpressionMatrix_submit(self, params, context=None):
-        return self._client._submit_job(
-             'ExpressionUtils.get_enhancedFilteredExpressionMatrix', [params],
-             self._service_ver, context)
+        return self._client.run_job('ExpressionUtils.get_expressionMatrix',
+                                    [params], self._service_ver, context)
 
     def get_enhancedFilteredExpressionMatrix(self, params, context=None):
         """
@@ -239,28 +174,9 @@ class ExpressionUtils(object):
            list of String, parameter "warnings" of list of String, parameter
            "errors" of list of String
         """
-        job_id = self._get_enhancedFilteredExpressionMatrix_submit(params, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
+        return self._client.run_job('ExpressionUtils.get_enhancedFilteredExpressionMatrix',
+                                    [params], self._service_ver, context)
 
     def status(self, context=None):
-        job_id = self._client._submit_job('ExpressionUtils.status', 
-            [], self._service_ver, context)
-        async_job_check_time = self._client.async_job_check_time
-        while True:
-            time.sleep(async_job_check_time)
-            async_job_check_time = (async_job_check_time *
-                self._client.async_job_check_time_scale_percent / 100.0)
-            if async_job_check_time > self._client.async_job_check_max_time:
-                async_job_check_time = self._client.async_job_check_max_time
-            job_state = self._check_job(job_id)
-            if job_state['finished']:
-                return job_state['result'][0]
+        return self._client.run_job('ExpressionUtils.status',
+                                    [], self._service_ver, context)

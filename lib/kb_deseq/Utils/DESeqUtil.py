@@ -1,34 +1,26 @@
 import collections
 import csv
-import errno
 import fileinput
 import itertools
 import json
+import logging
 import os
-import re
 import shutil
 import subprocess
-import time
 import uuid
 import zipfile
 
-from DataFileUtil.DataFileUtilClient import DataFileUtil
-from DifferentialExpressionUtils.DifferentialExpressionUtilsClient import \
-    DifferentialExpressionUtils
-from GenomeSearchUtil.GenomeSearchUtilClient import GenomeSearchUtil
-from KBaseReport.KBaseReportClient import KBaseReport
-from ReadsAlignmentUtils.ReadsAlignmentUtilsClient import ReadsAlignmentUtils
-from Workspace.WorkspaceClient import Workspace as Workspace
-
-
-def log(message, prefix_newline=False):
-    """Logging function, provides a hook to suppress or redirect log messages."""
-    print(('\n' if prefix_newline else '') + '{0:.2f}'.format(time.time()) + ': ' + str(message))
+from installed_clients.DataFileUtilClient import DataFileUtil
+from installed_clients.DifferentialExpressionUtilsClient import DifferentialExpressionUtils
+from installed_clients.GenomeSearchUtilClient import GenomeSearchUtil
+from installed_clients.KBaseReportClient import KBaseReport
+from installed_clients.ReadsAlignmentUtilsClient import ReadsAlignmentUtils
+from installed_clients.WorkspaceClient import Workspace as Workspace
 
 
 class DESeqUtil:
 
-    PREPDE_TOOLKIT_PATH = '/kb/deployment/bin/prepDE'
+    PREPDE_TOOLKIT_PATH = '/kb/module/lib/kb_deseq/Utils'
 
     def _validate_run_deseq2_app_params(self, params):
         """
@@ -36,7 +28,7 @@ class DESeqUtil:
                 validates params passed to run_deseq2_app method
         """
 
-        log('start validating run_deseq2_app params')
+        logging.info('start validating run_deseq2_app params')
 
         # check for required parameters
         for p in ['expressionset_ref', 'workspace_name']:
@@ -49,27 +41,13 @@ class DESeqUtil:
                 validates params passed to run_deseq2_app method
         """
 
-        log('start validating run_deseq2_app_with_condition_set params')
+        logging.info('start validating run_deseq2_app_with_condition_set params')
 
         # check for required parameters
         for p in ['expressionset_ref', 'workspace_name', 'diff_expression_obj_name',
                   'conditionset_ref', 'group_factor']:
             if p not in params:
                 raise ValueError('"{}" parameter is required, but missing'.format(p))
-
-    def _mkdir_p(self, path):
-        """
-        _mkdir_p: make directory for given path
-        """
-        if not path:
-            return
-        try:
-            os.makedirs(path)
-        except OSError as exc:
-            if exc.errno == errno.EEXIST and os.path.isdir(path):
-                pass
-            else:
-                raise
 
     def _xor(self, a, b):
         return bool(a) != bool(b)
@@ -78,14 +56,14 @@ class DESeqUtil:
         """
         _run_command: run command and print result
         """
-        log('Start executing command:\n{}'.format(command))
+        logging.info('Start executing command:\n{}'.format(command))
         pipe = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         output = pipe.communicate()[0]
         exit_code = pipe.returncode
 
         if exit_code == 0:
-            log('Executed command:\n{}\n'.format(command) +
-                'Exit Code: {}\nOutput:\n{}'.format(exit_code, output))
+            logging.info(f'Executed command:\n{command}\n'
+                         f'Exit Code: {exit_code}\nOutput:\n{output}')
         else:
             error_msg = 'Error running command:\n{}\n'.format(command)
             error_msg += 'Exit Code: {}\nOutput:\n{}'.format(exit_code, output)
@@ -97,11 +75,11 @@ class DESeqUtil:
         _generate_html_report: generate html summary report
         """
 
-        log('start generating html report')
+        logging.info('start generating html report')
         html_report = list()
 
         output_directory = os.path.join(self.scratch, str(uuid.uuid4()))
-        self._mkdir_p(output_directory)
+        os.makedirs(output_directory, exist_ok=True)
         result_file_path = os.path.join(output_directory, 'report.html')
 
         visualization_content = ''
@@ -188,11 +166,11 @@ class DESeqUtil:
         _generate_output_file_list: zip result files and generate file_links for report
         """
 
-        log('start packing result files')
+        logging.info('start packing result files')
         output_files = list()
 
         output_directory = os.path.join(self.scratch, str(uuid.uuid4()))
-        self._mkdir_p(output_directory)
+        os.makedirs(output_directory, exist_ok=True)
         result_file = os.path.join(output_directory, 'DESeq2_result.zip')
         plot_file = os.path.join(output_directory, 'DESeq2_plot.zip')
 
@@ -233,7 +211,7 @@ class DESeqUtil:
         _generate_report: generate summary report
         """
 
-        log('creating report')
+        logging.info('creating report')
 
         output_files = self._generate_output_file_list(result_directory)
 
@@ -280,14 +258,14 @@ class DESeqUtil:
                                  run prepDE.py on them and save resulting count matrix file
         """
 
-        log('generating count matrix file')
+        logging.info('generating count matrix file')
 
         conditions = []
         genome_ref = None
         items = self.expression_set_data['items']
 
         gtf_directory = os.path.join(self.scratch, str(uuid.uuid4()))
-        self._mkdir_p(gtf_directory)
+        os.makedirs(gtf_directory, exist_ok=True)
 
         mapping_file = os.path.join(gtf_directory, "mapping.txt")
         with open(mapping_file, 'w') as input_mapping:
@@ -303,7 +281,7 @@ class DESeqUtil:
                 genome_ref = expression_data['genome_id']
 
                 tmp_gtf_directory = os.path.join(gtf_directory, expression_name)
-                self._mkdir_p(tmp_gtf_directory)
+                os.makedirs(tmp_gtf_directory, exist_ok=True)
 
                 self.dfu.shock_to_file({'handle_id': handle_id,
                                         'file_path': tmp_gtf_directory,
@@ -322,7 +300,7 @@ class DESeqUtil:
         ref: http://ccb.jhu.edu/software/stringtie/index.shtml?t=manual#deseq
         """
 
-        log('generating matrix of read counts')
+        logging.info('generating matrix of read counts')
 
         command = self.PREPDE_TOOLKIT_PATH + '/prepDE.py '
         command += '-i {} '.format(input)
@@ -362,7 +340,7 @@ class DESeqUtil:
         _save_diff_expression: save DifferentialExpression object to workspace
         """
 
-        log('start saving KBaseFeatureValues.DifferentialExpressionMatrix object')
+        logging.info('start saving KBaseFeatureValues.DifferentialExpressionMatrix object')
 
         workspace_name = params.get('workspace_name')
         diff_expression_obj_name = params.get('diff_expression_obj_name')
@@ -378,18 +356,18 @@ class DESeqUtil:
 
             genes_results_filepath = os.path.join(result_directory, res_file)
 
-            with open(genes_results_filepath, "rb") as f:
+            with open(genes_results_filepath, "r") as f:
                 reader = csv.reader(f)
-                columns = reader.next()[1:]
+                columns = next(reader)[1:]
 
             columns[columns.index('log2FoldChange')] = 'log2_fold_change'
             columns[columns.index('pvalue')] = 'p_value'
             columns[columns.index('padj')] = 'q_value'
             for line in fileinput.input(genes_results_filepath, inplace=True):
                 if fileinput.isfirstline():
-                    print 'gene_id,' + ','.join(columns)
+                    print('gene_id,' + ','.join(columns))
                 else:
-                    print line,
+                    print(line)
 
             reader = csv.DictReader(open(genes_results_filepath))
 
@@ -430,7 +408,7 @@ class DESeqUtil:
         """
         _get_condition_labels: get all possible condition label pairs
         """
-        log('getting all possible condition pairs')
+        logging.info('getting all possible condition pairs')
 
         items = self.expression_set_data.get('items')
         condition_replicate_name_mapping = collections.OrderedDict()
@@ -449,12 +427,12 @@ class DESeqUtil:
             else:
                 condition_replicate_name_mapping.update({expr_condition: [expr_name]})
 
-        condition_labels = condition_replicate_name_mapping.keys()
+        condition_labels = list(condition_replicate_name_mapping.keys())
 
         condition_label_pairs = [list(pair) for pair in itertools.combinations(condition_labels,
                                                                                2)]
 
-        log('all possible condition pairs:\n{}'.format(condition_label_pairs))
+        logging.info('all possible condition pairs:\n{}'.format(condition_label_pairs))
 
         return condition_label_pairs, condition_labels
 
@@ -498,7 +476,7 @@ class DESeqUtil:
             position = factors.index(group_factor)
         except:
             error_msg = 'Group Factor {} is not available\n'.format(group_factor)
-            error_msg += 'Availbe factors {}'.format(factors)
+            error_msg += 'Available factors {}'.format(factors)
             raise ValueError(error_msg)
 
         for expr in expression_set_data.get('items'):
@@ -551,13 +529,13 @@ class DESeqUtil:
             report_name: report name generated by KBaseReport
             report_ref: report reference generated by KBaseReport
         """
-        log('--->\nrunning DESeqUtil.run_deseq2_app_with_condition_set\n' +
-            'params:\n{}'.format(json.dumps(params, indent=1)))
+        logging.info('--->\nrunning DESeqUtil.run_deseq2_app_with_condition_set\n'
+                     f'params:\n{json.dumps(params, indent=1)}')
 
         self._validate_run_deseq2_app_with_condition_set_params(params)
 
         result_directory = os.path.join(self.scratch, str(uuid.uuid4()))
-        self._mkdir_p(result_directory)
+        os.makedirs(result_directory, exist_ok=True)
 
         expressionset_ref = params.get('expressionset_ref')
         expression_set_obj = self.dfu.get_objects({'object_refs': [expressionset_ref]})['data'][0]
@@ -624,13 +602,13 @@ class DESeqUtil:
         if params.get('conditionset_ref'):
             return self.run_deseq2_app_with_condition_set(params)
 
-        log('--->\nrunning DESeqUtil.run_deseq2_app\n' +
-            'params:\n{}'.format(json.dumps(params, indent=1)))
+        logging.info('--->\nrunning DESeqUtil.run_deseq2_app\n' +
+                     f'params:\n{json.dumps(params, indent=1)}')
 
         self._validate_run_deseq2_app_params(params)
 
         result_directory = os.path.join(self.scratch, str(uuid.uuid4()))
-        self._mkdir_p(result_directory)
+        os.makedirs(result_directory, exist_ok=True)
 
         expressionset_ref = params.get('expressionset_ref')
         expression_set_obj = self.ws.get_objects2({'objects':
@@ -648,8 +626,9 @@ class DESeqUtil:
 
         if run_all_combinations:
             condition_label_pairs = available_condition_label_pairs
-        elif self._check_input_labels(condition_pairs, available_condition_labels):
-            condition_label_pairs = list()
+        else:
+            self._check_input_labels(condition_pairs, available_condition_labels)
+            condition_label_pairs = []
             for condition_pair in condition_pairs:
                 condition_labels = [condition_pair.get('condition_label_1')[0].strip(),
                                     condition_pair.get('condition_label_2')[0].strip()]
