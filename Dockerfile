@@ -8,9 +8,25 @@ MAINTAINER KBase Developer
 # -----------------------------------------
 
 # install R dependencies
-RUN conda install -y r-essentials r-base r-xml r-rcurl
-RUN apt-get update &&\
-    apt-get install -y g++
+# RUN conda install -y r-essentials r-base r-xml r-rcurl
+# RUN apt-get update &&\
+#    apt-get install -y g++
+
+# R related installations
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FCAE2A0E115C3D8A
+RUN echo 'deb https://cloud.r-project.org/bin/linux/debian stretch-cran35/' >> /etc/apt/sources.list
+
+RUN apt-get update --fix-missing
+RUN apt-get install -y gcc wget r-base r-base-dev
+RUN apt-get install -y g++
+RUN apt-get install -y build-essential
+
+RUN cp /usr/bin/R /kb/deployment/bin/.
+RUN cp /usr/bin/Rscript /kb/deployment/bin/.
+
+RUN Rscript -e "install.packages('XML')"
+RUN Rscript -e "install.packages('RCurl')"
+
 RUN R -q -e 'install.packages("getopt",  repos="http://cran.us.r-project.org")' && \
     R -q -e 'if (!require("getopt")) {quit(status=1)}'
 RUN R -q -e 'install.packages("BiocManager", repos="http://cran.us.r-project.org")' && \
