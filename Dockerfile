@@ -22,6 +22,8 @@ RUN pip install --upgrade pip \
 
 RUN pip install coverage==5.5 && \
     pip install requests==2.26.0 && \
+    pip install Jinja2==3.0.1 && \
+    pip install JSONRPCBase==0.2.0 && \
     pip install nose==1.3.7
 # -----------------------------------------
 
