@@ -1,8 +1,8 @@
 Build status:
 
-master: [![Coverage Status](https://coveralls.io/repos/github/kbaseapps/kb_deseq/badge.svg?branch=master)](https://coveralls.io/github/kbaseapps/kb_deseq?branch=master)
-
-master:  [![Build Status](https://travis-ci.org/kbaseapps/kb_deseq.svg?branch=master)](https://travis-ci.org/kbaseapps/kb_deseq)
+| Branch  | Build | Coverage | LGTM Alerts |
+| --- | --- | --- | --- |
+| master  | [![KBase SDK Tests](https://github.com/kbaseapps/kb_deseq/workflows/KBase%20SDK%20Tests/badge.svg)](https://github.com/kbaseapps/kb_deseq/actions?query=workflow%3A%22KBase+SDK+Tests%22)  | [![codecov](https://codecov.io/gh/kbaseapps/kb_deseq/branch/master/graph/badge.svg?token=5PAO39L7ZX)](https://codecov.io/gh/kbaseapps/kb_deseq) | [![Total alerts](https://img.shields.io/lgtm/alerts/g/kbaseapps/kb_deseq.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kbaseapps/kb_deseq/alerts/) |
 
 # kb_deseq
 ---
