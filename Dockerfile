@@ -17,6 +17,10 @@ RUN R -q -e 'install.packages("BiocManager", repos="http://cran.us.r-project.org
     R -q -e 'BiocManager::install("DESeq2", ask=FALSE)' && \
     R -q -e 'if (!require("DESeq2")) {quit(status=1)}'
 
+RUN pip install --upgrade pip \
+    && python --version
+
+RUN pip install coverage==5.5
 # -----------------------------------------
 
 COPY ./ /kb/module
