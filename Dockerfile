@@ -20,7 +20,8 @@ RUN R -q -e 'install.packages("BiocManager", repos="http://cran.us.r-project.org
 RUN pip install --upgrade pip \
     && python --version
 
-RUN pip install coverage==5.5
+RUN pip install coverage==5.5 && \
+    pip install nose==1.3.7
 # -----------------------------------------
 
 COPY ./ /kb/module
