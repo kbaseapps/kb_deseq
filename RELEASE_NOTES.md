@@ -1,3 +1,5 @@
+1.1.2: Hide input_type from UI (set it to 'genes')
+
 1.1.1: Fix condition order
 
 1.1.0: Updated to Python 3
