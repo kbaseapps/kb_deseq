@@ -69,6 +69,11 @@ class kb_deseqTest(unittest.TestCase):
         cls.expressionset_ref = '30957/52/41'
         cls.condition_1 = 'Ecoli_WT'
         cls.condition_2 = 'Ecoli_ydcR'
+
+        # public on Appdev
+        cls.expressionset_ref = '60454/19'
+        cls.condition_1 = 'WT'
+        cls.condition_2 = 'Hy5'
         #cls.prepare_data()
 
     @classmethod
