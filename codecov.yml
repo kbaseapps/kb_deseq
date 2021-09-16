@@ -1,0 +1,4 @@
+ignore:
+  - "lib/installed_clients"
+  - "lib/kb_deseq/kb_deseqServer.py"
+  - "lib/kb_deseq/authclient.py"

@@ -17,6 +17,14 @@ RUN R -q -e 'install.packages("BiocManager", repos="http://cran.us.r-project.org
     R -q -e 'BiocManager::install("DESeq2", ask=FALSE)' && \
     R -q -e 'if (!require("DESeq2")) {quit(status=1)}'
 
+RUN pip install --upgrade pip \
+    && python --version
+
+RUN pip install coverage==5.5 && \
+    pip install requests==2.26.0 && \
+    pip install Jinja2==3.0.1 && \
+    pip install JSONRPCBase==0.2.0 && \
+    pip install nose==1.3.7
 # -----------------------------------------
 
 COPY ./ /kb/module
